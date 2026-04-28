@@ -1,0 +1,440 @@
+'use client';
+
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useRotatingMessages } from '@/lib/hooks';
+import { createClient } from '@/lib/supabase/client';
+import {
+  Upload,
+  FileText,
+  Trash2,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  File,
+  X,
+  FileUp,
+  Files,
+  History,
+  Sparkles
+} from 'lucide-react';
+
+import { toast } from 'sonner';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip } from '@/components/ui/tooltip';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface Exam {
+  id: string;
+  exam_name: string;
+}
+
+interface DocumentInfo {
+  id: string;
+  file_name: string;
+  file_url: string;
+  doc_type: 'syllabus' | 'notes' | 'pyq';
+  processing_status: 'pending' | 'processing' | 'ready' | 'failed';
+  created_at: string;
+}
+
+// ─── Constants ───────────────────────────────────────────────────────
+const DOC_TYPES = [
+  { id: 'syllabus' as const, label: 'Syllabus', multi: false, icon: FileText },
+  { id: 'notes' as const, label: 'Study Notes', multi: true, icon: Files },
+  { id: 'pyq' as const, label: 'PYQs (Previous Years)', multi: true, icon: History },
+];
+
+const STATUS_CONFIG = {
+  pending: { color: 'bg-background text-subtle border-border-subtle', icon: Clock },
+  processing: { color: 'bg-orange-600/5 text-orange-600 border-primary/20', icon: Upload },
+  ready: { color: 'bg-emerald-500/5 text-emerald-600 border-emerald-500/20', icon: CheckCircle },
+  failed: { color: 'bg-red-500/5 text-red-600 border-red-500/20', icon: AlertCircle },
+};
+
+// ─── Components ──────────────────────────────────────────────────────
+function StatusBadge({ status }: { status: DocumentInfo['processing_status'] }) {
+  const config = STATUS_CONFIG[status];
+  const tooltipContent = {
+    pending: 'Document is queued for intelligence extraction.',
+    processing: 'AI is currently analyzing the document structure.',
+    ready: 'Analysis complete. Content is now available for Practice & Guru.',
+    failed: 'Extraction failed. Please ensure the file is a clear PDF or Image.'
+  }[status];
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <Tooltip content={tooltipContent}>
+        <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider cursor-help ${config.color}`}>
+          <config.icon className={`h-2.5 w-2.5 ${status === 'processing' ? 'animate-bounce' : ''}`} />
+          {status}
+        </span>
+      </Tooltip>
+    </div>
+  );
+}
+
+function ProcessingBanner({ isProcessing }: { isProcessing: boolean }) {
+  const rotatingMessage = useRotatingMessages(isProcessing, [
+    "AI is analyzing...",
+    "Extracting intelligence...",
+    "Almost there...",
+    "Still processing...",
+    "Optimizing data..."
+  ]);
+
+  if (!isProcessing) return null;
+
+  return (
+    <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 mb-8 flex items-center justify-between animate-fade-in">
+      <div className="flex items-center gap-3">
+        <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-accent">
+          <Upload className="h-4 w-4 animate-bounce" />
+        </div>
+        <div>
+          <p className="text-[10px] font-bold text-accent uppercase tracking-wider animate-pulse">{rotatingMessage}</p>
+          <p className="text-[10px] text-subtle font-medium">Your intelligence hub is being updated</p>
+        </div>
+      </div>
+      <div className="flex gap-1">
+        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
+      </div>
+    </div>
+  );
+}
+
+function UploadZone({
+  examId,
+  docType,
+  label,
+  multi,
+  documents,
+  onUploadStart,
+  onUploadFinish,
+  onDelete,
+}: {
+  examId: string;
+  docType: DocumentInfo['doc_type'];
+  label: string;
+  multi: boolean;
+  documents: DocumentInfo[];
+  onUploadStart: () => void;
+  onUploadFinish: () => void;
+  onDelete: (id: string, url: string) => void;
+}) {
+  const [isOver, setIsOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const supabase = createClient();
+
+  const handleUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    if (!multi && documents.length > 0) {
+      toast.error('Single File Policy', { description: 'Syllabus category only allows a single file. Delete the current one to replace.' });
+      return;
+    }
+
+    const filesToUpload = multi ? Array.from(files) : [files[0]];
+    onUploadStart();
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    for (const file of filesToUpload) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File Too Large', { description: `${file.name} exceeds 10MB limit.` });
+        continue;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${user.id}/${examId}/${docType}/${fileName}`;
+
+      const { error: storageError } = await supabase.storage
+        .from('user-documents')
+        .upload(filePath, file);
+
+      if (storageError) {
+        toast.error('Upload Failed', { description: storageError.message });
+        continue;
+      }
+
+      const { data: docData, error: dbError } = await supabase
+        .from('documents')
+        .insert({
+          user_id: user.id,
+          exam_id: examId,
+          file_name: file.name,
+          file_url: filePath,
+          doc_type: docType,
+          processing_status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (dbError) {
+        toast.error('Database Sync Failed', { description: dbError.message });
+        continue;
+      }
+
+      toast.success('Upload Successful', { description: `${file.name} is now being processed.` });
+
+      fetch('/api/process-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ documentId: docData.id }),
+      })
+      .then(async (res) => {
+        if (!res.ok) {
+           const errData = await res.json().catch(()=>({}));
+           console.error("Processing Failed:", errData.message);
+        }
+      })
+      .catch(err => {
+        console.error('API Trigger failed:', err);
+      });
+    }
+
+    onUploadFinish();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  return (
+    <div className="flex flex-col space-y-5">
+      <div className="flex items-center justify-between">
+          <h3 className="text-[11px] font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+            {label}
+          </h3>
+          {!multi && <span className="text-[9px] bg-background border border-border-subtle px-1.5 py-0.5 rounded text-subtle font-bold uppercase tracking-wider">Single</span>}
+      </div>
+
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        accept=".pdf,.jpg,.jpeg,.png"
+        multiple={multi}
+        onChange={(e) => handleUpload(e.target.files)}
+      />
+
+      <div
+        onDragOver={(e) => { e.preventDefault(); setIsOver(true); }}
+        onDragLeave={() => setIsOver(false)}
+        onDrop={(e) => { e.preventDefault(); setIsOver(false); handleUpload(e.dataTransfer.files); }}
+        onClick={() => fileInputRef.current?.click()}
+        className={`relative h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all cursor-pointer group ${
+          isOver 
+            ? 'border-accent bg-accent/5' 
+            : 'border-border-subtle hover:border-accent/40 hover:bg-accent/5'
+        }`}
+      >
+        <div className="relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
+          <FileUp className="h-4 w-4" />
+        </div>
+        <div className="relative z-10 mt-2 text-center px-4">
+          <p className="text-[10px] font-bold text-foreground uppercase tracking-wider">Drop or Select</p>
+          <p className="text-[9px] text-subtle font-medium">Max 10MB</p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {documents.map((doc) => (
+          <div key={doc.id} className="flex items-center justify-between p-3.5 bg-background border border-border-subtle rounded-xl hover:border-accent/30 transition-all group">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="h-9 w-9 rounded-lg bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0 text-subtle group-hover:text-orange-600 transition-colors">
+                <File className="h-4 w-4" />
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-[13px] font-medium text-foreground truncate">{doc.file_name}</p>
+                <p className="text-[10px] text-subtle font-bold uppercase tracking-wider">{new Date(doc.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 ml-4">
+              <StatusBadge status={doc.processing_status} />
+              <button 
+                onClick={(e) => { e.stopPropagation(); onDelete(doc.id, doc.file_url); }}
+                className="text-subtle hover:text-red-500 p-1.5 transition-colors rounded-lg hover:bg-red-500/5"
+                title="Delete"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function DocumentsPage() {
+  const [exams, setExams] = useState<Exam[]>([]);
+  const [activeExamId, setActiveExamId] = useState<string | null>(null);
+  const [documents, setDocuments] = useState<DocumentInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [docToDelete, setDocToDelete] = useState<{id: string, url: string} | null>(null);
+  
+  const supabase = createClient();
+
+  const fetchExams = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: examsData } = await supabase
+      .from('user_exams')
+      .select('id, exam_name')
+      .eq('user_id', user.id)
+      .order('exam_date', { ascending: true });
+
+    if (examsData) {
+      setExams(examsData);
+      if (examsData.length > 0 && !activeExamId) {
+        setActiveExamId(examsData[0].id);
+      }
+    }
+  }, [supabase, activeExamId]);
+
+  const fetchDocs = useCallback(async () => {
+    if (!activeExamId) return;
+    const { data } = await supabase
+      .from('documents')
+      .select('id, file_name, file_url, doc_type, processing_status, created_at')
+      .eq('exam_id', activeExamId)
+      .order('created_at', { ascending: false });
+
+    if (data) setDocuments(data);
+  }, [supabase, activeExamId]);
+
+  useEffect(() => { fetchExams(); }, [fetchExams]);
+  
+  useEffect(() => {
+    if (activeExamId) {
+      setLoading(true);
+      fetchDocs().finally(() => setLoading(false));
+    }
+  }, [activeExamId, fetchDocs]);
+
+  useEffect(() => {
+    if (!activeExamId) return;
+    const interval = setInterval(() => { fetchDocs(); }, 5000);
+    return () => clearInterval(interval);
+  }, [activeExamId, fetchDocs]);
+
+  const handleDelete = async (id: string, url: string) => {
+    try {
+      const { error: chunkError } = await supabase.from('document_chunks').delete().eq('document_id', id);
+      const { error: storageError } = await supabase.storage.from('user-documents').remove([url]);
+      const { error: dbError } = await supabase.from('documents').delete().eq('id', id);
+      
+      if (dbError) throw dbError;
+      
+      toast.success('Document Purged', { description: 'All associated intelligence chunks have been removed.' });
+      fetchDocs();
+    } catch (error: any) {
+      toast.error('Deletion Failed', { description: error.message });
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 pb-12">
+      {/* Header Panel */}
+      <div className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative z-10">
+          <div className="space-y-4">
+             <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-accent" />
+                <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Repository</span>
+             </div>
+             <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
+               Study <span className="text-accent">Materials</span>
+             </h1>
+             <p className="text-sm text-subtle font-medium max-w-sm leading-relaxed">
+               Securely upload and manage your core syllabus and reference notes.
+             </p>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            {exams.map((exam) => (
+              <button
+                key={exam.id}
+                onClick={() => setActiveExamId(exam.id)}
+                className={`px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${
+                  activeExamId === exam.id 
+                    ? 'bg-orange-600 text-background' 
+                    : 'bg-background border border-border-subtle text-subtle hover:text-foreground'
+                }`}
+              >
+                {exam.exam_name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {!activeExamId ? (
+        <div className="bg-surface p-12 rounded-2xl text-center border border-border-subtle">
+            <div className="h-12 w-12 rounded-xl bg-background border border-border-subtle flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="h-5 w-5 text-subtle" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground tracking-tight">Mission Target Not Set</h3>
+            <p className="text-sm text-subtle mt-2 font-medium max-w-xs mx-auto">Please initialize an exam in the dashboard to start managing documents.</p>
+        </div>
+      ) : (
+        <div className="space-y-6 sm:space-y-8">
+          <ProcessingBanner isProcessing={documents.some(d => d.processing_status === 'processing' || d.processing_status === 'pending')} />
+
+          {loading ? (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+               {[1, 2, 3].map(i => (
+                 <div key={i} className="bg-surface p-8 rounded-3xl border border-border-subtle space-y-6">
+                    <Skeleton className="h-4 w-32 rounded-full" />
+                    <Skeleton className="h-24 w-full rounded-2xl" />
+                    <div className="space-y-3">
+                      <Skeleton className="h-12 w-full rounded-xl" />
+                      <Skeleton className="h-12 w-full rounded-xl" />
+                    </div>
+                 </div>
+               ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {DOC_TYPES.map((type) => (
+                <div key={type.id} className="bg-surface p-6 rounded-2xl border border-border-subtle shadow-sm">
+                  <UploadZone
+                    examId={activeExamId}
+                    docType={type.id}
+                    label={type.label}
+                    multi={type.multi}
+                    documents={documents.filter(d => d.doc_type === type.id)}
+                    onUploadStart={() => {}}
+                    onUploadFinish={() => fetchDocs()}
+                    onDelete={(id, url) => {
+                      // We'll use state to manage which doc is being deleted for the modal
+                      setDocToDelete({ id, url });
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <ConfirmModal 
+            isOpen={!!docToDelete}
+            onClose={() => setDocToDelete(null)}
+            onConfirm={() => {
+              if (docToDelete) handleDelete(docToDelete.id, docToDelete.url);
+            }}
+            title="Purge Document Intelligence?"
+            description="This will permanently delete the file and all AI-extracted data. This action cannot be undone."
+            variant="danger"
+            confirmLabel="Delete Forever"
+          />
+        </div>
+      )}
+    </div>
+  );
+}

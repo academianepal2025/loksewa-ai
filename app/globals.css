@@ -1,0 +1,141 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: #f97316;
+  --color-accent: #f97316;
+  --color-surface: var(--surface);
+  --color-border-subtle: var(--border-subtle);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  
+  --color-primary-brand: var(--primary-brand);
+  --color-accent-brand: var(--accent-brand);
+  
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-inter);
+}
+
+:root {
+  --background: #fafafa; 
+  --foreground: #09090b;
+  --primary: #f97316;     /* Saffron - was Zinc-900 */
+  --accent: #f97316;     /* Orange-500 */
+  --surface: #ffffff;
+  --border-subtle: #e4e4e7; /* Zinc-200 */
+  --muted: #71717a;      /* Zinc-500 */
+  --subtle: #a1a1aa;     /* Zinc-400 */
+  
+  --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --primary: #fb923c;     /* Saffron-400 */
+  --accent: #fb923c;
+  --surface: #18181b;
+  --border-subtle: #27272a;
+  --muted: #a1a1aa;
+  --subtle: #71717a;
+}
+
+/* ── Brand Themes ─────────────────────────────────────────────── */
+html.theme-orange {
+  --primary-brand: #ea580c;
+  --accent-brand: #9a3412;
+}
+
+html.theme-indigo {
+  --primary-brand: #4f46e5;
+  --accent-brand: #4338ca;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Legibility improvements for text reading */
+.parsed-text-container {
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+  font-size: 1.05rem;
+  scrollbar-width: thin;
+}
+
+.parsed-text-container p {
+  margin-bottom: 1.25rem;
+}
+
+/* 3D Flip & Interactive Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-top {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoom-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+}
+
+.animate-slide-in-top {
+  animation: slide-in-top 0.8s ease-out forwards;
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ── Reading Area Font Scaling ───────────────────────────────────────── */
+html.font-scale-sm {
+  --reading-font-size: 0.875rem; /* text-sm equivalent */
+  --reading-line-height: 1.6;
+}
+
+html.font-scale-md {
+  --reading-font-size: 1rem;    /* text-base equivalent */
+  --reading-line-height: 1.7;
+}
+
+html.font-scale-lg {
+  --reading-font-size: 1.25rem; /* text-xl equivalent */
+  --reading-line-height: 1.8;
+}
+
+.reading-area {
+  font-size: var(--reading-font-size, 1rem) !important;
+  line-height: var(--reading-line-height, 1.7) !important;
+  transition: font-size 0.2s ease, line-height 0.2s ease;
+}

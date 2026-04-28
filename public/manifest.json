@@ -1,0 +1,17 @@
+{
+  "name": "Loksewa AI",
+  "short_name": "LoksewaAI",
+  "description": "Advanced AI partner for Nepal PSC exam preparation.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f59e0b",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
