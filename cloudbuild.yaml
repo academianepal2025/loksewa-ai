@@ -20,5 +20,9 @@ steps:
       - '1Gi'
       - '--port'
       - '3080'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 images:
   - 'gcr.io/$PROJECT_ID/loksewa-ai'
