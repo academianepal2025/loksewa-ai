@@ -28,6 +28,11 @@ import { DashboardProvider, useDashboard } from '@/components/dashboard/Dashboar
 import { OnboardingModal } from '@/components/dashboard/OnboardingModal';
 import { BottomNav } from '@/components/dashboard/BottomNav';
 import { InstallPrompt } from '@/components/dashboard/InstallPrompt';
+import { UpgradeModalProvider, useUpgradeModal } from '@/lib/UpgradeModalContext';
+import { UpgradeModal } from '@/components/UpgradeModal';
+import { PaymentFlowModal } from '@/components/PaymentFlowModal';
+import { PlanBanner } from '@/components/dashboard/PlanBanner';
+import { ShieldAlert } from 'lucide-react';
 
 const navItems = [
   { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -36,6 +41,7 @@ const navItems = [
   { key: 'documents', href: '/dashboard/documents', icon: FileText },
   { key: 'guru', href: '/dashboard/guru', icon: Lightbulb },
   { key: 'practice', href: '/dashboard/practice', icon: PenTool },
+  { key: 'study_notes', href: '/dashboard/study-notes', icon: BookOpen },
   { key: 'performance', href: '/dashboard/performance', icon: BarChart3 },
   { key: 'intelligence', href: '/dashboard/intelligence', icon: Sparkles },
   { key: 'settings', href: '/dashboard/settings', icon: Settings },
@@ -46,9 +52,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const currentPath = usePathname() || '/dashboard';
   const { theme, setTheme } = useTheme();
-  const { t, language } = useDashboard();
+  const { t, language, isAdmin } = useDashboard();
+  const { setSelectedPlan, selectedPlan } = useUpgradeModal();
   const [mounted, setMounted] = useState(false);
   const [fullName, setFullName] = useState('User');
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [pendingAdminCount, setPendingAdminCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -59,9 +68,17 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         return;
       }
       setFullName(session.user.user_metadata?.full_name || 'User');
+      // Fetch pending count for admin badge
+      if (isAdmin) {
+        const { count } = await supabase
+          .from('payment_requests')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending');
+        setPendingAdminCount(count || 0);
+      }
     };
     init();
-  }, [supabase, router]);
+  }, [supabase, router, isAdmin]);
 
   if (!mounted) return null;
 
@@ -93,6 +110,32 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
               </Link>
             );
           })}
+
+          {isAdmin && (
+            <div className="pt-6 mt-6 border-t border-border-subtle">
+               <p className="px-4 text-[10px] font-black text-accent uppercase tracking-[0.2em] mb-2">Command Center</p>
+               <Link
+                href="/admin"
+                className={`flex items-center justify-between px-4 py-2.5 text-sm font-bold rounded-xl transition-all group min-h-[44px] ${
+                  currentPath.startsWith('/admin') 
+                  ? 'bg-orange-600 text-background shadow-lg shadow-primary/20' 
+                  : 'text-subtle hover:bg-background hover:text-foreground'
+                }`}
+              >
+                <div className="flex items-center">
+                  <ShieldAlert className="mr-3 h-4 w-4" />
+                  Admin Console
+                </div>
+                {pendingAdminCount > 0 && (
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold animate-pulse-badge ${
+                    currentPath.startsWith('/admin')
+                    ? 'bg-background text-orange-600'
+                    : 'bg-red-500 text-white'
+                  }`}>{pendingAdminCount}</span>
+                )}
+              </Link>
+            </div>
+          )}
         </nav>
         <div className="p-4 border-t border-border-subtle">
            <div className="bg-background rounded-xl p-3 flex items-center gap-3">
@@ -109,6 +152,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:pl-64 min-h-screen">
+        <PlanBanner />
+        <UpgradeModal onSelectPlan={(plan) => { setSelectedPlan(plan); setIsPaymentModalOpen(true); }} />
+        <PaymentFlowModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} selectedPlan={selectedPlan as any} />
+        
         {/* Top Bar */}
         <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border-subtle h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
@@ -163,6 +210,8 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       </div>
 
       <BottomNav />
+      <UpgradeModal onSelectPlan={(plan) => { setSelectedPlan(plan); setIsPaymentModalOpen(true); }} />
+      <PaymentFlowModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} selectedPlan={selectedPlan} />
     </div>
   );
 }
@@ -170,7 +219,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <DashboardProvider>
-      <DashboardContent>{children}</DashboardContent>
+      <UpgradeModalProvider>
+        <DashboardContent>{children}</DashboardContent>
+      </UpgradeModalProvider>
     </DashboardProvider>
   );
 }

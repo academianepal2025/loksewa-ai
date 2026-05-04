@@ -26,6 +26,8 @@ import {
   ArrowDown,
 } from 'lucide-react';
 
+import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
+
 // ── Types ─────────────────────────────────────────────────────────────
 interface ChatMessage {
   id?: string;
@@ -409,6 +411,9 @@ function GuruContent() {
           return updated;
         });
       }
+      
+      // Refresh usage UI
+      window.dispatchEvent(new CustomEvent('usage-updated'));
     } catch (error: any) {
       console.error('Chat error:', error);
       
@@ -607,6 +612,9 @@ function GuruContent() {
       {/* ── Input Area (pinned to bottom, full width) ──────────────── */}
       <div className="flex-shrink-0 border-t border-border-subtle bg-background/90 backdrop-blur-md px-4 sm:px-6 py-3 sm:py-4">
         <div className="max-w-3xl mx-auto">
+          <div className="mb-2 px-1">
+             <UsageIndicator type="chat" />
+          </div>
           <div className="flex items-end gap-2 bg-surface border border-border-subtle rounded-2xl p-2 focus-within:border-accent/40 transition-all">
             <textarea
               ref={inputRef}

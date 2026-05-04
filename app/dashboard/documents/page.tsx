@@ -25,6 +25,10 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useUpgradeModal } from '@/lib/UpgradeModalContext';
+import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
+import { useDashboard } from '@/components/dashboard/DashboardProvider';
+
 interface Exam {
   id: string;
   exam_name: string;
@@ -128,19 +132,42 @@ function UploadZone({
   const [isOver, setIsOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
+  const { showUpgradeModal } = useUpgradeModal();
+  const { isPro, isAdmin } = useDashboard();
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
+
+    // Plan Limit Check
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) return;
+
+    const resLimit = await fetch('/api/check-limits');
+    const limitData = await resLimit.json();
+
+    if (limitData.plan === 'free' && limitData.limits.documents.exceeded) {
+      showUpgradeModal('document_limit');
+      return;
+    }
+
     if (!multi && documents.length > 0) {
       toast.error('Single File Policy', { description: 'Syllabus category only allows a single file. Delete the current one to replace.' });
       return;
     }
 
     const filesToUpload = multi ? Array.from(files) : [files[0]];
-    onUploadStart();
+    
+    // Check Storage Limit for Free Users
+    if (!isPro && !isAdmin) {
+       const { count: currentDocs } = await supabase.from('documents').select('*', { count: 'exact', head: true }).eq('user_id', authUser.id);
+       if ((currentDocs || 0) + filesToUpload.length > 3) {
+          toast.error('Storage Limit Reached', { description: 'Free plan is limited to 3 documents. Upgrade to Pro for unlimited storage.' });
+          showUpgradeModal('document_limit');
+          return;
+       }
+    }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    onUploadStart();
 
     for (const file of filesToUpload) {
       if (file.size > 10 * 1024 * 1024) {
@@ -150,7 +177,7 @@ function UploadZone({
 
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `${user.id}/${examId}/${docType}/${fileName}`;
+      const filePath = `${authUser.id}/${examId}/${docType}/${fileName}`;
 
       const { error: storageError } = await supabase.storage
         .from('user-documents')
@@ -164,7 +191,7 @@ function UploadZone({
       const { data: docData, error: dbError } = await supabase
         .from('documents')
         .insert({
-          user_id: user.id,
+          user_id: authUser.id,
           exam_id: examId,
           file_name: file.name,
           file_url: filePath,
@@ -180,6 +207,7 @@ function UploadZone({
       }
 
       toast.success('Upload Successful', { description: `${file.name} is now being processed.` });
+      window.dispatchEvent(new CustomEvent('usage-updated'));
 
       fetch('/api/process-document', {
         method: 'POST',
@@ -355,6 +383,9 @@ export default function DocumentsPage() {
              <p className="text-sm text-subtle font-medium max-w-sm leading-relaxed">
                Securely upload and manage your core syllabus and reference notes.
              </p>
+             <div className="pt-2">
+                <UsageIndicator type="documents" />
+             </div>
           </div>
           
           <div className="flex flex-wrap gap-2">

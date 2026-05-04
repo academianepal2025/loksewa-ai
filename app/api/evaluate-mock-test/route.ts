@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateMultimodalJSON } from '@/lib/ai';
+import { checkUserLimits } from '@/lib/checkUserLimits';
 
 const EVALUATION_SYSTEM_PROMPT = `You are an expert PSC Nepal (Loksewa Ayog) Examiner.
 Your task is to grade a student's handwritten answer sheet against the provided Mock Test questions.
@@ -27,6 +28,7 @@ Return ONLY valid JSON in this format:
 }`;
 
 export async function POST(request: Request) {
+  const supabase = await createClient();
   try {
     const body = await request.json();
     const { fileUrl, testJson, userId, examId, submissionId } = body;
@@ -35,7 +37,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Missing required parameters' }, { status: 400 });
     }
 
-    const supabase = await createClient();
+    // ── Step 0: Check Plan Limits ──────────────────────────────────
+    const limits = await checkUserLimits(userId);
+    if (!limits.allowed && limits.exceeded_limit === 'mock_test_limit') {
+      return NextResponse.json(
+        { error: 'limit_reached', limit_type: 'mock_test_limit' },
+        { status: 403 }
+      );
+    }
 
     // 1. Download file from Supabase Storage to send to Gemini
     // Extract bucket and path from URL
@@ -48,70 +57,57 @@ export async function POST(request: Request) {
 
     const { data: fileData, error: downloadError } = await supabase.storage.from(bucket).download(path);
     if (downloadError || !fileData) {
-      throw new Error(`Failed to download answer sheet: ${downloadError?.message}`);
+      throw new Error(`Failed to download file: ${downloadError?.message}`);
     }
 
     const buffer = Buffer.from(await fileData.arrayBuffer());
-    const base64Data = buffer.toString('base64');
+    const base64Image = buffer.toString('base64');
     const mimeType = fileData.type || 'image/jpeg';
 
-    // 2. Formulate Prompt
-    const userMessage = `Grading Request:
-Test Title: ${testJson.title}
-Instructions: ${testJson.instructions}
+    // 2. Prepare multimodal content
+    const testContent = typeof testJson === 'string' ? testJson : JSON.stringify(testJson);
+    const userPrompt = `Grade this answer sheet against these mock test questions:\n${testContent}`;
 
-Questions to Grade:
-${JSON.stringify(testJson.sections || testJson.questions, null, 2)}
+    const contents = [
+      {
+        role: 'user',
+        parts: [
+          { text: userPrompt },
+          {
+            inlineData: {
+              data: base64Image,
+              mimeType: mimeType,
+            },
+          },
+        ],
+      },
+    ];
 
-Attached is the student's answer sheet. Please evaluate it.`;
+    // 3. Call Gemini
+    const evaluation = await generateMultimodalJSON(EVALUATION_SYSTEM_PROMPT, contents);
 
-    // 3. Call Gemini Vision
-    const evaluation = await generateMultimodalJSON(
-      EVALUATION_SYSTEM_PROMPT,
-      userMessage,
-      [{ mimeType, data: base64Data }]
-    );
-
-    // 4. Update/Save Submission in DB
-    const updateData = {
-      user_id: userId,
-      exam_id: examId,
-      test_title: testJson.title,
-      test_json: testJson,
-      file_url: fileUrl,
-      score: evaluation.total_score,
-      total_marks: evaluation.total_marks,
-      feedback: evaluation.overall_feedback,
-      breakdown: evaluation.breakdown,
-    };
-
-    let result;
+    // 4. Update submission in DB
     if (submissionId) {
-      const { data, error } = await supabase
-        .from('mock_test_submissions')
-        .update(updateData)
-        .eq('id', submissionId)
-        .select()
-        .single();
-      if (error) throw error;
-      result = data;
-    } else {
-      const { data, error } = await supabase
-        .from('mock_test_submissions')
-        .insert(updateData)
-        .select()
-        .single();
-      if (error) throw error;
-      result = data;
+       await supabase.from('mock_test_submissions').update({
+         marks_obtained: evaluation.total_score,
+         feedback: evaluation.overall_feedback,
+         detailed_breakdown: evaluation.breakdown,
+         evaluation_status: 'completed'
+       }).eq('id', submissionId);
     }
 
-    return NextResponse.json({
-      success: true,
-      submission: result
-    });
+    return NextResponse.json({ success: true, data: evaluation });
 
   } catch (error: any) {
     console.error('Evaluate Mock Test Error:', error);
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    
+    if (body?.submissionId) {
+       await supabase.from('mock_test_submissions').update({
+         evaluation_status: 'failed'
+       }).eq('id', body.submissionId);
+    }
+
+    const status = error.status || 500;
+    return NextResponse.json({ success: false, message: error.message }, { status });
   }
 }

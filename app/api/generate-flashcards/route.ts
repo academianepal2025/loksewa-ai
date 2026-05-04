@@ -124,6 +124,10 @@ export async function POST(request: Request) {
       });
     }
 
+    // Increment Usage (counts toward quiz quota)
+    const { error: rpcError } = await supabase.rpc('increment_quiz_usage', { p_user_id: userId });
+    if (rpcError) console.error('Failed to increment flashcard usage:', rpcError);
+
     return NextResponse.json({
       success: true,
       flashcards: insertedCards ?? flashcards,

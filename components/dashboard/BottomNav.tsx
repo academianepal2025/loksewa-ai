@@ -8,7 +8,7 @@ import {
   Calendar, 
   Lightbulb, 
   PenTool, 
-  BarChart3 
+  BookOpen 
 } from 'lucide-react';
 import { useDashboard } from './DashboardProvider';
 
@@ -17,7 +17,7 @@ const navItems = [
   { key: 'study_plan', href: '/dashboard/study-plan', icon: Calendar },
   { key: 'guru', href: '/dashboard/guru', icon: Lightbulb },
   { key: 'practice', href: '/dashboard/practice', icon: PenTool },
-  { key: 'performance', href: '/dashboard/performance', icon: BarChart3 },
+  { key: 'study_notes', href: '/dashboard/study-notes', icon: BookOpen },
 ];
 
 export function BottomNav() {

@@ -25,7 +25,13 @@ Return ONLY valid JSON matching this exact schema:
   ],
   "study_strategy": "string",
   "critical_topics_summary": "string"
-}`;
+}
+
+CRITICAL PERFORMANCE RULES:
+1. Keep 'priority_reason' under 10 words.
+2. Keep 'study_strategy' under 40 words.
+3. Keep 'critical_topics_summary' under 30 words.
+4. If there are more than 30 minor subtopics, aggregate them into broader themes to keep the array size small.`;
 
   if (lang === 'np') {
     return `${base}\n\nIMPORTANT: Write all descriptive strings (paper_name, topic_name, priority_reason, study_strategy, critical_topics_summary) in Pure Nepali. Always include relevant English technical terms in brackets [English Term] immediately after their Nepali counterparts.`;

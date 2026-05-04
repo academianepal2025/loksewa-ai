@@ -34,13 +34,17 @@ export default function PerformancePage() {
   const [quizData, setQuizData] = useState<any[]>([]);
   const [topicAverages, setTopicAverages] = useState<any[]>([]);
   const [heatmapData, setHeatmapData] = useState<Record<string, number>>({});
+  const [timeAllocation, setTimeAllocation] = useState<any[]>([]);
+  const [roadmapProgress, setRoadmapProgress] = useState(0);
+  const [predictedScore, setPredictedScore] = useState(0);
+  const [exams, setExams] = useState<any[]>([]);
   
   const [feedback, setFeedback] = useState<string | null>(null);
   const [generatingFeedback, setGeneratingFeedback] = useState(false);
   const [analyzingGaps, setAnalyzingGaps] = useState(false);
 
   useEffect(() => {
-    async function fetchDashboardData() {
+    const fetchDashboardData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
       if (!user) return;
@@ -48,13 +52,16 @@ export default function PerformancePage() {
       setLoading(true);
       
       try {
+        // Fetch all exams for the switcher
+        const { data: allExams } = await supabase.from('user_exams').select('id, exam_name').eq('user_id', user.id).order('exam_date', { ascending: true });
+        if (allExams) setExams(allExams);
+
         let currentExamId = activeExamId;
         
         if (!currentExamId) {
-          const { data: firstExam } = await supabase.from('user_exams').select('id').eq('user_id', user.id).order('exam_date', { ascending: true }).limit(1).single();
-          if (firstExam?.id) {
-            currentExamId = firstExam.id;
-            setActiveExamId(firstExam.id);
+          if (allExams && allExams.length > 0) {
+            currentExamId = allExams[0].id;
+            setActiveExamId(allExams[0].id);
           } else {
             setLoading(false);
             return;
@@ -74,11 +81,22 @@ export default function PerformancePage() {
           daysToExam = Math.max(0, Math.ceil(diff / (1000 * 3600 * 24)));
         }
 
-        // Fetch Study Progress
-        const { data: progress } = await supabase
-          .from('study_progress')
-          .select('completed_at, day_number, is_completed')
-          .eq('user_id', user.id); // Note: Assuming plan_id correlates to exam. Ideally we'd join via study_plans.
+        // Fetch Study Plan to get progress for this specific exam
+        const { data: plan } = await supabase
+          .from('study_plans')
+          .select('id')
+          .eq('exam_id', currentExamId)
+          .maybeSingle();
+
+        // Fetch Study Progress for this specific plan
+        let progress = null;
+        if (plan) {
+          const { data: prog } = await supabase
+            .from('study_progress')
+            .select('completed_at, day_number, is_completed')
+            .eq('plan_id', plan.id);
+          progress = prog;
+        }
 
         // Assuming estimated hours is ~2 per completed day if not recorded
         let totalHours = 0;
@@ -117,62 +135,119 @@ export default function PerformancePage() {
             const dateStr = new Date(p.completed_at!).toISOString().split('T')[0];
             heat[dateStr] = (heat[dateStr] || 0) + 1;
           });
+          // Calculate Time Allocation and Roadmap Progress
+          if (plan?.plan_data?.daily_plans) {
+            const dailyPlans = plan.plan_data.daily_plans;
+            const completedDays = new Set(progress.filter((p: any) => p.is_completed).map((p: any) => p.day_number));
+            
+            setRoadmapProgress(Math.round((completedDays.size / dailyPlans.length) * 100));
+
+            const timeMap: Record<string, number> = {};
+            dailyPlans.forEach((dp: any) => {
+              if (completedDays.has(dp.day_number)) {
+                const topic = dp.primary_topic || 'General';
+                timeMap[topic] = (timeMap[topic] || 0) + (dp.estimated_hours || 2);
+              }
+            });
+
+            const tAlloc = Object.entries(timeMap).map(([topic, hours]) => ({
+              name: topic,
+              value: hours
+            })).sort((a, b) => b.value - a.value).slice(0, 5);
+            setTimeAllocation(tAlloc);
+          }
         }
         setHeatmapData(heat);
 
-        // Fetch Quiz Attempts
-        const { data: quizzes } = await supabase
-          .from('quiz_attempts')
-          .select('score, total_questions, created_at, topic')
-          .eq('user_id', user.id)
-          .eq('exam_id', currentExamId)
-          .order('created_at', { ascending: true });
-
+        // Initialize metrics
         let quizAvg = 0;
+        let mockAvg = 0;
         const topicMap: Record<string, { total: number, count: number }> = {};
-        
-        if (quizzes && quizzes.length > 0) {
-          const totalPct = quizzes.reduce((acc: number, q: any) => {
-            const pct = (q.score / (q.total_questions || 1)) * 100;
-            return acc + pct;
-          }, 0);
-          quizAvg = Math.round(totalPct / quizzes.length);
 
-          const qChart = quizzes.map((q: any, i: number) => ({
-            name: `Q${i + 1}`,
-            score: Math.round((q.score / (q.total_questions || 1)) * 100),
-            topic: q.topic || 'General',
-            date: new Date(q.created_at).toLocaleDateString()
-          }));
-          setQuizData(qChart);
+        // Fetch Quiz Attempts
+        try {
+          const { data: quizzes, error: qError } = await supabase
+            .from('quiz_attempts')
+            .select('score, total_questions, created_at, topic')
+            .eq('user_id', user.id)
+            .eq('exam_id', currentExamId)
+            .order('created_at', { ascending: true });
 
-          quizzes.forEach((q: any) => {
-            const topic = q.topic || 'General';
-            const pct = (q.score / (q.total_questions || 1)) * 100;
-            if (!topicMap[topic]) topicMap[topic] = { total: 0, count: 0 };
-            topicMap[topic].total += pct;
-            topicMap[topic].count += 1;
-          });
+          if (qError) throw qError;
 
-          const tAvgs = Object.keys(topicMap).map(k => ({
-            topic: k,
-            avg: Math.round(topicMap[k].total / topicMap[k].count)
-          })).sort((a, b) => a.avg - b.avg);
-          setTopicAverages(tAvgs);
+          if (quizzes && quizzes.length > 0) {
+            const totalPct = quizzes.reduce((acc: number, q: any) => {
+              const pct = (q.score / (q.total_questions || 1)) * 100;
+              return acc + pct;
+            }, 0);
+            quizAvg = Math.round(totalPct / quizzes.length);
+
+            const qChart = quizzes.map((q: any, i: number) => ({
+              name: `Q${i + 1}`,
+              score: Math.round((q.score / (q.total_questions || 1)) * 100),
+              topic: q.topic || 'General',
+              date: new Date(q.created_at).toLocaleDateString()
+            }));
+            setQuizData(qChart);
+
+            quizzes.forEach((q: any) => {
+              const topic = q.topic || 'General';
+              const pct = (q.score / (q.total_questions || 1)) * 100;
+              if (!topicMap[topic]) topicMap[topic] = { total: 0, count: 0 };
+              topicMap[topic].total += pct;
+              topicMap[topic].count += 1;
+            });
+
+            const tAvgs = Object.keys(topicMap).map(k => ({
+              topic: k,
+              avg: Math.round(topicMap[k].total / topicMap[k].count)
+            })).sort((a, b) => a.avg - b.avg);
+            setTopicAverages(tAvgs);
+          }
+        } catch (e) {
+          console.error("Failed to fetch quizzes:", e);
+          setQuizData([]);
+          setTopicAverages([]);
         }
 
         // Fetch Mock Tests
-        const { data: mocks } = await supabase
-          .from('mock_test_submissions')
-          .select('score_percentage')
-          .eq('user_id', user.id)
-          .eq('exam_id', currentExamId);
+        try {
+          const { data: mocks, error: mError } = await supabase
+            .from('mock_test_submissions')
+            .select('score_percentage')
+            .eq('user_id', user.id)
+            .eq('exam_id', currentExamId);
+          
+          if (mError) throw mError;
 
-        let mockAvg = 0;
-        if (mocks && mocks.length > 0) {
-          const totalMock = mocks.reduce((acc: number, m: any) => acc + (m.score_percentage || 0), 0);
-          mockAvg = Math.round(totalMock / mocks.length);
+          if (mocks && mocks.length > 0) {
+            const totalMock = mocks.reduce((acc: number, m: any) => acc + (m.score_percentage || 0), 0);
+            mockAvg = Math.round(totalMock / mocks.length);
+          }
+        } catch (e) {
+          console.error("Failed to fetch mock tests:", e);
         }
+        // Fetch Weekly Feedback
+        const { data: latestFeedback } = await supabase
+          .from('weekly_feedback')
+          .select('feedback_text')
+          .eq('user_id', user.id)
+          .eq('exam_id', currentExamId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (latestFeedback) {
+          setFeedback(latestFeedback.feedback_text);
+        } else {
+          setFeedback(null);
+        }
+
+        const predicted = mockAvg > 0 
+          ? Math.round((quizAvg * 0.4) + (mockAvg * 0.6)) 
+          : quizAvg;
+        
+        setPredictedScore(predicted);
 
         setStats({
           studyStreak: streak,
@@ -191,6 +266,91 @@ export default function PerformancePage() {
 
     fetchDashboardData();
   }, [activeExamId, supabase]);
+
+  const refreshData = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user;
+    if (!user || !activeExamId) return;
+
+    setLoading(true);
+    
+    let quizAvg = 0;
+    let mockAvg = 0;
+    const topicMap: Record<string, { total: number, count: number }> = {};
+
+    // 1. Fetch Quiz Attempts
+    try {
+      const { data: quizzes, error: qError } = await supabase
+        .from('quiz_attempts')
+        .select('score, total_questions, created_at, topic')
+        .eq('user_id', user.id)
+        .eq('exam_id', activeExamId)
+        .order('created_at', { ascending: true });
+
+      if (qError) throw qError;
+
+      if (quizzes && quizzes.length > 0) {
+        const totalPct = quizzes.reduce((acc: number, q: any) => {
+          const pct = (q.score / (q.total_questions || 1)) * 100;
+          return acc + pct;
+        }, 0);
+        quizAvg = Math.round(totalPct / quizzes.length);
+
+        const qChart = quizzes.map((q: any, i: number) => ({
+          name: `Q${i + 1}`,
+          score: Math.round((q.score / (q.total_questions || 1)) * 100),
+          topic: q.topic || 'General',
+          date: new Date(q.created_at).toLocaleDateString()
+        }));
+        setQuizData(qChart);
+
+        quizzes.forEach((q: any) => {
+          const topic = q.topic || 'General';
+          const pct = (q.score / (q.total_questions || 1)) * 100;
+          if (!topicMap[topic]) topicMap[topic] = { total: 0, count: 0 };
+          topicMap[topic].total += pct;
+          topicMap[topic].count += 1;
+        });
+
+        const tAvgs = Object.keys(topicMap).map(k => ({
+          topic: k,
+          avg: Math.round(topicMap[k].total / topicMap[k].count)
+        })).sort((a, b) => a.avg - b.avg);
+        setTopicAverages(tAvgs);
+      } else {
+        setQuizData([]);
+        setTopicAverages([]);
+      }
+    } catch (e) {
+      console.error("Failed to refresh quizzes:", e);
+    }
+
+    // 2. Fetch Mock Tests
+    try {
+      const { data: mocks, error: mError } = await supabase
+        .from('mock_test_submissions')
+        .select('score_percentage')
+        .eq('user_id', user.id)
+        .eq('exam_id', activeExamId);
+
+      if (mError) throw mError;
+
+      if (mocks && mocks.length > 0) {
+        const totalMock = mocks.reduce((acc: number, m: any) => acc + (m.score_percentage || 0), 0);
+        mockAvg = Math.round(totalMock / mocks.length);
+      }
+    } catch (e) {
+      console.error("Failed to refresh mock tests:", e);
+    }
+
+    setStats(prev => ({
+      ...prev,
+      quizAvg: quizAvg,
+      mockAvg: mockAvg
+    }));
+
+    setLoading(false);
+  };
 
   const fetchGapAnalysis = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -284,20 +444,38 @@ export default function PerformancePage() {
   return (
     <div className="p-4 md:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 max-w-7xl mx-auto">
       
+      {/* EXAM SELECTOR HEADER */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
+          Performance <span className="text-accent">Analytics</span>
+        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <button 
+            onClick={refreshData} 
+            className="p-2 text-subtle hover:text-accent transition-colors rounded-lg bg-background border border-border-subtle"
+            title="Refresh Stats"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          {exams.map(e => (
+            <button 
+              key={e.id} 
+              onClick={() => setActiveExamId(e.id)} 
+              className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${activeExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}
+            >
+              {e.exam_name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* HEADER STATS */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
           <p className="text-sm font-medium text-subtle flex items-center gap-2"><Activity className="w-4 h-4"/> Study Streak</p>
           <div className="mt-4">
             <span className="text-3xl font-bold text-foreground">{stats.studyStreak}</span>
             <span className="text-sm text-subtle ml-1">Days</span>
-          </div>
-        </div>
-        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-subtle flex items-center gap-2"><Clock className="w-4 h-4"/> Total Hours</p>
-          <div className="mt-4">
-            <span className="text-3xl font-bold text-foreground">{stats.totalHours}</span>
-            <span className="text-sm text-subtle ml-1">Hrs</span>
           </div>
         </div>
         <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
@@ -312,11 +490,24 @@ export default function PerformancePage() {
             <span className="text-3xl font-bold text-foreground">{stats.mockAvg}%</span>
           </div>
         </div>
+        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
+          <p className="text-sm font-medium text-subtle flex items-center gap-2"><Sparkles className="w-4 h-4"/> Predicted Score</p>
+          <div className="mt-4">
+            <span className="text-3xl font-bold text-accent">{predictedScore}%</span>
+            <div className="h-1 w-full bg-border-subtle rounded-full mt-2"><div className="h-full bg-accent rounded-full" style={{ width: `${predictedScore}%` }} /></div>
+          </div>
+        </div>
+        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
+          <p className="text-sm font-medium text-subtle flex items-center gap-2"><TrendingUp className="w-4 h-4"/> Mission Progress</p>
+          <div className="mt-4">
+            <span className="text-3xl font-bold text-foreground">{roadmapProgress}%</span>
+            <div className="h-1 w-full bg-border-subtle rounded-full mt-2"><div className="h-full bg-emerald-500 rounded-full" style={{ width: `${roadmapProgress}%` }} /></div>
+          </div>
+        </div>
         <div className="bg-accent/5 border border-accent/20 p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-accent flex items-center gap-2"><Calendar className="w-4 h-4"/> Days to Exam</p>
+          <p className="text-sm font-medium text-accent flex items-center gap-2"><Calendar className="w-4 h-4"/> Days left</p>
           <div className="mt-4">
             <span className="text-3xl font-bold text-accent">{stats.daysToExam}</span>
-            <span className="text-sm text-accent/70 ml-1">Days left</span>
           </div>
         </div>
       </div>
@@ -426,7 +617,7 @@ export default function PerformancePage() {
             </div>
 
             <div className="bg-surface border border-border-subtle rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Average by Topic</h3>
+              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Average by Topic (%)</h3>
               <div className="h-64">
                 {topicAverages.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -444,6 +635,25 @@ export default function PerformancePage() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="flex h-full items-center justify-center text-subtle text-sm">No topic data available</div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-surface border border-border-subtle rounded-2xl p-6 md:col-span-2">
+              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Time Allocation (Hours by Subject)</h3>
+              <div className="h-64">
+                {timeAllocation.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={timeAllocation} margin={{ top: 0, right: 20, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-border-subtle opacity-30" />
+                      <XAxis dataKey="name" tick={{fill: '#888888', fontSize: 10}} axisLine={false} tickLine={false} />
+                      <YAxis tick={{fill: '#888888', fontSize: 10}} axisLine={false} tickLine={false} />
+                      <RechartsTooltip cursor={{fill: 'var(--bg-background)'}} contentStyle={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}/>
+                      <Bar dataKey="value" fill="var(--color-accent)" radius={[4, 4, 0, 0]} barSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex h-full items-center justify-center text-subtle text-sm">Start your roadmap missions to see subject-wise time allocation.</div>
                 )}
               </div>
             </div>

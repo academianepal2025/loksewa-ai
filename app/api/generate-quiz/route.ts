@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateJSON } from '@/lib/ai';
+import { checkUserLimits } from '@/lib/checkUserLimits';
 
 function getSystemInstruction(lang: string) {
   const base = `You are creating MCQ practice questions for PSC Nepal (Loksewa Ayog) exams.
@@ -41,6 +42,15 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields: examId, userId, topic' },
         { status: 400 }
+      );
+    }
+
+    // ── Step 0: Check Plan Limits ──────────────────────────────────
+    const limits = await checkUserLimits(userId);
+    if (!limits.allowed && limits.exceeded_limit === 'quiz_limit') {
+      return NextResponse.json(
+        { error: 'limit_reached', limit_type: 'quiz_limit' },
+        { status: 403 }
       );
     }
 
@@ -99,8 +109,11 @@ ${contextContent}`;
       throw new Error('AI failed to generate a valid list of questions.');
     }
 
+    // 3. Increment Usage in Background
+    const { error: rpcError } = await supabase.rpc('increment_quiz_usage', { p_user_id: userId });
+    if (rpcError) console.error('Failed to increment quiz usage:', rpcError);
+
     // 4. Return the generated quiz
-    // We don't save to DB yet as per the plan (returning to UI for attempt first)
     return NextResponse.json({
       success: true,
       quiz_title: parsedData.quiz_title || `${topic} Mastery Quiz`,

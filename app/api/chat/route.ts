@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { generateQueryEmbedding, streamText } from '@/lib/ai';
+import { checkUserLimits } from '@/lib/checkUserLimits';
 
 const SYSTEM_INSTRUCTION = `You are Loksewa Guru, an expert assistant for Nepal PSC (Public Service Commission) exam preparation. 
 
@@ -23,6 +24,7 @@ FORMATTING RULES (ESSENTIAL):
 - Ensure a clean, structured layout with enough spacing between sections.`;
 
 export async function POST(request: Request) {
+  const supabase = await createClient();
   try {
     const body = await request.json();
     const { message, examId, userId, conversationHistory = [] } = body;
@@ -34,11 +36,19 @@ export async function POST(request: Request) {
       );
     }
 
+    // ── Step 0: Check Plan Limits ──────────────────────────────────
+    const limits = await checkUserLimits(userId);
+    if (!limits.allowed && limits.exceeded_limit === 'chat_limit') {
+      return new Response(
+        JSON.stringify({ error: 'limit_reached', limit_type: 'chat_limit' }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is not defined');
     }
 
-    const supabase = await createClient();
     // ── Step 1: Generate query embedding using centralized utility ────
     const queryEmbedding = await generateQueryEmbedding(message);
 
@@ -114,24 +124,17 @@ export async function POST(request: Request) {
           }
           controller.close();
 
-          // ── Step 7: Save messages to chat_messages after stream ends ─
+          // ── Step 7: Save messages & Increment Usage ─────────────────
           try {
-            await supabase.from('chat_messages').insert([
-              {
-                user_id: userId,
-                exam_id: examId,
-                role: 'user',
-                content: message,
-              },
-              {
-                user_id: userId,
-                exam_id: examId,
-                role: 'assistant',
-                content: fullResponse,
-              },
+            await Promise.all([
+               supabase.from('chat_messages').insert([
+                { user_id: userId, exam_id: examId, role: 'user', content: message },
+                { user_id: userId, exam_id: examId, role: 'assistant', content: fullResponse }
+              ]),
+              supabase.rpc('increment_chat_usage', { p_user_id: userId, p_usage_date: new Date().toISOString().split('T')[0] })
             ]);
           } catch (saveError) {
-            console.error('Failed to save chat messages:', saveError);
+            console.error('Background tasks failed:', saveError);
           }
         } catch (error) {
           console.error('Stream error:', error);
@@ -139,6 +142,10 @@ export async function POST(request: Request) {
         }
       },
     });
+
+    // ── Step 5: Increment Usage ──────────────────────────────────
+    const { error: rpcError } = await supabase.rpc('increment_chat_usage', { p_user_id: userId });
+    if (rpcError) console.error('Failed to increment chat usage:', rpcError);
 
     return new Response(stream, {
       headers: {

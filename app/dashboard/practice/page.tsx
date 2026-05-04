@@ -36,6 +36,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
 import ReactMarkdown from 'react-markdown';
+import { useUpgradeModal } from '@/lib/UpgradeModalContext';
+import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
 
 // --- Types ---
 interface Flashcard {
@@ -113,7 +115,7 @@ function GenerationOverlay({ step, type }: { step: number; type: 'flashcards' | 
 
 export default function PracticePage() {
   const supabase = createClient();
-  const { language, t } = useDashboard();
+  const { language, activeExamId, setActiveExamId, t } = useDashboard();
   const [activeTab, setActiveTab] = useState<'flashcards' | 'quiz' | 'mock-test'>('flashcards');
   const [loading, setLoading] = useState(true);
   
@@ -155,6 +157,8 @@ export default function PracticePage() {
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState<any>(null);
 
+  const { showUpgradeModal } = useUpgradeModal();
+  const { isPro, isAdmin } = useDashboard();
   const router = useRouter();
 
   // Fetch initial data
@@ -171,12 +175,23 @@ export default function PracticePage() {
 
       if (examsData?.length) {
         setExams(examsData);
-        setSelectedExamId(examsData[0].id);
+        if (!selectedExamId) {
+          const initialId = activeExamId || examsData[0].id;
+          setSelectedExamId(initialId);
+          if (!activeExamId) setActiveExamId(initialId);
+        }
       }
       setLoading(false);
     }
     init();
-  }, [supabase]);
+  }, [supabase, activeExamId, setActiveExamId]);
+
+  // Sync local selectedExamId with global activeExamId if global changes
+  useEffect(() => {
+    if (activeExamId && activeExamId !== selectedExamId) {
+      setSelectedExamId(activeExamId);
+    }
+  }, [activeExamId, selectedExamId]);
 
   // Fetch topics when exam changes
   useEffect(() => {
@@ -208,8 +223,8 @@ export default function PracticePage() {
     const topicToUse = selectedTopic === 'custom' ? customTopic : selectedTopic;
     if (!topicToUse) return;
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) return;
 
     setGeneratingFlashcards(true);
     setGenStepFlashcards(0);
@@ -224,7 +239,7 @@ export default function PracticePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           examId: selectedExamId,
-          userId: user.id,
+          userId: authUser.id,
           topic: topicToUse,
           count: flashcardCount,
           language
@@ -249,6 +264,8 @@ export default function PracticePage() {
       setIsFlipped(false);
       setFlashcardRatings({});
       setFlashcardSessionComplete(false);
+      setActiveTab('flashcards');
+      window.dispatchEvent(new CustomEvent('usage-updated'));
     } catch (e: any) {
       toast.error('Mission Failed', { description: e.message });
       setError(e.message);
@@ -259,13 +276,32 @@ export default function PracticePage() {
 
   const handleFlashcardRate = async (rating: 'didnt-know' | 'almost' | 'got-it') => {
     const card = deck[currentFlashIndex];
-    setFlashcardRatings(prev => ({ ...prev, [currentFlashIndex]: rating }));
+    const newRatings = { ...flashcardRatings, [currentFlashIndex]: rating };
+    setFlashcardRatings(newRatings);
     const difficultyMap = { 'didnt-know': 'hard', 'almost': 'medium', 'got-it': 'easy' };
+    
     if (currentFlashIndex < deck.length - 1) {
       setCurrentFlashIndex(prev => prev + 1);
       setIsFlipped(false);
     } else {
       setFlashcardSessionComplete(true);
+      
+      // Persist the flashcard session as a performance metric
+      const gotIt = Object.values(newRatings).filter(r => r === 'got-it').length;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && selectedExamId) {
+        const { error: insertError } = await supabase.from('quiz_attempts').insert({
+          user_id: user.id,
+          exam_id: selectedExamId,
+          topic: `Flashcards - ${selectedTopic || 'General'}`,
+          score: gotIt,
+          total_questions: deck.length,
+        });
+        if (insertError) {
+          console.error('Failed to save flashcard session:', insertError);
+          toast.error('Sync Failed', { description: 'Flashcard progress could not be saved to your profile.' });
+        }
+      }
     }
     await supabase.from('flashcards').update({ difficulty: difficultyMap[rating] }).eq('id', card.id);
   };
@@ -274,8 +310,17 @@ export default function PracticePage() {
   const handleGenerateQuiz = async () => {
     const topicToUse = selectedTopic === 'custom' ? customTopic : selectedTopic;
     if (!topicToUse) return;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) return;
+
+    // Plan Limit Check
+    const resLimit = await fetch('/api/check-limits');
+    const limitData = await resLimit.json();
+    if (limitData.plan === 'free' && limitData.limits.quizzes.exceeded) {
+      showUpgradeModal('quiz_limit');
+      return;
+    }
+
     setGeneratingQuiz(true);
     setGenStepQuiz(0);
     setError(null);
@@ -287,7 +332,7 @@ export default function PracticePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           examId: selectedExamId,
-          userId: user.id,
+          userId: authUser.id,
           topic: topicToUse,
           questionCount: quizQuestionCount,
           language
@@ -305,12 +350,12 @@ export default function PracticePage() {
       setGenStepQuiz(2);
       await new Promise(r => setTimeout(r, 600));
       setQuizQuestions(data.questions);
+      setQuizFinished(false);
       setCurrentQuizIndex(0);
       setUserQuizAnswers({});
-      setQuizFinished(false);
       setQuizStartTime(Date.now());
-      setQuizEndTime(null);
-      setShowExplanation(false);
+      setActiveTab('quiz');
+      window.dispatchEvent(new CustomEvent('usage-updated'));
     } catch (e: any) {
       toast.error('Deployment Failed', { description: e.message });
       setError(e.message);
@@ -338,15 +383,23 @@ export default function PracticePage() {
 
   // --- Mock Test Handlers ---
   const handleGenerateMockTest = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !selectedExamId) return;
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser || !selectedExamId) return;
+
+    // Plan Limit Check
+    if (!isPro && !isAdmin) {
+      toast.error('Pro Feature', { description: 'Mock tests are available for Pro members only.' });
+      showUpgradeModal('mock_test_limit');
+      return;
+    }
+
     setGeneratingMockTest(true);
     setError(null);
     try {
       const res = await fetch('/api/generate-mock-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ examId: selectedExamId, userId: user.id })
+        body: JSON.stringify({ examId: selectedExamId, userId: authUser.id })
       });
       if (!res.ok) {
         if (res.status === 404) {
@@ -396,14 +449,20 @@ export default function PracticePage() {
       correct_answer: q.correct_answer,
       is_correct: userQuizAnswers[idx] === q.correct_answer
     }));
-    await supabase.from('quiz_attempts').insert({
+    const { error: insertError } = await supabase.from('quiz_attempts').insert({
       user_id: user.id,
       exam_id: selectedExamId,
       topic: selectedTopic === 'custom' ? customTopic : selectedTopic,
       score: correctCount,
-      total_questions: quizQuestions.length,
-      details: detailLog
+      total_questions: quizQuestions.length
     });
+
+    if (insertError) {
+      console.error('Failed to save quiz attempt:', insertError);
+      toast.error('Sync Failed', { description: 'Quiz results could not be saved to your profile.' });
+    } else {
+      toast.success('Session Saved', { description: 'Performance analytics updated.' });
+    }
   };
 
   const score = quizQuestions.reduce((acc, q, idx) => {
@@ -488,6 +547,11 @@ export default function PracticePage() {
                  </div>
                  <h2 className="text-lg font-bold text-foreground tracking-tight uppercase tracking-wider">Initialize Session</h2>
               </div>
+
+               <div className="mb-8 p-4 bg-background border border-border-subtle rounded-xl space-y-4">
+                  <UsageIndicator type="quizzes" />
+                  <UsageIndicator type="mock_tests" />
+               </div>
               
               <div className="space-y-8 sm:space-y-10">
                 <div className="space-y-4">
@@ -814,23 +878,29 @@ export default function PracticePage() {
                    <p className="text-sm text-subtle mt-2 font-medium max-w-sm mx-auto">Upload a scanned image of your written answers for AI evaluation.</p>
                 </div>
                 <div className="relative inline-block group">
-                  <input type="file" accept="image/*,.pdf" disabled={isEvaluating} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed" onChange={async (e) => {
+                    <input type="file" accept="image/*,.pdf" disabled={isEvaluating} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 disabled:cursor-not-allowed" onChange={async (e) => {
+                      if (!isPro && !isAdmin) {
+                        toast.error('Pro Feature', { description: 'AI Grading is a Pro feature.' });
+                        showUpgradeModal('mock_test_limit');
+                        return;
+                      }
                       const file = e.target.files?.[0];
                       if (!file) return;
-                      const { data: { user } } = await supabase.auth.getUser();
-                      if (!user) return;
+                      const { data: { user: authUser } } = await supabase.auth.getUser();
+                      if (!authUser) return;
                       setIsEvaluating(true);
                       setError(null);
                       try {
                         const fileExt = file.name.split('.').pop();
-                        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+                        const fileName = `${authUser.id}/${Date.now()}.${fileExt}`;
                         const { data: uploadData, error: uploadError } = await supabase.storage.from('answer-sheets').upload(fileName, file);
                         if (uploadError) throw uploadError;
                         const { data: { publicUrl } } = supabase.storage.from('answer-sheets').getPublicUrl(fileName);
-                        const res = await fetch('/api/evaluate-mock-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileUrl: publicUrl, testJson: mockTest, userId: user.id, examId: selectedExamId }) });
+                        const res = await fetch('/api/evaluate-mock-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileUrl: publicUrl, testJson: mockTest, userId: authUser.id, examId: selectedExamId }) });
                         if (!res.ok) throw new Error('Evaluation failed. Please try again.');
                         const evalData = await res.json();
                         setEvaluationResult(evalData.submission);
+                        window.dispatchEvent(new CustomEvent('usage-updated'));
                       } catch (err: any) { setError(err.message); } finally { setIsEvaluating(false); }
                     }} />
                   <button className={`px-10 py-4 rounded-xl bg-orange-600 text-background font-bold text-sm transition-all flex items-center gap-3 ${isEvaluating ? 'opacity-50' : 'hover:opacity-90'}`}>

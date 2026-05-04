@@ -123,6 +123,18 @@ Please generate my weekly performance review based on this data.`;
     // 6. Call Gemini 2.0 Flash via centralized utility
     const responseText = await generateText(getSystemInstruction(language), userPrompt);
 
+    // 7. Persist to weekly_feedback table
+    const { error: insertError } = await supabase.from('weekly_feedback').insert({
+      user_id: userId,
+      exam_id: examId,
+      feedback_text: responseText
+    });
+    
+    if (insertError) {
+      console.warn('Failed to persist feedback to database:', insertError.message);
+      // We still return success since the generation worked
+    }
+
     return NextResponse.json({
       success: true,
       feedback: responseText,

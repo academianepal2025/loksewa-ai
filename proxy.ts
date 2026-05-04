@@ -17,59 +17,83 @@ export async function proxy(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          request.cookies.set({ name, value, ...options });
           response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request: { headers: request.headers },
           });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          request.cookies.set({ name, value: '', ...options });
           response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
+            request: { headers: request.headers },
           });
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          response.cookies.set({ name, value: '', ...options });
         },
       },
     }
   );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // Refresh the session (important for Supabase auth)
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // If user is not signed in and the current path starts with /dashboard
-  // redirect them to /auth/signin
-  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/auth/signin';
-    redirectUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname);
-    return NextResponse.redirect(redirectUrl);
+  const pathname = request.nextUrl.pathname;
+
+  // ── Protect /dashboard routes ─────────────────────────────────────
+  if (pathname.startsWith('/dashboard') && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/auth/signin';
+    url.searchParams.set('redirectedFrom', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // ── Protect /admin routes (server-side gate) ──────────────────────
+  if (pathname.startsWith('/admin')) {
+    // 1. Must be logged in
+    if (!user) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/auth/signin';
+      return NextResponse.redirect(url);
+    }
+
+    // 2. Must have is_admin = true in profiles table
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile?.is_admin) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // ── Protect /api/admin routes ─────────────────────────────────────
+  if (pathname.startsWith('/api/admin')) {
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single();
+
+    if (!profile?.is_admin) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: [
+    '/dashboard/:path*',
+    '/admin/:path*',
+    '/api/admin/:path*',
+  ],
 };

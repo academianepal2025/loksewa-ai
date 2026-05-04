@@ -74,49 +74,140 @@ function OperationalCard({ title, desc, icon: Icon, href, color = 'zinc' }: any)
 export default function DashboardPage() {
   const supabase = createClient();
   const [loading, setLoading] = useState(true);
+  const [exams, setExams] = useState<Exam[]>([]);
   const [exam, setExam] = useState<Exam | null>(null);
   const [stats, setStats] = useState({
     streak: 0,
     accuracy: 0,
     progress: 0,
-    hours: 0
+    hours: 0,
+    notes: 0,
+    stronghold: 'N/A',
+    targetArea: 'N/A',
+    feedback: 'Generate your first performance review in the Performance tab to see insights here.'
   });
 
-  const { t, language } = useDashboard();
+  const { t, language, activeExamId, setActiveExamId } = useDashboard();
 
   useEffect(() => {
     async function initDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // 1. Next Exam
-      const { data: exams } = await supabase
+      // 1. Fetch All Exams
+      const { data: allExams } = await supabase
         .from('user_exams')
         .select('*')
         .eq('user_id', user.id)
-        .order('exam_date', { ascending: true })
-        .limit(1);
+        .order('exam_date', { ascending: true });
       
-      if (exams?.length) setExam(exams[0]);
+      if (allExams) {
+        setExams(allExams);
+        
+        // Determine which exam to display
+        let currentExam = null;
+        if (activeExamId) {
+          currentExam = allExams.find(e => e.id === activeExamId) || allExams[0];
+        } else {
+          currentExam = allExams[0];
+          if (currentExam) setActiveExamId(currentExam.id);
+        }
+        setExam(currentExam);
 
-      // 2. Fetch Aggregated Stats (Simulation / Data Fetch)
-      const { data: quizzes } = await supabase.from('quiz_attempts').select('score, total_questions').eq('user_id', user.id);
-      const acc = quizzes?.length 
-        ? Math.round(quizzes.reduce((a: number, b: any) => a + (b.score / b.total_questions), 0) / quizzes.length * 100) 
-        : 0;
+        if (currentExam) {
+          const currentExamId = currentExam.id;
 
-      // Simulation of other stats for high-density demo if actual table data is sparse
-      setStats({
-        streak: 3, 
-        accuracy: acc || 0,
-        progress: 12,
-        hours: 4.5
-      });
+          // 2. Fetch Aggregated Stats for this specific exam
+          const { data: quizzes } = await supabase
+            .from('quiz_attempts')
+            .select('score, total_questions, topic')
+            .eq('user_id', user.id)
+            .eq('exam_id', currentExamId);
+
+          const acc = quizzes?.length 
+            ? Math.round(quizzes.reduce((a: number, b: any) => a + (b.score / b.total_questions), 0) / quizzes.length * 100) 
+            : 0;
+
+          // Fetch AI Notes count for this specific exam
+          const { count: notesCount } = await supabase
+            .from('study_notes')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .eq('exam_id', currentExamId)
+            .eq('generation_status', 'ready');
+
+          // Fetch Study Progress
+          const { data: plan } = await supabase
+            .from('study_plans')
+            .select('id')
+            .eq('exam_id', currentExamId)
+            .maybeSingle();
+          
+          let progressPct = 0;
+          if (plan) {
+            const { data: prog } = await supabase
+              .from('study_progress')
+              .select('is_completed')
+              .eq('plan_id', plan.id);
+            
+            if (prog?.length) {
+              const completed = prog.filter(p => p.is_completed).length;
+              progressPct = Math.round((completed / 90) * 100); 
+            }
+          }
+
+          // Fetch Latest Feedback
+          const { data: latestFeedback } = await supabase
+            .from('weekly_feedback')
+            .select('feedback_text')
+            .eq('exam_id', currentExamId)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          // Calculate Strong/Weak from Topic Averages
+          const topicMap: Record<string, { total: number, count: number }> = {};
+          if (quizzes && quizzes.length > 0) {
+            quizzes.forEach((q: any) => {
+              const topic = q.topic || 'General';
+              const pct = (q.score / (q.total_questions || 1)) * 100;
+              if (!topicMap[topic]) topicMap[topic] = { total: 0, count: 0 };
+              topicMap[topic].total += pct;
+              topicMap[topic].count += 1;
+            });
+          }
+
+          let stronghold = 'N/A';
+          let targetArea = 'N/A';
+          const topicAvgs = Object.entries(topicMap).map(([name, data]) => ({
+            name,
+            avg: data.total / data.count
+          })).sort((a, b) => b.avg - a.avg);
+
+          if (topicAvgs.length > 0) {
+            stronghold = topicAvgs[0].name;
+            if (topicAvgs.length > 1) {
+              targetArea = topicAvgs[topicAvgs.length - 1].name;
+            }
+          }
+
+          setStats({
+            streak: 3, 
+            accuracy: acc || 0,
+            progress: Math.min(100, progressPct || 12),
+            hours: 4.5,
+            notes: notesCount || 0,
+            stronghold,
+            targetArea,
+            feedback: latestFeedback?.feedback_text?.slice(0, 150) + '...' || 'No recent feedback available. Complete a quiz to get started.'
+          });
+        }
+      }
 
       setLoading(false);
     }
     initDashboard();
-  }, [supabase]);
+  }, [supabase, activeExamId, setActiveExamId]);
 
   const daysRem = exam ? Math.max(0, Math.ceil((new Date(exam.exam_date).getTime() - Date.now()) / 86400000)) : 0;
 
@@ -165,9 +256,20 @@ export default function DashboardPage() {
           
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background text-foreground text-[10px] font-bold uppercase tracking-wider mb-6 border border-border-subtle">
-                <span className="flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-                {t('active_mission')}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {exams.map(e => (
+                  <button 
+                    key={e.id}
+                    onClick={() => setActiveExamId(e.id)}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                      exam.id === e.id 
+                        ? 'bg-orange-600 text-background border border-orange-600' 
+                        : 'bg-background border border-border-subtle text-subtle hover:text-foreground hover:border-accent/40'
+                    }`}
+                  >
+                    {e.exam_name}
+                  </button>
+                ))}
               </div>
               <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3 leading-tight">
                 {exam.exam_name}
@@ -207,7 +309,7 @@ export default function DashboardPage() {
         <MiniStat label={t('streak')} value={`${stats.streak} Days`} icon={Calendar} tooltip="Total consecutive days of study logs." />
         <MiniStat label={t('accuracy')} value={`${stats.accuracy}%`} icon={Zap} tooltip="Weighted average from your practice hub quizzes." />
         <MiniStat label={t('hours')} value={`${stats.hours}h`} icon={Clock} tooltip="Cumulative focus hours measured from session engagement." />
-        <MiniStat label={t('gaps')} value="High" icon={Target} tooltip="Detected syllabus regions with low retrieval scores." />
+        <MiniStat label="AI Notes" value={`${stats.notes}`} icon={BookOpen} tooltip="Total AI-generated study notes added to your knowledge base." />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -261,24 +363,24 @@ export default function DashboardPage() {
               <div className="space-y-6 relative z-10 flex-1">
                  <div className="p-4 bg-background border border-border-subtle rounded-xl">
                     <p className="text-[10px] font-bold text-accent uppercase mb-2">{t('strategy_update')}</p>
-                    <p className="text-xs font-medium text-muted leading-relaxed">
-                      "Your accuracy in Constitution topics has spiked to 85%. Proceed to Economy Section for maximum syllabus coverage this week."
+                    <p className="text-xs font-medium text-muted leading-relaxed line-clamp-3">
+                      "{stats.feedback}"
                     </p>
                  </div>
 
                  <div className="grid grid-cols-2 gap-3">
                     <div className="p-4 bg-background border border-border-subtle rounded-xl">
                        <p className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase mb-1">{t('stronghold')}</p>
-                       <p className="text-[10px] font-bold text-foreground">Constitution</p>
+                       <p className="text-[10px] font-bold text-foreground truncate">{stats.stronghold}</p>
                     </div>
                     <div className="p-4 bg-background border border-border-subtle rounded-xl">
                        <p className="text-[9px] font-bold text-red-600 dark:text-red-400 uppercase mb-1">{t('target_area')}</p>
-                       <p className="text-[10px] font-bold text-foreground">Public Admin</p>
+                       <p className="text-[10px] font-bold text-foreground truncate">{stats.targetArea}</p>
                     </div>
                  </div>
 
                  <div className="pt-6 border-t border-border-subtle">
-                    <Link href="/dashboard/guru?message=Help%20me%20improve%20Public%20Administration%20topics" className="w-full py-3.5 bg-orange-600 text-background rounded-xl text-[10px] font-bold uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center">
+                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3.5 bg-orange-600 text-background rounded-xl text-[10px] font-bold uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center">
                        {t('brief_guru')}
                     </Link>
                  </div>

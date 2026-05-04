@@ -1,114 +1,74 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { generateText } from '@/lib/ai';
 
 export async function POST(request: Request) {
   try {
-    const { examId, userId } = await request.json();
+    const body = await request.json();
+    const { examId, userId } = body;
 
     if (!examId || !userId) {
-      return NextResponse.json({ error: 'Missing examId or userId' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Missing examId or userId' }, { status: 400 });
     }
 
     const supabase = await createClient();
 
-    // 1. Fetch syllabus_analysis topics array for this exam
-    const { data: syllabusData, error: syllabusError } = await supabase
+    // 1. Fetch the latest syllabus analysis
+    const { data: analysisData, error: analysisError } = await supabase
       .from('syllabus_analysis')
-      .select('topics')
+      .select('analysis_data')
       .eq('exam_id', examId)
       .order('created_at', { ascending: false })
-      .limit(1);
+      .limit(1)
+      .single();
 
-    if (syllabusError || !syllabusData || syllabusData.length === 0) {
-      return NextResponse.json({ error: 'Failed to fetch syllabus analysis' }, { status: 404 });
+    if (analysisError || !analysisData) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'Syllabus analysis not found.' 
+      }, { status: 404 });
     }
 
-    const topics = syllabusData[0].topics || [];
-    
+    const topics = (analysisData.analysis_data as any).topics || [];
     if (topics.length === 0) {
-      return NextResponse.json({ error: 'No topics found in syllabus analysis' }, { status: 404 });
-    }
-
-    // 2 & 3. For each topic, count chunks and classify coverage
-    const coverageData = [];
-    let goodCount = 0;
-    
-    for (const topic of topics) {
-      const topicName = topic.topic || topic.name || topic;
-      const priority = topic.priority || 'medium';
-      
-      if (!topicName || typeof topicName !== 'string') continue;
-
-      const { count, error: countError } = await supabase
-        .from('document_chunks')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .eq('doc_type', 'notes')
-        .ilike('content', `%${topicName}%`);
-
-      const chunkCount = count || 0;
-      let coverageStatus = 'missing';
-      if (chunkCount >= 3) {
-        coverageStatus = 'good';
-        goodCount++;
-      } else if (chunkCount >= 1) {
-        coverageStatus = 'partial';
-      }
-
-      coverageData.push({
-        topic: topicName,
-        priority: priority,
-        chunk_count: chunkCount,
-        coverage_status: coverageStatus
+      return NextResponse.json({ 
+        success: true, 
+        analysis: { overall_coverage_percentage: 0 }, 
+        coverage_data: [] 
       });
     }
 
-    // 4. Call Gemini
-    const systemInstruction = `You are analyzing a PSC Nepal exam student's study material gaps.
-Based on topic coverage data, provide specific, actionable recommendations.
-Prioritize gaps in critical and high priority topics.
+    // 2. Fetch all ready study notes for this exam
+    const { data: notes, error: notesError } = await supabase
+      .from('study_notes')
+      .select('topic, generation_status')
+      .eq('exam_id', examId)
+      .eq('generation_status', 'ready');
 
-Return ONLY valid JSON:
-{
-  "overall_coverage_percentage": number,
-  "gaps": [
-    {
-      "topic": string,
-      "coverage_status": "good" | "partial" | "missing",
-      "syllabus_priority": string,
-      "recommendation": string,
-      "urgency": "immediate" | "soon" | "when_possible"
-    }
-  ],
-  "strongest_areas": [string],
-  "weakest_areas": [string],
-  "immediate_action": string,
-  "estimated_hours_to_fill_gaps": number
-}`;
+    const coveredTopics = new Set((notes || []).map(n => n.topic));
 
-    const promptText = `Please analyze the following topic coverage data:\n\n${JSON.stringify(coverageData, null, 2)}`;
+    // 3. Map syllabus topics to coverage status
+    const coverage_data = topics.map((t: any) => {
+      const isCovered = coveredTopics.has(t.topic_name);
+      return {
+        topic: t.topic_name,
+        coverage_status: isCovered ? 'good' : 'missing'
+      };
+    });
 
-    const aiResponse = await generateText(promptText, systemInstruction);
-    
-    let parsedResponse;
-    try {
-      const jsonStr = aiResponse.replace(/```json\n?|\n?```/g, '').trim();
-      parsedResponse = JSON.parse(jsonStr);
-    } catch (e) {
-      console.error('Failed to parse AI JSON:', e);
-      return NextResponse.json({ error: 'AI failed to return valid JSON' }, { status: 500 });
-    }
+    // 4. Calculate overall percentage
+    const goodCount = coverage_data.filter((c: any) => c.coverage_status === 'good').length;
+    const percentage = Math.round((goodCount / topics.length) * 100);
 
-    // 5. Return the analysis
     return NextResponse.json({
       success: true,
-      coverage_data: coverageData,
-      analysis: parsedResponse
+      analysis: {
+        overall_coverage_percentage: percentage
+      },
+      coverage_data
     });
 
   } catch (error: any) {
-    console.error('Analyze Gaps error:', error);
-    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
+    console.error('Analyze Gaps Error:', error);
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

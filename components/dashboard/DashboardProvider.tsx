@@ -9,6 +9,9 @@ interface DashboardContextType {
   theme: 'indigo' | 'orange';
   fontScale: 'sm' | 'md' | 'lg';
   activeExamId: string | null;
+  isAdmin: boolean;
+  isPro: boolean;
+  subscription: any | null;
   t: (key: TranslationKey) => string;
   updatePreference: (key: string, value: string) => Promise<void>;
   setActiveExamId: (id: string) => void;
@@ -26,6 +29,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const [activeExamId, setActiveExamId] = useState<string | null>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isPro, setIsPro] = useState(false);
+  const [subscription, setSubscription] = useState<any | null>(null);
 
   // ── Translation Logic ────────────────────────────────────────────────
   const t = useCallback((key: TranslationKey) => {
@@ -86,6 +92,18 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       if (user) {
         setUserId(user.id);
         fetchPrefs(user.id);
+
+        // Fetch Profile & Subscription
+        const [{ data: prof }, { data: sub }] = await Promise.all([
+          supabase.from('profiles').select('is_admin').eq('id', user.id).single(),
+          supabase.from('subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').gt('expires_at', new Date().toISOString()).maybeSingle()
+        ]);
+
+        if (prof) setIsAdmin(!!prof.is_admin);
+        if (sub) {
+          setIsPro(true);
+          setSubscription(sub);
+        }
 
         const channelName = `prefs-${user.id}`;
         
@@ -163,6 +181,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       theme, 
       fontScale, 
       activeExamId, 
+      isAdmin,
+      isPro,
+      subscription,
       t, 
       updatePreference, 
       setActiveExamId,

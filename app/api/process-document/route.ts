@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateText } from '@/lib/ai';
 
+import pdfParse from 'pdf-parse';
+
 export async function POST(request: Request) {
   const supabase = await createClient();
   let latestDocumentId = '';
@@ -50,48 +52,98 @@ export async function POST(request: Request) {
 
     // Determine MIME type
     let mimeType = 'application/pdf';
+    let isImage = false;
     if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
       mimeType = 'image/jpeg';
+      isImage = true;
     } else if (fileName.endsWith('.png')) {
       mimeType = 'image/png';
+      isImage = true;
     } else if (!fileName.endsWith('.pdf')) {
       throw new Error('Unsupported file format. Please upload PDF, JPG, JPEG, or PNG.');
     }
 
-    const systemPrompt = `Extract ALL the text content from this document. 
+    let extractedText = '';
+
+    // Attempt Native PDF Parsing FIRST (Lightning Fast)
+    if (!isImage) {
+      try {
+        console.log('[DEBUG] Attempting native PDF extraction for:', fileName);
+        const data = await pdfParse(buffer);
+        extractedText = data.text || '';
+      } catch (err) {
+        console.warn('[DEBUG] Native PDF parsing failed. Falling back to Gemini API.');
+      }
+    }
+
+    // Fallback to Gemini if:
+    // 1. It's an image
+    // 2. Native parsing returned < 100 chars (likely a scanned PDF)
+    // 3. Native parsing returned text but ZERO Devanagari characters (likely garbled legacy fonts like Preeti)
+    const hasDevanagari = /[\u0900-\u097F]/.test(extractedText);
+    const isGarbled = extractedText.length > 50 && !hasDevanagari;
+
+    if (isImage || extractedText.trim().length < 100 || isGarbled) {
+      console.log(`[DEBUG] Extraction fallback triggered. isImage: ${isImage}, length: ${extractedText.length}, isGarbled: ${isGarbled}`);
+      console.log(`[DEBUG] Buffer size: ${buffer.length} bytes`);
+
+      const systemPrompt = `You are a high-accuracy document OCR engine. 
+Extract EVERY WORD of text from this document exactly as it appears.
 Rules:
-- Output ONLY the extracted text, nothing else.
-- Preserve the original language (Nepali, English, or mixed).
-- Preserve paragraph structure and line breaks.
-- If the document uses Devanagari/Nepali script, output proper Unicode Devanagari text.
-- Do not add any commentary, headers, or formatting markers.
-- Do not translate anything. Extract as-is.`;
+- Preserve the original language (Nepali/Devanagari and English).
+- Do not translate or summarize.
+- Output the text exactly as it is written.
+- If you see Nepali text, output it in proper Unicode Devanagari.
+- If the document is partially empty, extract what you can find.`;
 
-    const contents = [
-      {
-        role: 'user',
-        parts: [
-          { text: "Please extract text from this document." },
-          {
-            inlineData: {
-              data: base64Data,
-              mimeType: mimeType,
+      const contents = [
+        {
+          role: 'user',
+          parts: [
+            { text: "Please transcribe all the text from this document. If it is in Nepali, use Devanagari script." },
+            {
+              inlineData: {
+                data: base64Data,
+                mimeType: mimeType,
+              },
             },
-          },
-        ],
-      },
-    ];
+          ],
+        },
+      ];
 
-    const extractedText = await generateText(systemPrompt, contents);
+      try {
+        console.log('[DEBUG] Sending to gemini-2.5-flash for visual extraction...');
+        // We use gemini-2.5-flash as it is more robust for high-fidelity OCR than the lite model
+        const aiResponse = await generateText(systemPrompt, contents, 'gemini-2.5-flash');
+        console.log(`[DEBUG] Gemini response length: ${aiResponse?.length || 0}`);
+        
+        if (aiResponse && aiResponse.trim().length > 10) {
+          extractedText = aiResponse;
+        } else {
+           console.warn('[DEBUG] Gemini returned an empty or extremely short response.');
+        }
+      } catch (geminiError: any) {
+        console.error("Gemini Extraction Error:", geminiError);
+        // Fallback to whatever pdf-parse found if Gemini fails
+        if (extractedText.trim().length === 0) throw geminiError;
+      }
+    }
 
     // 7. Clean extracted text: remove excessive whitespace, normalize line breaks
     let cleanedText = extractedText
-      .replace(/[^\S\r\n]+/g, ' ') // Replace multiple spaces/tabs with a single space
-      .replace(/\n{3,}/g, '\n\n')  // Replace 3+ consecutive newlines with exactly 2 newlines
+      .replace(/[\t ]+/g, ' ') 
+      .replace(/\r\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
       .trim();
 
-    if (!cleanedText) {
-      throw new Error('No text could be extracted from the document.');
+    console.log(`[DEBUG] Final cleaned text length: ${cleanedText.length}`);
+    if (cleanedText.length > 0) {
+      console.log(`[DEBUG] Sample text: ${cleanedText.substring(0, 50)}...`);
+    }
+
+    if (!cleanedText || cleanedText.length < 5) {
+      const dbgInfo = `Extracted length: ${extractedText.length}, Buffer size: ${buffer.length}`;
+      throw new Error(`No readable text could be extracted. ${dbgInfo}. The document might be an encrypted PDF, a low-quality scan, or completely blank.`);
     }
 
     // 8. Update documents table: set parsed_text = cleaned text, processing_status = 'ready'

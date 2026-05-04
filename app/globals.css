@@ -139,3 +139,47 @@ html.font-scale-lg {
   line-height: var(--reading-line-height, 1.7) !important;
   transition: font-size 0.2s ease, line-height 0.2s ease;
 }
+
+/* ── Admin Panel Distinct Theme ─────────────────────────────────────── */
+.admin-header {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.admin-header-light {
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+@keyframes pulse-badge {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.15); }
+}
+
+.animate-pulse-badge {
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+/* Admin stat card hover lift */
+.admin-stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.1), 0 4px 10px -5px rgb(0 0 0 / 0.05);
+}
+
+/* Scrollbar for admin tables */
+.admin-table-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.admin-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-table-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 3px;
+}

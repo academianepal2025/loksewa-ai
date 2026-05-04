@@ -11,7 +11,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip } from '@/components/ui/tooltip';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
+import { StudyPlanRegenModal } from '@/components/dashboard/StudyPlanRegenModal';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useUpgradeModal } from '@/lib/UpgradeModalContext';
+import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
 
 import {
   Calendar,
@@ -30,6 +33,8 @@ import {
   X,
   Check,
   AlertTriangle,
+  AlertCircle,
+  FileText,
   Flame,
   Zap
 } from 'lucide-react';
@@ -155,13 +160,66 @@ function GenerationOverlay({ step }: { step: number }) {
   );
 }
 
+// ── Generate Notes Button ─────────────────────────────────────────────
+function GenerateNotesButton({ 
+  dayNumber, 
+  status, 
+  isGeneratingLocal, 
+  onGenerate, 
+  onView 
+}: { 
+  dayNumber: number, 
+  status?: string, 
+  isGeneratingLocal: boolean, 
+  onGenerate: (force: boolean) => void,
+  onView: () => void 
+}) {
+  if (isGeneratingLocal || status === 'generating') {
+    return (
+      <button disabled className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-surface border border-border-subtle rounded-lg flex items-center justify-center gap-2 text-subtle">
+        <RefreshCw className="h-4 w-4 animate-spin" /> Generating...
+      </button>
+    );
+  }
+  if (status === 'ready') {
+    return (
+      <button onClick={onView} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition-colors">
+        <FileText className="h-4 w-4" /> View Notes
+      </button>
+    );
+  }
+  if (status === 'no_content') {
+    return (
+      <button onClick={() => onGenerate(true)} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-yellow-500/10 text-yellow-600 border border-yellow-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-500/20 transition-colors text-left sm:text-center leading-tight">
+        <AlertCircle className="h-4 w-4 flex-shrink-0" /> <span className="hidden sm:inline">Force Generate</span><span className="sm:hidden">Force</span>
+      </button>
+    );
+  }
+  if (status === 'failed') {
+    return (
+      <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors">
+        <RefreshCw className="h-4 w-4" /> Retry Notes
+      </button>
+    );
+  }
+  return (
+    <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-background border border-accent/40 text-accent rounded-lg flex items-center justify-center gap-2 hover:bg-accent/5 transition-colors">
+      <FileText className="h-4 w-4" /> Generate Notes
+    </button>
+  );
+}
+
 // ── Day Detail Modal (Compact) ────────────────────────────────────────
-function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete }: { 
+function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, noteStatusMap, isGeneratingLocal, onGenerateNote, onViewNote }: { 
   day: DailyPlan; 
   onClose: () => void; 
   progress: StudyProgress | null; 
   onToggleSubtopic: (subtopic: string) => void; 
-  onMarkComplete: (feedback: { status: 'finished' | 'need_revisit', difficulty: 'easy' | 'medium' | 'hard', notes: string }) => void; 
+  onMarkComplete: (feedback: { status: 'finished' | 'need_revisit', difficulty: 'easy' | 'medium' | 'hard', notes: string }) => void;
+  noteStatusMap: Map<string, string>;
+  isGeneratingLocal: boolean;
+  onGenerateNote: (day: DailyPlan, topic: string, subtopics: string[], force: boolean) => void;
+  onViewNote: (day: number, topic: string) => void;
 }) {
   const [feedbackStatus, setFeedbackStatus] = useState<'finished' | 'need_revisit'>(progress?.feedback_status || 'finished');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(progress?.difficulty || 'medium');
@@ -334,6 +392,47 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete }: 
               <><Check className="h-5 w-5" /> Mark Day Complete</>
             )}
           </button>
+          
+          <div className="space-y-4 pt-4 border-t border-border-subtle mt-4">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-subtle uppercase tracking-wider">Primary Topic</span>
+                <GenerateNotesButton 
+                  dayNumber={day.day_number}
+                  status={noteStatusMap.get(`${day.day_number}-${day.primary_topic}`)}
+                  isGeneratingLocal={isGeneratingLocal}
+                  onGenerate={(force) => onGenerateNote(day, day.primary_topic, day.subtopics_to_cover, force)}
+                  onView={() => onViewNote(day.day_number, day.primary_topic)}
+                />
+              </div>
+              
+              {day.secondary_topic && (
+                <div className="flex items-center justify-between pt-2 border-t border-border-subtle/50">
+                  <span className="text-[10px] font-bold text-subtle uppercase tracking-wider line-clamp-1 flex-1 mr-4">{day.secondary_topic}</span>
+                  <GenerateNotesButton 
+                    dayNumber={day.day_number}
+                    status={noteStatusMap.get(`${day.day_number}-${day.secondary_topic}`)}
+                    isGeneratingLocal={isGeneratingLocal}
+                    onGenerate={(force) => onGenerateNote(day, day.secondary_topic, [], force)}
+                    onView={() => onViewNote(day.day_number, day.secondary_topic)}
+                  />
+                </div>
+              )}
+
+              {day.revision_topics && day.revision_topics.length > 0 && day.revision_topics.map((revTopic, idx) => (
+                <div key={idx} className="flex items-center justify-between pt-2 border-t border-border-subtle/50">
+                  <span className="text-[10px] font-bold text-subtle uppercase tracking-wider line-clamp-1 flex-1 mr-4">Revision: {revTopic}</span>
+                  <GenerateNotesButton 
+                    dayNumber={day.day_number}
+                    status={noteStatusMap.get(`${day.day_number}-${revTopic}`)}
+                    isGeneratingLocal={isGeneratingLocal}
+                    onGenerate={(force) => onGenerateNote(day, revTopic, [], force)}
+                    onView={() => onViewNote(day.day_number, revTopic)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -344,6 +443,7 @@ export default function StudyPlanPage() {
   const router = useRouter();
   const supabase = createClient();
   const { t, language } = useDashboard();
+  const { showUpgradeModal } = useUpgradeModal();
   const [exams, setExams] = useState<Exam[]>([]);
   const [activeExamId, setActiveExamId] = useState<string | null>(null);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
@@ -356,6 +456,8 @@ export default function StudyPlanPage() {
   const [confirmRegen, setConfirmRegen] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<'no_syllabus' | 'api' | null>(null);
+  const [noteStatusMap, setNoteStatusMap] = useState<Map<string, string>>(new Map());
+  const [generatingNotesFor, setGeneratingNotesFor] = useState<number | null>(null);
 
   const fetchExams = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -427,8 +529,96 @@ export default function StudyPlanPage() {
     });
   };
 
+  const fetchNoteStatuses = useCallback(async () => {
+    if (!activeExamId) return;
+    const { data } = await supabase
+      .from('study_notes')
+      .select('day_number, topic, generation_status, no_content_found')
+      .eq('exam_id', activeExamId);
+    
+    if (data) {
+      const map = new Map<string, string>();
+      data.forEach(note => map.set(`${note.day_number}-${note.topic}`, note.no_content_found ? 'no_content' : note.generation_status));
+      setNoteStatusMap(map);
+    }
+  }, [activeExamId, supabase]);
+
   useEffect(() => { fetchExams(); }, [fetchExams]);
-  useEffect(() => { if (activeExamId) fetchPlan(); }, [activeExamId, fetchPlan]);
+  useEffect(() => { 
+    if (activeExamId) {
+      fetchPlan();
+      fetchNoteStatuses();
+      
+      const channel = supabase
+        .channel(`study-notes-${activeExamId}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'study_notes', filter: `exam_id=eq.${activeExamId}` },
+          (payload) => {
+            if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
+              const updatedNote = payload.new as any;
+              setNoteStatusMap(prev => {
+                const next = new Map(prev);
+                next.set(`${updatedNote.day_number}-${updatedNote.topic}`, updatedNote.no_content_found ? 'no_content' : updatedNote.generation_status);
+                return next;
+              });
+              if (updatedNote.generation_status === 'ready') {
+                toast.success(`Notes generated for ${updatedNote.topic}!`);
+                setGeneratingNotesFor(null);
+              } else if (updatedNote.generation_status === 'failed') {
+                toast.error(`Generation failed for ${updatedNote.topic}`);
+                setGeneratingNotesFor(null);
+              }
+            }
+          }
+        )
+        .subscribe();
+        
+      return () => { supabase.removeChannel(channel); };
+    }
+  }, [activeExamId, fetchPlan, fetchNoteStatuses, supabase]);
+
+  const handleGenerateNote = async (day: DailyPlan, topicToGen: string, subtopicsToGen: string[], force = false) => {
+    if (!activeExamId) return;
+    setGeneratingNotesFor(day.day_number);
+    toast(`Generating notes for ${topicToGen}...`, { icon: '⏳' });
+    
+    try {
+      const res = await fetch('/api/notes/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          examId: activeExamId,
+          day_number: day.day_number,
+          topic: topicToGen,
+          subtopics: subtopicsToGen,
+          date: day.date,
+          force_generate: force
+        })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        if (res.status === 403) {
+          toast.error("Daily limit reached", { description: "Upgrade to Pro for unlimited note generations." });
+          showUpgradeModal('notes_limit');
+        } else {
+          throw new Error(data.error || 'Failed to generate notes');
+        }
+        setGeneratingNotesFor(null);
+      } else if (data.status === 'no_content_found') {
+        toast.error("No relevant study material found. Please upload notes.");
+        setGeneratingNotesFor(null);
+      } else {
+        // Success
+        window.dispatchEvent(new CustomEvent('usage-updated'));
+      }
+    } catch (e: any) {
+      toast.error(e.message);
+      setGeneratingNotesFor(null);
+    }
+  };
 
   const fetchWithRetry = async (url: string, options: RequestInit, retries = 2): Promise<Response> => {
     const res = await fetch(url, options);
@@ -439,7 +629,7 @@ export default function StudyPlanPage() {
     return res;
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (overrideDays?: number, overrideHours?: number) => {
     if (!activeExamId) return;
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -484,7 +674,13 @@ export default function StudyPlanPage() {
       const pRes = await fetchWithRetry('/api/generate-study-plan', { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/json' }, 
-        body: JSON.stringify({ examId: activeExamId, userId: user.id, language }) 
+        body: JSON.stringify({ 
+          examId: activeExamId, 
+          userId: user.id, 
+          language,
+          overrideDays,
+          overrideHours
+        }) 
       });
       
       const pData = await pRes.json().catch(() => null);
@@ -580,16 +776,27 @@ export default function StudyPlanPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 pb-12">
       {generating && <GenerationOverlay step={genStep} />}
-      {selectedDay && plan && <DayModal day={selectedDay} onClose={() => setSelectedDay(null)} progress={getProgressForDay(selectedDay.day_number)} onToggleSubtopic={s => toggleSubtopic(selectedDay, s)} onMarkComplete={f => markDayComplete(selectedDay, f)} />}
+      {selectedDay && plan && <DayModal 
+        day={selectedDay} 
+        onClose={() => setSelectedDay(null)} 
+        progress={getProgressForDay(selectedDay.day_number)} 
+        onToggleSubtopic={s => toggleSubtopic(selectedDay, s)} 
+        onMarkComplete={f => markDayComplete(selectedDay, f)} 
+        noteStatusMap={noteStatusMap}
+        isGeneratingLocal={generatingNotesFor === selectedDay.day_number}
+        onGenerateNote={(d, topic, subtopics, force) => handleGenerateNote(d, topic, subtopics, force)}
+        onViewNote={(day, topic) => router.push(`/dashboard/study-notes?day=${day}&topic=${encodeURIComponent(topic)}`)}
+      />}
 
-      <ConfirmModal 
+      <StudyPlanRegenModal
         isOpen={confirmRegen}
         onClose={() => setConfirmRegen(false)}
-        onConfirm={handleGenerate}
-        title="Regenerate Tactical Roadmap?"
-        description="This will reset your current timeline and all daily study progress for this exam. This action cannot be undone."
-        variant="danger"
-        confirmLabel="Reset Mission"
+        onConfirm={(days, hours) => {
+          setConfirmRegen(false);
+          handleGenerate(days, hours);
+        }}
+        initialDays={daysRem || 30}
+        initialHours={exams.find(e => e.id === activeExamId)?.daily_study_hours || 4}
       />
 
       {/* Header (Minimalist) */}
@@ -667,6 +874,43 @@ export default function StudyPlanPage() {
                          <button onClick={() => markDayComplete(todayPlan, { status: 'finished', difficulty: 'medium', notes: 'Quick complete from dashboard' })} disabled={getProgressForDay(todayPlan.day_number)?.is_completed} className={`w-full py-3 text-xs font-bold uppercase tracking-wider rounded-xl min-h-[44px] ${getProgressForDay(todayPlan.day_number)?.is_completed ? 'bg-emerald-500/10 text-emerald-600' : 'bg-orange-600 text-background'}`}>
                             {getProgressForDay(todayPlan.day_number)?.is_completed ? 'SECURED' : 'COMPLETE'}
                          </button>
+                         <div className="space-y-3">
+                           <div className="flex items-center justify-between gap-4">
+                             <span className="text-[9px] font-bold text-subtle uppercase truncate max-w-[100px]">{todayPlan.primary_topic}</span>
+                             <GenerateNotesButton 
+                                dayNumber={todayPlan.day_number}
+                                status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.primary_topic}`)}
+                                isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
+                                onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.primary_topic, todayPlan.subtopics_to_cover, force)}
+                                onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.primary_topic)}`)}
+                             />
+                           </div>
+                           {todayPlan.secondary_topic && (
+                             <div className="flex items-center justify-between gap-4 pt-2 border-t border-border-subtle/30">
+                               <span className="text-[9px] font-bold text-subtle uppercase truncate max-w-[100px]">{todayPlan.secondary_topic}</span>
+                               <GenerateNotesButton 
+                                  dayNumber={todayPlan.day_number}
+                                  status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.secondary_topic}`)}
+                                  isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
+                                  onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.secondary_topic, [], force)}
+                                  onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.secondary_topic)}`)}
+                               />
+                             </div>
+                           )}
+                           
+                           {todayPlan.revision_topics && todayPlan.revision_topics.length > 0 && todayPlan.revision_topics.slice(0, 2).map((revTopic, idx) => (
+                             <div key={idx} className="flex items-center justify-between gap-4 pt-2 border-t border-border-subtle/30">
+                               <span className="text-[9px] font-bold text-subtle uppercase truncate max-w-[100px]">Rev: {revTopic}</span>
+                               <GenerateNotesButton 
+                                  dayNumber={todayPlan.day_number}
+                                  status={noteStatusMap.get(`${todayPlan.day_number}-${revTopic}`)}
+                                  isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
+                                  onGenerate={(force) => handleGenerateNote(todayPlan, revTopic, [], force)}
+                                  onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(revTopic)}`)}
+                               />
+                             </div>
+                           ))}
+                         </div>
                       </div>
                    </div>
                 </div>
@@ -702,14 +946,26 @@ export default function StudyPlanPage() {
                                       const fin = getProgressForDay(d.day_number)?.is_completed;
                                       const isT = d.date === todayStr;
                                       return (
-                                        <button key={d.day_number} onClick={() => setSelectedDay(d)} className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between text-left h-32 relative ${isT ? 'border-accent bg-background' : fin ? 'bg-background opacity-50' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
+                                        <div key={d.day_number} onClick={() => setSelectedDay(d)} className={`cursor-pointer p-3.5 rounded-xl border transition-all flex flex-col justify-between text-left h-auto min-h-[8rem] relative ${isT ? 'border-accent bg-background' : fin ? 'bg-background opacity-50' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
                                            <div className="flex justify-between items-start">
                                               <div className="space-y-0.5"><p className="text-[9px] font-bold text-subtle uppercase">{new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}</p><p className="text-sm font-bold leading-none">Day {d.day_number}</p></div>
                                               <cfg.icon className="h-3.5 w-3.5 text-subtle opacity-40" />
                                            </div>
-                                           <p className="text-[11px] font-bold uppercase leading-tight line-clamp-2 mt-2">{d.primary_topic || cfg.label}</p>
+                                           <p className="text-[11px] font-bold uppercase leading-tight line-clamp-2 mt-2 mb-3">{d.primary_topic || cfg.label}</p>
+                                           <div className="mt-auto w-full space-y-1" onClick={e => e.stopPropagation()}>
+                                               <p className="text-[7px] font-bold text-subtle uppercase px-1">Notes Status</p>
+                                               <div className="flex gap-1">
+                                                  <div className={`h-1.5 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.primary_topic}`) === 'ready' ? 'bg-emerald-500' : 'bg-border-subtle'}`} title={d.primary_topic} />
+                                                  {d.secondary_topic && (
+                                                    <div className={`h-1.5 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.secondary_topic}`) === 'ready' ? 'bg-emerald-500' : 'bg-border-subtle'}`} title={d.secondary_topic} />
+                                                  )}
+                                                  {d.revision_topics && d.revision_topics.length > 0 && (
+                                                    <div className={`h-1.5 flex-1 rounded-full ${d.revision_topics.every(rt => noteStatusMap.get(`${d.day_number}-${rt}`) === 'ready') ? 'bg-emerald-500' : 'bg-border-subtle opacity-50'}`} title="Revision Topics" />
+                                                  )}
+                                               </div>
+                                            </div>
                                            {fin && <CheckCircle2 className="absolute top-1 right-1 h-3.5 w-3.5 text-emerald-500" />}
-                                        </button>
+                                        </div>
                                       );
                                    })}
                                 </div>

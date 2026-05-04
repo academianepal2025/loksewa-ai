@@ -49,7 +49,7 @@ Return ONLY valid JSON:
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { examId, userId, language = 'en' } = body;
+    const { examId, userId, language = 'en', overrideDays, overrideHours } = body;
 
     if (!examId || !userId) {
       return NextResponse.json({ success: false, message: 'Missing examId or userId' }, { status: 400 });
@@ -60,6 +60,15 @@ export async function POST(request: Request) {
     }
 
     const supabase = await createClient();
+
+    // If overrideHours is provided, update user_exams table
+    if (overrideHours) {
+      await supabase
+        .from('user_exams')
+        .update({ daily_study_hours: overrideHours })
+        .eq('id', examId)
+        .eq('user_id', userId);
+    }
 
     // 1. Fetch syllabus_analysis for this examId
     const { data: analysis, error: analysisError } = await supabase
@@ -88,19 +97,20 @@ export async function POST(request: Request) {
       throw new Error(`Failed to fetch exam details: ${examError?.message}`);
     }
 
-    // 3. Calculate exact days remaining
+    // 3. Calculate exact days remaining or use override
     const today = new Date();
     const examDate = new Date(exam.exam_date);
-    const daysRemaining = Math.max(1, Math.ceil((examDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+    const daysRemaining = overrideDays || Math.max(1, Math.ceil((examDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+    const studyHours = overrideHours || exam.daily_study_hours;
 
     const userMessage = `Days remaining: ${daysRemaining}
-Daily available hours: ${exam.daily_study_hours}
+Daily available hours: ${studyHours}
 Exam Name: ${exam.exam_name}
 Exam Date: ${exam.exam_date}
 Syllabus Analysis JSON:
 ${JSON.stringify(analysis.analysis_data, null, 2)}`;
 
-    console.log(`Generating study plan for ${exam.exam_name} (${daysRemaining} days remaining)...`);
+    console.log(`Generating study plan for ${exam.exam_name} (${daysRemaining} days remaining, ${studyHours} hours/day)...`);
     let planData = await generateJSON(getSystemInstruction(language), userMessage);
 
     // Normalize potential nested structures from Gemini
