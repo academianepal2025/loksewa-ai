@@ -68,23 +68,12 @@ export async function POST(request: Request) {
     const testContent = typeof testJson === 'string' ? testJson : JSON.stringify(testJson);
     const userPrompt = `Grade this answer sheet against these mock test questions:\n${testContent}`;
 
-    const contents = [
-      {
-        role: 'user',
-        parts: [
-          { text: userPrompt },
-          {
-            inlineData: {
-              data: base64Image,
-              mimeType: mimeType,
-            },
-          },
-        ],
-      },
-    ];
-
     // 3. Call Gemini
-    const evaluation = await generateMultimodalJSON(EVALUATION_SYSTEM_PROMPT, contents);
+    const evaluation = await generateMultimodalJSON(
+      EVALUATION_SYSTEM_PROMPT, 
+      userPrompt, 
+      [{ mimeType, data: base64Image }]
+    );
 
     // 4. Update submission in DB
     if (submissionId) {
