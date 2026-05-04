@@ -29,8 +29,9 @@ Return ONLY valid JSON in this format:
 
 export async function POST(request: Request) {
   const supabase = await createClient();
+  let body: any = null;
   try {
-    const body = await request.json();
+    body = await request.json();
     const { fileUrl, testJson, userId, examId, submissionId } = body;
 
     if (!fileUrl || !testJson || !userId) {

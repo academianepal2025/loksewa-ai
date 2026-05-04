@@ -2,15 +2,21 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-type LimitType = 'document_limit' | 'chat_limit' | 'quiz_limit' | 'notes_limit' | 'exam_limit' | null;
+type LimitType = 'document_limit' | 'chat_limit' | 'quiz_limit' | 'notes_limit' | 'exam_limit' | 'mock_test_limit' | null;
+
+interface Plan {
+  id: string;
+  name: string;
+  price: string;
+}
 
 interface UpgradeModalContextType {
   isOpen: boolean;
   limitType: LimitType;
   showUpgradeModal: (type?: LimitType) => void;
   hideUpgradeModal: () => void;
-  selectedPlan: string | null;
-  setSelectedPlan: (plan: string | null) => void;
+  selectedPlan: Plan | null;
+  setSelectedPlan: (plan: Plan | null) => void;
 }
 
 const UpgradeModalContext = createContext<UpgradeModalContextType | undefined>(undefined);
@@ -18,7 +24,7 @@ const UpgradeModalContext = createContext<UpgradeModalContextType | undefined>(u
 export function UpgradeModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [limitType, setLimitType] = useState<LimitType>(null);
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
 
   const showUpgradeModal = (type: LimitType = null) => {
     setLimitType(type);

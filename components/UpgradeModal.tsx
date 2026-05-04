@@ -59,6 +59,7 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
       case 'quiz_limit': return 'You have used all 3 daily quiz generations.';
       case 'notes_limit': return 'You have used all 3 daily note generations.';
       case 'exam_limit': return 'Free plan supports only 1 active exam.';
+      case 'mock_test_limit': return 'Mock tests are available exclusively for Pro members.';
       default: return 'Unlock the full potential of Loksewa AI.';
     }
   };

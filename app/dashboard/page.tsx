@@ -107,7 +107,7 @@ export default function DashboardPage() {
         // Determine which exam to display
         let currentExam = null;
         if (activeExamId) {
-          currentExam = allExams.find(e => e.id === activeExamId) || allExams[0];
+          currentExam = allExams.find((e: Exam) => e.id === activeExamId) || allExams[0];
         } else {
           currentExam = allExams[0];
           if (currentExam) setActiveExamId(currentExam.id);
@@ -151,7 +151,7 @@ export default function DashboardPage() {
               .eq('plan_id', plan.id);
             
             if (prog?.length) {
-              const completed = prog.filter(p => p.is_completed).length;
+              const completed = prog.filter((p: any) => p.is_completed).length;
               progressPct = Math.round((completed / 90) * 100); 
             }
           }
@@ -257,7 +257,7 @@ export default function DashboardPage() {
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
               <div className="flex flex-wrap gap-2 mb-6">
-                {exams.map(e => (
+                {exams.map((e: Exam) => (
                   <button 
                     key={e.id}
                     onClick={() => setActiveExamId(e.id)}

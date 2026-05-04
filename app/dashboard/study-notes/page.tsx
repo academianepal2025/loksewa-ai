@@ -87,7 +87,7 @@ export default function StudyNotesPage() {
         const topicParam = urlParams.get('topic');
         
         if (dayParam) {
-          const target = data.find(n => 
+          const target = data.find((n: StudyNote) => 
             n.day_number.toString() === dayParam && 
             (!topicParam || n.topic === topicParam)
           );
@@ -97,7 +97,7 @@ export default function StudyNotesPage() {
             setSelectedExamId(target.exam_id);
           }
         } else {
-          const firstReady = data.find(n => n.generation_status === 'ready' && n.notes_content);
+          const firstReady = data.find((n: StudyNote) => n.generation_status === 'ready' && n.notes_content);
           if (firstReady) {
             setActiveNote(firstReady);
             setEditContent(firstReady.notes_content!.full_markdown);
@@ -112,7 +112,7 @@ export default function StudyNotesPage() {
   }, [supabase]);
 
   const filteredNotes = useMemo(() => {
-    return notes.filter(n => {
+    return notes.filter((n: StudyNote) => {
       if (n.generation_status !== 'ready' || !n.notes_content) return false;
       if (selectedExamId !== 'all' && n.exam_id !== selectedExamId) return false;
       
@@ -126,7 +126,7 @@ export default function StudyNotesPage() {
   // Group by week
   const groupedNotes = useMemo(() => {
     const groups: Record<number, StudyNote[]> = {};
-    filteredNotes.forEach(note => {
+    filteredNotes.forEach((note: StudyNote) => {
       const week = Math.ceil(note.day_number / 7);
       if (!groups[week]) groups[week] = [];
       groups[week].push(note);

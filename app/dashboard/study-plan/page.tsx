@@ -413,8 +413,8 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                     dayNumber={day.day_number}
                     status={noteStatusMap.get(`${day.day_number}-${day.secondary_topic}`)}
                     isGeneratingLocal={isGeneratingLocal}
-                    onGenerate={(force) => onGenerateNote(day, day.secondary_topic, [], force)}
-                    onView={() => onViewNote(day.day_number, day.secondary_topic)}
+                    onGenerate={(force) => onGenerateNote(day, day.secondary_topic!, [], force)}
+                    onView={() => onViewNote(day.day_number, day.secondary_topic!)}
                   />
                 </div>
               )}
@@ -538,7 +538,7 @@ export default function StudyPlanPage() {
     
     if (data) {
       const map = new Map<string, string>();
-      data.forEach(note => map.set(`${note.day_number}-${note.topic}`, note.no_content_found ? 'no_content' : note.generation_status));
+      data.forEach((note: any) => map.set(`${note.day_number}-${note.topic}`, note.no_content_found ? 'no_content' : note.generation_status));
       setNoteStatusMap(map);
     }
   }, [activeExamId, supabase]);
@@ -554,10 +554,10 @@ export default function StudyPlanPage() {
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'study_notes', filter: `exam_id=eq.${activeExamId}` },
-          (payload) => {
+          (payload: any) => {
             if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
               const updatedNote = payload.new as any;
-              setNoteStatusMap(prev => {
+              setNoteStatusMap((prev: Map<string, string>) => {
                 const next = new Map(prev);
                 next.set(`${updatedNote.day_number}-${updatedNote.topic}`, updatedNote.no_content_found ? 'no_content' : updatedNote.generation_status);
                 return next;
@@ -747,15 +747,15 @@ export default function StudyPlanPage() {
 
   const planData = plan?.plan_data;
   const todayStr = new Date().toISOString().split('T')[0];
-  const todayPlan = planData?.daily_plans.find(d => d.date === todayStr) || planData?.daily_plans.find(d => d.date >= todayStr);
-  const completedDays = progress.filter(p => p.is_completed).length;
-  const totalStudyDays = planData?.daily_plans.filter(d => d.day_type !== 'rest').length || 1;
+  const todayPlan = planData?.daily_plans.find((d: DailyPlan) => d.date === todayStr) || planData?.daily_plans.find((d: DailyPlan) => d.date >= todayStr);
+  const completedDays = progress.filter((p: StudyProgress) => p.is_completed).length;
+  const totalStudyDays = planData?.daily_plans.filter((d: DailyPlan) => d.day_type !== 'rest').length || 1;
   const completionPct = Math.round((completedDays / totalStudyDays) * 100);
-  const daysRem = exams.find(e => e.id === activeExamId) ? Math.max(0, Math.ceil((new Date(exams.find(e => e.id === activeExamId)!.exam_date).getTime() - Date.now()) / 86400000)) : 0;
+  const daysRem = exams.find((e: Exam) => e.id === activeExamId) ? Math.max(0, Math.ceil((new Date(exams.find((e: Exam) => e.id === activeExamId)!.exam_date).getTime() - Date.now()) / 86400000)) : 0;
   const currentWeekNum = todayPlan ? Math.ceil(todayPlan.day_number / 7) : 1;
-  const currentWeekTarget = planData?.weekly_targets.find(w => w.week_number === currentWeekNum);
+  const currentWeekTarget = planData?.weekly_targets.find((w: WeeklyTarget) => w.week_number === currentWeekNum);
   const weeklyGroups: Record<number, DailyPlan[]> = {};
-  planData?.daily_plans.forEach(d => { const wk = Math.ceil(d.day_number / 7); if (!weeklyGroups[wk]) weeklyGroups[wk] = []; weeklyGroups[wk].push(d); });
+  planData?.daily_plans.forEach((d: DailyPlan) => { const wk = Math.ceil(d.day_number / 7); if (!weeklyGroups[wk]) weeklyGroups[wk] = []; weeklyGroups[wk].push(d); });
 
   if (loading) return (
     <div className="max-w-6xl mx-auto space-y-8 animate-pulse">
@@ -796,7 +796,7 @@ export default function StudyPlanPage() {
           handleGenerate(days, hours);
         }}
         initialDays={daysRem || 30}
-        initialHours={exams.find(e => e.id === activeExamId)?.daily_study_hours || 4}
+        initialHours={exams.find((e: Exam) => e.id === activeExamId)?.daily_study_hours || 4}
       />
 
       {/* Header (Minimalist) */}
@@ -807,9 +807,10 @@ export default function StudyPlanPage() {
                <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
                   Study <span className="text-accent">Roadmap</span>
                </h1>
-               <div className="flex flex-wrap gap-2">
-                  {exams.map(e => (
-                    <button key={e.id} onClick={() => { setActiveExamId(e.id); setPlan(null); }} className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${activeExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
+               <div className="flex flex-wrap gap-2 mb-6">
+                  {exams.map((e: Exam) => (
+                    <button 
+                      key={e.id} onClick={() => { setActiveExamId(e.id); setPlan(null); }} className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${activeExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
                       {e.exam_name}
                     </button>
                   ))}
@@ -851,7 +852,7 @@ export default function StudyPlanPage() {
              </div>
            )}
 
-           <button onClick={handleGenerate} className="w-full sm:w-auto bg-orange-600 text-background px-8 py-3.5 rounded-xl font-bold text-base hover:opacity-90 transition-all flex items-center justify-center gap-2 mx-auto min-h-[44px]">
+            <button onClick={() => handleGenerate()} className="w-full sm:w-auto bg-orange-600 text-background px-8 py-3 rounded-xl text-xs font-bold hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 min-h-[44px]">
               <Zap className="h-4 w-4" /> Build My Roadmap
            </button>
         </div>
@@ -892,8 +893,8 @@ export default function StudyPlanPage() {
                                   dayNumber={todayPlan.day_number}
                                   status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.secondary_topic}`)}
                                   isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
-                                  onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.secondary_topic, [], force)}
-                                  onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.secondary_topic)}`)}
+                                  onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.secondary_topic!, [], force)}
+                                  onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.secondary_topic!)}`)}
                                />
                              </div>
                            )}
