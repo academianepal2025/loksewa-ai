@@ -32,11 +32,36 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
   const supabase = createClient();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [qrUrl, setQrUrl] = useState<string>('https://bgvezddpaxxqtaskueuw.supabase.co/storage/v1/object/public/system/esewa_qr.jpg');
+  const [qrLoading, setQrLoading] = useState(true);
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
   });
   const [requestId, setRequestId] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      const fetchQR = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('app_settings')
+            .select('value')
+            .eq('key', 'payment_qr_url')
+            .maybeSingle();
+          
+          if (data?.value) {
+            setQrUrl(`${data.value}?t=${Date.now()}`);
+          }
+        } catch (err) {
+          console.error('Error fetching QR:', err);
+        } finally {
+          setQrLoading(false);
+        }
+      };
+      fetchQR();
+    }
+  }, [isOpen, supabase]);
 
   if (!selectedPlan) return null;
 
@@ -145,21 +170,27 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                        <p className="text-xs font-medium text-subtle">Plan: <span className="text-foreground font-bold">{selectedPlan.name}</span> • Amount: <span className="text-orange-600 font-bold">NPR {selectedPlan.price}</span></p>
                     </div>
 
-                    <div className="flex justify-center p-4 bg-white rounded-2xl border border-border-subtle shadow-inner">
-                       {/* QR Code Placeholder */}
-                       <div className="relative h-56 w-56 group">
-                          <img 
-                            src="/payment-qr.png" 
-                            alt="Payment QR Code" 
-                            className="h-full w-full object-contain rounded-lg"
-                            onError={(e) => {
-                              (e.target as any).src = "https://placehold.co/400x400/orange/white?text=SCAN+TO+PAY";
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                             <QrCode className="h-10 w-10 text-orange-600" />
-                          </div>
-                       </div>
+                    <div className="flex justify-center p-4 bg-white rounded-2xl border border-border-subtle shadow-inner min-h-[224px] items-center">
+                       {qrLoading ? (
+                         <div className="flex flex-col items-center gap-2">
+                           <div className="h-40 w-40 bg-gray-100 animate-pulse rounded-xl" />
+                           <p className="text-[10px] font-bold text-subtle uppercase animate-pulse">Loading QR...</p>
+                         </div>
+                       ) : (
+                         <div className="relative h-56 w-56 group">
+                            <img 
+                              src={qrUrl} 
+                              alt="Payment QR Code" 
+                              className="h-full w-full object-contain rounded-lg"
+                              onError={(e) => {
+                                (e.target as any).src = "https://placehold.co/400x400/orange/white?text=SCAN+TO+PAY";
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                               <QrCode className="h-10 w-10 text-orange-600" />
+                            </div>
+                         </div>
+                       )}
                     </div>
 
                     <div className="p-5 bg-orange-500/[0.03] border border-orange-500/10 rounded-2xl space-y-4">

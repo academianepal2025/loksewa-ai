@@ -24,6 +24,7 @@
     "@types/marked": "^5.0.2",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.4.2",
     "emitter": "^0.0.5",
     "framer-motion": "^12.38.0",
     "html-pdf-node": "^1.0.8",
