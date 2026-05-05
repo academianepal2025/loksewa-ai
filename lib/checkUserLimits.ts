@@ -34,6 +34,7 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
         quizzes: { used: 0, max: Infinity, exceeded: false },
         notes: { used: 0, max: Infinity, exceeded: false },
         exams: { used: 0, max: Infinity, exceeded: false },
+        mock_tests: { used: 0, max: Infinity, exceeded: false },
       },
       exceeded_limit: null,
     };
@@ -58,7 +59,8 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
         chat: { used: 0, max: Infinity, exceeded: false },
         quizzes: { used: 0, max: Infinity, exceeded: false },
         notes: { used: 0, max: Infinity, exceeded: false },
-        exams: { used: 0, max: 3, exceeded: false }, // Even Pro has some reasonable soft limits if needed, but per req: unlimited
+        exams: { used: 0, max: Infinity, exceeded: false },
+        mock_tests: { used: 0, max: Infinity, exceeded: false },
       },
       exceeded_limit: null,
     };

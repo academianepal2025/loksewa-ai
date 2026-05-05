@@ -55,8 +55,6 @@ export async function POST(request: Request) {
       throw new Error('GEMINI_API_KEY is not defined in environment variables');
     }
 
-    const supabase = await createClient();
-
     // 1. Vector Search for relevant document chunks
     // First, we need the embedding for the topic to perform vector search
     let relevantContext = '';

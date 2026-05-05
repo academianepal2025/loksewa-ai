@@ -29,13 +29,14 @@ Return ONLY valid JSON in this format:
 
 export async function POST(request: Request) {
   const supabase = await createClient();
+  let body: any = null;
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
+    body = await request.json();
     const { fileUrl, testJson, examId, submissionId } = body;
     const userId = user.id;
 
