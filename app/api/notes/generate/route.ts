@@ -94,6 +94,7 @@ export async function POST(request: Request) {
       .select('id, generation_status, notes_content')
       .eq('exam_id', examId)
       .eq('day_number', day_number)
+      .eq('topic', topic)
       .single();
 
     if (existingNote?.generation_status === 'ready' && !force_generate) {
@@ -208,7 +209,8 @@ The output language must be: ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}.
         updated_at: new Date().toISOString()
       })
       .eq('exam_id', examId)
-      .eq('day_number', day_number);
+      .eq('day_number', day_number)
+      .eq('topic', topic);
 
     if (finalizeError) throw new Error(finalizeError.message);
 

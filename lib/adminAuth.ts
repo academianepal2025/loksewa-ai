@@ -31,21 +31,11 @@ export async function verifyAdmin() {
 
     if (profileError) {
       console.error('[adminAuth] Profile fetch error:', profileError);
-      // Fallback: check if it's the admin email even if profile fetch fails
-      if (user.email === 'shahrammy131@gmail.com') {
-         console.log('[adminAuth] Profile fetch failed but email matched super admin. Proceeding.');
-         return { error: null, user, supabase };
-      }
       return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }), user: null, supabase };
     }
 
     if (!profile?.is_admin) {
       console.warn('[adminAuth] User is not admin:', user.email);
-      // Fallback for the user
-      if (user.email === 'shahrammy131@gmail.com') {
-        console.log('[adminAuth] User not marked as admin in DB but email matched super admin. Proceeding.');
-        return { error: null, user, supabase };
-      }
       return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }), user: null, supabase };
     }
 

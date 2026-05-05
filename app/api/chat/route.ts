@@ -26,12 +26,21 @@ FORMATTING RULES (ESSENTIAL):
 export async function POST(request: Request) {
   const supabase = await createClient();
   try {
-    const body = await request.json();
-    const { message, examId, userId, conversationHistory = [] } = body;
-
-    if (!message || !examId || !userId) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields: message, examId, userId' }),
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const body = await request.json();
+    const { message, examId, conversationHistory = [] } = body;
+    const userId = user.id;
+
+    if (!message || !examId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: message, examId' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -142,10 +151,6 @@ export async function POST(request: Request) {
         }
       },
     });
-
-    // ── Step 5: Increment Usage ──────────────────────────────────
-    const { error: rpcError } = await supabase.rpc('increment_chat_usage', { p_user_id: userId });
-    if (rpcError) console.error('Failed to increment chat usage:', rpcError);
 
     return new Response(stream, {
       headers: {

@@ -33,13 +33,20 @@ Return ONLY valid JSON:
 }
 
 export async function POST(request: Request) {
+  const supabase = await createClient();
   try {
-    const body = await request.json();
-    const { examId, userId, topic, count, language = 'en' } = body;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    if (!examId || !userId || !topic || !count) {
+    const body = await request.json();
+    const { examId, topic, count, language = 'en' } = body;
+    const userId = user.id;
+
+    if (!examId || !topic || !count) {
       return NextResponse.json(
-        { success: false, message: 'Missing required fields: examId, userId, topic, count' },
+        { success: false, message: 'Missing required fields: examId, topic, count' },
         { status: 400 }
       );
     }

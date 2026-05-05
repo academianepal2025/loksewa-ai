@@ -210,8 +210,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       </div>
 
       <BottomNav />
-      <UpgradeModal onSelectPlan={(plan) => { setSelectedPlan(plan); setIsPaymentModalOpen(true); }} />
-      <PaymentFlowModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} selectedPlan={selectedPlan} />
     </div>
   );
 }

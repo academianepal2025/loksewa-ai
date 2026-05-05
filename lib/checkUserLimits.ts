@@ -9,6 +9,7 @@ export interface UserLimits {
     quizzes: { used: number, max: number, exceeded: boolean };
     notes: { used: number, max: number, exceeded: boolean };
     exams: { used: number, max: number, exceeded: boolean };
+    mock_tests: { used: number, max: number, exceeded: boolean };
   };
   exceeded_limit: string | null;
 }

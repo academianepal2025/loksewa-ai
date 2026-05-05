@@ -8,13 +8,13 @@ export async function GET(req: Request) {
   try {
     // 1. Verify User Session using the normal authenticated client
     const supabaseUserClient = await createServerClient();
-    const { data: { session } } = await supabaseUserClient.auth.getSession();
+    const { data: { user } } = await supabaseUserClient.auth.getUser();
     
-    if (!session || !session.user || !session.user.email) {
+    if (!user || !user.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!ADMIN_EMAILS.includes(session.user.email)) {
+    if (!ADMIN_EMAILS.includes(user.email)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
