@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { getURL } from '@/lib/utils';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -11,5 +12,5 @@ export async function GET(request: Request) {
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(`${requestUrl.origin}/dashboard`);
+  return NextResponse.redirect(`${getURL()}dashboard`);
 }

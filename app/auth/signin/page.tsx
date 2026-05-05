@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Sparkles, ArrowRight, Mail, Lock, Loader2, ShieldCheck } from 'lucide-react';
+import { getURL } from '@/lib/utils';
 
 const signinSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -46,7 +47,7 @@ export default function SignIn() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${getURL()}auth/callback`,
       },
     });
 
