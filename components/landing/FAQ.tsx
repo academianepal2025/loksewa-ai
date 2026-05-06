@@ -34,10 +34,6 @@ const faqs = [
     answer: "Yes. Loksewa AI is fully optimized for mobile use and works on all smartphones and tablets. You can also install it on your Android or iOS home screen as an app by tapping Add to Home Screen in your browser. The app works partially offline for already loaded content like your study plan and notes."
   },
   {
-    question: "What if I am not satisfied with the platform?",
-    answer: "We offer a 7 day money back guarantee. If you are not satisfied with Loksewa AI within 7 days of your first payment contact us at support@loksewai.com and we will refund your payment in full with no questions asked. We are confident that Loksewa AI will transform your preparation but we want you to feel completely safe trying it."
-  },
-  {
     question: "How is the study plan generated? Is it really personalized?",
     answer: "Yes it is genuinely personalized to you. When you upload your syllabus the AI analyzes every topic, assigns priority scores based on how important each topic is for PSC exams, estimates how many hours each topic needs, and then builds a day by day plan using your exam date and how many hours you can study daily. The plan automatically reserves the last 7 days for revision, includes rest days, and schedules revision sessions every 7 days. No two study plans are the same."
   },
@@ -96,23 +92,23 @@ export function FAQ() {
 
         {/* Still have questions block */}
         <div className="bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 rounded-[2.5rem] p-10 text-center">
-           <h3 className="text-xl font-bold text-[#1e3a5f] mb-3">Still have questions?</h3>
-           <p className="text-gray-500 mb-8 font-medium">We are here to help you ace your exams.</p>
-           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href="mailto:support@loksewai.com?subject=Loksewa AI Question"
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-[#1e3a5f] text-white font-bold rounded-2xl hover:bg-[#1e3a5f]/90 transition-all shadow-lg shadow-[#1e3a5f]/20"
-              >
-                <Mail className="h-5 w-5" />
-                Contact via Email
-              </a>
-              <button
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-[#1e3a5f] text-[#1e3a5f] font-bold rounded-2xl hover:bg-[#1e3a5f] hover:text-white transition-all shadow-sm"
-              >
-                <MessageCircle className="h-5 w-5" />
-                Chat with Us
-              </button>
-           </div>
+          <h3 className="text-xl font-bold text-[#1e3a5f] mb-3">Still have questions?</h3>
+          <p className="text-gray-500 mb-8 font-medium">We are here to help you ace your exams.</p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="mailto:support@loksewai.com?subject=Loksewa AI Question"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-[#1e3a5f] text-white font-bold rounded-2xl hover:bg-[#1e3a5f]/90 transition-all shadow-lg shadow-[#1e3a5f]/20"
+            >
+              <Mail className="h-5 w-5" />
+              Contact via Email
+            </a>
+            <button
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-[#1e3a5f] text-[#1e3a5f] font-bold rounded-2xl hover:bg-[#1e3a5f] hover:text-white transition-all shadow-sm"
+            >
+              <MessageCircle className="h-5 w-5" />
+              Chat with Us
+            </button>
+          </div>
         </div>
       </div>
     </section>
