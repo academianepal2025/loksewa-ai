@@ -4,8 +4,12 @@ import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function GET(req: Request) {
   try {
-    const { error } = await verifyAdmin();
-    if (error) return error;
+    console.log('[admin/users] GET request started');
+    const { error: authError, user: adminUser } = await verifyAdmin();
+    if (authError) {
+      console.warn('[admin/users] Admin verification failed');
+      return authError;
+    }
 
     const supabaseAdmin = createAdminClient();
     const url = new URL(req.url);
@@ -17,10 +21,12 @@ export async function GET(req: Request) {
     const limit = parseInt(url.searchParams.get('limit') || '20');
     const offset = (page - 1) * limit;
 
+    console.log(`[admin/users] Params - Search: "${search}", Filter: "${filter}", Page: ${page}`);
+
     // Build profiles query
     let query = supabaseAdmin
       .from('profiles')
-      .select('id, full_name, email, phone, avatar_url, created_at', { count: 'exact' });
+      .select('id, full_name, email, phone, photo_url, created_at', { count: 'exact' });
 
     // Search
     if (search) {
@@ -39,8 +45,15 @@ export async function GET(req: Request) {
     // Pagination
     query = query.range(offset, offset + limit - 1);
 
+    console.log('[admin/users] Fetching profiles...');
     const { data: profiles, count, error: profilesError } = await query;
-    if (profilesError) throw profilesError;
+    
+    if (profilesError) {
+      console.error('[admin/users] Profiles Fetch Error:', profilesError);
+      return NextResponse.json({ error: `Profiles: ${profilesError.message}` }, { status: 500 });
+    }
+
+    console.log(`[admin/users] Found ${profiles?.length || 0} profiles.`);
 
     if (!profiles || profiles.length === 0) {
       return NextResponse.json({
@@ -51,57 +64,62 @@ export async function GET(req: Request) {
 
     const userIds = profiles.map((p: any) => p.id);
 
-    // Fetch subscriptions + usage counts in parallel
-    const [subsRes, docsRes, chatsRes, quizzesRes, notesRes] = await Promise.all([
-      supabaseAdmin.from('subscriptions')
-        .select('user_id, plan, status, expires_at, started_at')
-        .in('user_id', userIds),
-      supabaseAdmin.from('documents')
-        .select('user_id')
-        .in('user_id', userIds),
-      supabaseAdmin.from('chat_messages')
-        .select('user_id')
-        .in('user_id', userIds),
-      supabaseAdmin.from('quiz_attempts')
-        .select('user_id')
-        .in('user_id', userIds),
-      supabaseAdmin.from('study_notes')
-        .select('user_id')
-        .in('user_id', userIds)
+    // Fetch related data with individual error handling
+    console.log('[admin/users] Fetching related data for IDs:', userIds.length);
+    
+    const fetchTable = async (table: string, select: string) => {
+      try {
+        const { data, error } = await supabaseAdmin.from(table).select(select).in('user_id', userIds);
+        if (error) {
+          console.error(`[admin/users] Error fetching ${table}:`, error.message);
+          return [];
+        }
+        return data || [];
+      } catch (err: any) {
+        console.error(`[admin/users] Exception fetching ${table}:`, err.message);
+        return [];
+      }
+    };
+
+    const [subs, docs, chats, quizzes, notes] = await Promise.all([
+      fetchTable('subscriptions', 'user_id, plan, status, expires_at'),
+      fetchTable('documents', 'user_id'),
+      fetchTable('chat_messages', 'user_id'),
+      fetchTable('quiz_attempts', 'user_id'),
+      fetchTable('study_notes', 'user_id')
     ]);
 
+    console.log(`[admin/users] Data fetched - Subs: ${subs.length}, Docs: ${docs.length}, Chats: ${chats.length}`);
+
     // Build maps
-    const subMap = new Map<string, any>();
-    (subsRes.data || []).forEach((s: any) => {
+    const subMap = new Map();
+    subs.forEach((s: any) => {
       const existing = subMap.get(s.user_id);
-      // Keep the most recent / active subscription
-      if (!existing || s.status === 'active') {
-        subMap.set(s.user_id, s);
-      }
+      if (!existing || s.status === 'active') subMap.set(s.user_id, s);
     });
 
     const countMap = (data: any[]) => {
       const map: Record<string, number> = {};
-      (data || []).forEach((row: any) => {
-        map[row.user_id] = (map[row.user_id] || 0) + 1;
+      data.forEach((row: any) => {
+        if (row.user_id) map[row.user_id] = (map[row.user_id] || 0) + 1;
       });
       return map;
     };
 
-    const docCounts = countMap(docsRes.data || []);
-    const chatCounts = countMap(chatsRes.data || []);
-    const quizCounts = countMap(quizzesRes.data || []);
-    const noteCounts = countMap(notesRes.data || []);
+    const docCounts = countMap(docs);
+    const chatCounts = countMap(chats);
+    const quizCounts = countMap(quizzes);
+    const noteCounts = countMap(notes);
 
     // Assemble users
+    const now = new Date();
     let users = profiles.map((p: any) => {
       const sub = subMap.get(p.id);
-      const now = new Date();
       let planStatus = 'free';
       let daysRemaining = null;
 
       if (sub) {
-        if (sub.status === 'active' && new Date(sub.expires_at) > now) {
+        if (sub.status === 'active' && sub.expires_at && new Date(sub.expires_at) > now) {
           planStatus = 'active';
           daysRemaining = Math.ceil((new Date(sub.expires_at).getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
         } else {
@@ -111,15 +129,14 @@ export async function GET(req: Request) {
 
       return {
         id: p.id,
-        full_name: p.full_name,
-        email: p.email,
-        phone: p.phone,
-        avatar_url: p.avatar_url,
+        full_name: p.full_name || 'No Name',
+        email: p.email || 'No Email',
+        phone: p.phone || '—',
+        avatar_url: p.photo_url || null,
         created_at: p.created_at,
         plan: sub?.plan || null,
         plan_status: planStatus,
         expires_at: sub?.expires_at || null,
-        started_at: sub?.started_at || null,
         days_remaining: daysRemaining,
         documents: docCounts[p.id] || 0,
         chats: chatCounts[p.id] || 0,
@@ -128,28 +145,21 @@ export async function GET(req: Request) {
       };
     });
 
-    // Filter by plan type
+    // Filter
     if (filter !== 'all') {
-      if (filter === 'free') {
-        users = users.filter((u: any) => u.plan_status === 'free');
-      } else if (filter === 'expired') {
-        users = users.filter((u: any) => u.plan_status === 'expired');
-      } else {
-        users = users.filter((u: any) => u.plan === filter && u.plan_status === 'active');
-      }
+      if (filter === 'free') users = users.filter((u: any) => u.plan_status === 'free');
+      else if (filter === 'expired') users = users.filter((u: any) => u.plan_status === 'expired');
+      else users = users.filter((u: any) => u.plan === filter && u.plan_status === 'active');
     }
+
+    console.log(`[admin/users] Returning ${users.length} users.`);
 
     return NextResponse.json({
       success: true,
-      data: {
-        users,
-        total: count || 0,
-        page,
-        limit
-      }
+      data: { users, total: count || 0, page, limit }
     });
   } catch (error: any) {
-    console.error('Admin Users Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[admin/users] FATAL ERROR:', error);
+    return NextResponse.json({ error: `Internal Server Error: ${error.message}` }, { status: 500 });
   }
 }

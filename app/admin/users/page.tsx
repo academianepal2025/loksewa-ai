@@ -60,13 +60,27 @@ export default function AdminUsersPage() {
         search, filter, sort
       });
       const res = await fetch(`/api/admin/users?${params}`);
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error(`[admin/users] API Error ${res.status}:`, errText);
+        toast.error(`Failed to load users: ${res.status}`);
+        return;
+      }
       const json = await res.json();
       if (json.success) {
+        console.log(`[admin/users] Loaded ${json.data.users.length} users`);
         setUsers(json.data.users);
         setTotal(json.data.total);
+      } else {
+        console.error('[admin/users] API returned success:false', json.error);
+        toast.error(json.error || 'Failed to load users');
       }
-    } catch { toast.error('Failed to load users'); }
-    finally { setLoading(false); }
+    } catch (e: any) {
+      console.error('[admin/users] Fetch exception:', e);
+      toast.error('Failed to load users');
+    } finally {
+      setLoading(false);
+    }
   }, [page, search, filter, sort]);
 
   useEffect(() => { fetchUsers(); }, [fetchUsers]);
