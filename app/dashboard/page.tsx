@@ -54,8 +54,8 @@ function MiniStat({ label, value, icon: Icon, tooltip }: any) {
 function OperationalCard({ title, desc, icon: Icon, href, color = 'zinc' }: any) {
   return (
     <Link href={href}>
-      <div className="bg-surface border border-border-subtle p-6 rounded-2xl h-full flex flex-col group hover:border-accent/40 transition-all active:scale-[0.99]">
-        <div className="h-10 w-10 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground group-hover:bg-orange-600 group-hover:text-background transition-all duration-300 mb-6">
+      <div className="bg-surface border border-border-subtle p-6 rounded-2xl h-full flex flex-col group hover:border-[#c9a84c]/40 transition-all active:scale-[0.99] shadow-sm hover:shadow-xl hover:shadow-[#1e3a5f]/5">
+        <div className="h-10 w-10 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground group-hover:bg-[#1e3a5f] group-hover:text-[#c9a84c] transition-all duration-300 mb-6">
           <Icon className="h-5 w-5" />
         </div>
         <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
@@ -63,7 +63,7 @@ function OperationalCard({ title, desc, icon: Icon, href, color = 'zinc' }: any)
           <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
         </h3>
         <p className="text-xs font-medium text-muted leading-relaxed mb-6">{desc}</p>
-        <div className="mt-auto flex items-center text-[10px] font-bold uppercase tracking-wider text-accent group-hover:gap-2 transition-all">
+        <div className="mt-auto flex items-center text-[10px] font-black uppercase tracking-widest text-[#c9a84c] group-hover:gap-2 transition-all">
           Launch Module <ChevronRight className="h-3 w-3" />
         </div>
       </div>
@@ -241,7 +241,7 @@ export default function DashboardPage() {
           title="Mission Parameters Not Set"
           description="You haven't defined an active Loksewa mission yet. Setting an exam allows our AI to generate a tactical study plan."
           action={
-            <Link href="/dashboard/settings" className="px-8 py-3 bg-orange-600 text-background rounded-xl text-xs font-bold hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px]">
+            <Link href="/dashboard/settings" className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px] shadow-lg shadow-[#1e3a5f]/20">
               Initialize Mission <Target className="h-4 w-4" />
             </Link>
           }
@@ -261,10 +261,10 @@ export default function DashboardPage() {
                   <button 
                     key={e.id}
                     onClick={() => setActiveExamId(e.id)}
-                    className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                       exam.id === e.id 
-                        ? 'bg-orange-600 text-background border border-orange-600' 
-                        : 'bg-background border border-border-subtle text-subtle hover:text-foreground hover:border-accent/40'
+                        ? 'bg-[#1e3a5f] text-[#c9a84c] border border-[#1e3a5f]' 
+                        : 'bg-background border border-border-subtle text-subtle hover:text-foreground hover:border-[#c9a84c]/40'
                     }`}
                   >
                     {e.exam_name}
@@ -278,23 +278,21 @@ export default function DashboardPage() {
                 {daysRem} day study plan in progress. Stay consistent to reach your goal.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link href="/dashboard/study-plan" className="px-8 py-3 bg-orange-600 text-background rounded-xl text-xs font-bold hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2 min-h-[44px] min-w-[160px]">
+                <Link href="/dashboard/study-plan" className="px-8 py-3 bg-[#c9a84c] text-[#1e3a5f] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2 min-h-[44px] min-w-[160px] shadow-lg shadow-[#c9a84c]/20">
                   {t('continue_study')} <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
-                <div className="px-6 py-3 bg-background border border-border-subtle rounded-xl text-xs font-bold flex items-center justify-center gap-3 text-foreground min-h-[44px]">
-                  <Clock className="h-3.5 w-3.5 text-accent" />
-                  <span>{daysRem} {t('days_rem')}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden lg:flex flex-col items-center justify-center text-center p-8 bg-background border border-border-subtle rounded-2xl">
+                <div className="px-6 py-3 bg-background border border-border-subtle rounded-xl text-xs font-black upper             <div className="hidden lg:flex flex-col items-center justify-center text-center p-8 bg-background border border-border-subtle rounded-2xl">
                <div className="relative h-28 w-28 mb-4">
                   <svg className="h-full w-full" viewBox="0 0 36 36">
                      <path className="text-border-subtle" strokeWidth="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                     <path className="text-accent" strokeWidth="2.5" strokeDasharray={`${stats.progress}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                     <path className="text-[#c9a84c]" strokeWidth="2.5" strokeDasharray={`${stats.progress}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
+                     <span className="text-xl font-bold text-foreground">{stats.progress}%</span>
+                  </div>
+               </div>
+               <p className="text-[10px] font-black uppercase tracking-widest text-subtle">{t('ready_percent')}</p>
+            </div>r">
                      <span className="text-xl font-bold text-foreground">{stats.progress}%</span>
                   </div>
                </div>
@@ -350,7 +348,7 @@ export default function DashboardPage() {
               
               <div className="flex items-center justify-between mb-8 relative z-10">
                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-orange-600 flex items-center justify-center text-background">
+                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f] flex items-center justify-center text-background">
                       <Sparkles className="h-4 w-4" />
                     </div>
                     <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">{t('coach_report')}</h3>
@@ -380,7 +378,7 @@ export default function DashboardPage() {
                  </div>
 
                  <div className="pt-6 border-t border-border-subtle">
-                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3.5 bg-orange-600 text-background rounded-xl text-[10px] font-bold uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center">
+                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3.5 bg-[#1e3a5f] text-background rounded-xl text-[10px] font-bold uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center">
                        {t('brief_guru')}
                     </Link>
                  </div>

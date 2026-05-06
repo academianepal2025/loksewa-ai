@@ -136,13 +136,13 @@ export default function SettingsPage() {
               onClick={() => scrollTo(s.id)}
               className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
                 activeSection === s.id
-                  ? 'bg-orange-600 text-white'
+                  ? 'bg-[#1e3a5f] text-[#c9a84c]'
                   : 'bg-surface border border-border-subtle text-subtle'
               }`}
             >
               <s.icon className="h-3 w-3" />
               {s.label}
-              {dirtySet.has(s.id) && <span className="h-1.5 w-1.5 rounded-full bg-orange-400" />}
+              {dirtySet.has(s.id) && <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c]" />}
             </button>
           ))}
         </div>
@@ -158,13 +158,13 @@ export default function SettingsPage() {
                 onClick={() => scrollTo(s.id)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all text-left ${
                   activeSection === s.id
-                    ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20'
+                    ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20'
                     : 'text-subtle hover:bg-surface hover:text-foreground'
                 } ${s.id === 'danger-zone' && activeSection !== s.id ? 'text-red-500' : ''}`}
               >
                 <s.icon className="h-4 w-4 flex-shrink-0" />
                 <span className="flex-1">{s.label}</span>
-                {dirtySet.has(s.id) && <span className="h-2 w-2 rounded-full bg-orange-400 animate-pulse" />}
+                {dirtySet.has(s.id) && <span className="h-2 w-2 rounded-full bg-[#c9a84c] animate-pulse" />}
               </button>
             ))}
           </div>

@@ -461,7 +461,7 @@ export default function PerformancePage() {
             <button 
               key={e.id} 
               onClick={() => setActiveExamId(e.id)} 
-              className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${activeExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}
+              className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-h-[36px] shadow-sm ${activeExamId === e.id ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}
             >
               {e.exam_name}
             </button>

@@ -4,8 +4,8 @@
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: #f97316;
-  --color-accent: #f97316;
+  --color-primary: #1e3a5f;
+  --color-accent: #c9a84c;
   --color-surface: var(--surface);
   --color-border-subtle: var(--border-subtle);
   --color-muted: var(--muted);
@@ -21,8 +21,8 @@
 :root {
   --background: #fafafa; 
   --foreground: #09090b;
-  --primary: #f97316;     /* Saffron - was Zinc-900 */
-  --accent: #f97316;     /* Orange-500 */
+  --primary: #1e3a5f;     /* Deep Blue */
+  --accent: #c9a84c;     /* Gold */
   --surface: #ffffff;
   --border-subtle: #e4e4e7; /* Zinc-200 */
   --muted: #71717a;      /* Zinc-500 */
@@ -34,8 +34,8 @@
 .dark {
   --background: #09090b;
   --foreground: #fafafa;
-  --primary: #fb923c;     /* Saffron-400 */
-  --accent: #fb923c;
+  --primary: #1e3a5f;
+  --accent: #c9a84c;
   --surface: #18181b;
   --border-subtle: #27272a;
   --muted: #a1a1aa;
@@ -44,8 +44,8 @@
 
 /* ── Brand Themes ─────────────────────────────────────────────── */
 html.theme-orange {
-  --primary-brand: #ea580c;
-  --accent-brand: #9a3412;
+  --primary-brand: #1e3a5f;
+  --accent-brand: #c9a84c;
 }
 
 html.theme-indigo {

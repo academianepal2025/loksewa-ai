@@ -193,7 +193,7 @@ export default function IntelligenceHubPage() {
                 <button
                   key={e.id}
                   onClick={() => setActiveExamId(e.id)}
-                  className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${activeExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background text-muted border border-border-subtle hover:bg-surface'}`}
+                  className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeExamId === e.id ? 'bg-[#1e3a5f] text-[#c9a84c]' : 'bg-background text-muted border border-border-subtle hover:bg-surface'}`}
                 >
                   {e.exam_name}
                 </button>
@@ -243,7 +243,7 @@ export default function IntelligenceHubPage() {
                 <AlertCircle className="h-12 w-12 text-muted mx-auto mb-4" />
                 <h3 className="text-2xl font-black">No Analysis Available</h3>
                 <p className="text-base text-muted mt-2 mb-6 max-w-sm mx-auto">Please upload a syllabus in the Materials Repo and trigger a new analysis.</p>
-                <button onClick={() => router.push('/dashboard/documents')} className="px-8 py-3 bg-orange-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest hover:scale-105 transition-all">Go to Material Repo</button>
+                <button onClick={() => router.push('/dashboard/documents')} className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl text-sm font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-[#1e3a5f]/20">Go to Material Repo</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -303,9 +303,9 @@ export default function IntelligenceHubPage() {
                      </div>
                   </div>
 
-                  <div className="bg-orange-600 p-6 rounded-2xl text-background">
-                     <h4 className="text-[10px] font-bold uppercase tracking-wider mb-4 flex items-center gap-2 text-accent"><Sparkles className="h-3.5 w-3.5" /> Critical Focus</h4>
-                     <p className="reading-area text-xs font-medium leading-relaxed opacity-80 italic">
+                  <div className="bg-[#1e3a5f] p-6 rounded-2xl text-[#c9a84c] shadow-xl shadow-[#1e3a5f]/10">
+                     <h4 className="text-[10px] font-black uppercase tracking-widest mb-4 flex items-center gap-2 text-[#c9a84c]"><Sparkles className="h-3.5 w-3.5" /> Critical Focus</h4>
+                     <p className="reading-area text-xs font-medium leading-relaxed opacity-80 italic text-white/90">
                         {syllabusAnalysis.analysis_data.critical_topics_summary}
                      </p>
                   </div>
@@ -347,7 +347,7 @@ export default function IntelligenceHubPage() {
                        <div className="flex items-center gap-3">
                           <button 
                             onClick={(e) => { e.stopPropagation(); navigateToGuru(doc.file_name, `Extracted Content: ${doc.parsed_text?.slice(0, 1000)}`); }}
-                            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-background border border-border-subtle text-muted text-[10px] font-bold uppercase tracking-wider rounded-lg hover:bg-orange-600 hover:text-background transition-all"
+                            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-background border border-border-subtle text-muted text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-[#1e3a5f] hover:text-[#c9a84c] transition-all"
                           >
                              Consult Guru <MessageSquare className="h-3 w-3" />
                           </button>
@@ -369,7 +369,7 @@ export default function IntelligenceHubPage() {
                                 <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">Validated by Loksewa AI</p>
                                 <button 
                                   onClick={() => navigateToGuru(doc.file_name, doc.parsed_text || '')}
-                                  className="w-full sm:w-auto px-6 py-2 bg-orange-600 text-background text-[10px] font-bold uppercase tracking-wider rounded-lg flex items-center justify-center gap-2"
+                                  className="w-full sm:w-auto px-6 py-2 bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
                                 >
                                    Ask Guru about this document <ArrowRight className="h-3.5 w-3.5" />
                                 </button>

@@ -60,7 +60,7 @@ function GuruAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const dims = size === 'lg' ? 'h-16 w-16' : size === 'md' ? 'h-8 w-8' : 'h-7 w-7';
   const iconDims = size === 'lg' ? 'h-8 w-8' : size === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5';
   return (
-    <div className={`${dims} rounded-xl bg-orange-600 text-background flex items-center justify-center flex-shrink-0`}>
+    <div className={`${dims} rounded-xl bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#1e3a5f]/10`}>
       <Sparkles className={iconDims} />
     </div>
   );
@@ -108,14 +108,14 @@ function MessageBubble({ message }: { message: ChatMessage }) {
             {/* Source Tag */}
             {sourceTag && (
               <div className="flex items-center gap-1.5 mb-2">
-                <sourceTag.icon className="h-3 w-3 text-orange-600" />
-                <span className="text-[10px] font-black text-orange-600 uppercase tracking-[0.15em]">{sourceTag.label}</span>
+                <sourceTag.icon className="h-3 w-3 text-[#c9a84c]" />
+                <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-[0.15em]">{sourceTag.label}</span>
               </div>
             )}
 
             <div className={`inline-block text-left reading-area prose prose-sm dark:prose-invert max-w-none text-[15px] leading-[1.8] font-medium prose-headings:text-foreground prose-strong:text-foreground prose-p:text-foreground prose-li:text-foreground prose-ol:text-foreground prose-ul:text-foreground ${
               isUser
-                ? 'bg-orange-600 text-background px-5 py-3 rounded-2xl rounded-br-sm'
+                ? 'bg-[#1e3a5f] text-[#c9a84c] px-5 py-3 rounded-2xl rounded-br-sm shadow-md'
                 : 'text-foreground'
             }`}>
               {isUser ? (
@@ -530,10 +530,10 @@ function GuruContent() {
 
           <button
             onClick={startNewChat}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-orange-600 text-background text-[10px] font-bold hover:opacity-90 transition-all min-h-[36px]"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black hover:opacity-90 transition-all min-h-[36px] shadow-sm shadow-[#1e3a5f]/10"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline uppercase tracking-wider">New</span>
+            <span className="hidden sm:inline uppercase tracking-widest">New</span>
           </button>
         </div>
       </div>
@@ -602,7 +602,7 @@ function GuruContent() {
         {showScrollBtn && hasMessages && (
           <button
             onClick={scrollToBottom}
-            className="sticky bottom-4 left-1/2 -translate-x-1/2 z-20 p-2.5 bg-orange-600 text-background rounded-full shadow-lg hover:scale-110 transition-transform"
+            className="sticky bottom-4 left-1/2 -translate-x-1/2 z-20 p-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-full shadow-lg hover:scale-110 transition-transform shadow-[#1e3a5f]/20"
           >
             <ArrowDown className="h-4 w-4" />
           </button>
@@ -629,7 +629,7 @@ function GuruContent() {
             <button
               onClick={() => sendMessage(input)}
               disabled={isStreaming || !input.trim()}
-              className="p-3 bg-orange-600 text-background rounded-xl hover:opacity-90 transition-all active:scale-90 flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40"
+              className="p-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl hover:opacity-90 transition-all active:scale-90 flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10"
             >
               <Send className="h-5 w-5" />
             </button>

@@ -511,7 +511,7 @@ export default function PracticePage() {
       <div className="flex p-1.5 bg-surface border border-border-subtle rounded-xl w-fit mx-auto sm:mx-0">
         <button
           onClick={() => setActiveTab('flashcards')}
-          className={`flex items-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${activeTab === 'flashcards' ? 'bg-orange-600 text-background shadow-md' : 'text-subtle hover:text-foreground'}`}
+          className={`flex items-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'flashcards' ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20' : 'text-subtle hover:text-foreground'}`}
         >
           <Layers className="h-4 w-4" />
           {t('flashcards')}
@@ -519,7 +519,7 @@ export default function PracticePage() {
         </button>
         <button
           onClick={() => setActiveTab('quiz')}
-          className={`flex items-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${activeTab === 'quiz' ? 'bg-orange-600 text-background shadow-md' : 'text-subtle hover:text-foreground'}`}
+          className={`flex items-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'quiz' ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20' : 'text-subtle hover:text-foreground'}`}
         >
           <Dices className="h-4 w-4" />
           {t('quizzes')}
@@ -527,7 +527,7 @@ export default function PracticePage() {
         </button>
         <button
           onClick={() => setActiveTab('mock-test')}
-          className={`flex items-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${activeTab === 'mock-test' ? 'bg-orange-600 text-background shadow-md' : 'text-subtle hover:text-foreground'}`}
+          className={`flex items-center gap-3 px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'mock-test' ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20' : 'text-subtle hover:text-foreground'}`}
         >
           <Target className="h-4 w-4" />
           {t('mock_test')}
@@ -558,7 +558,7 @@ export default function PracticePage() {
                   <p className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1">Target Mission</p>
                   <div className="flex flex-wrap gap-2">
                     {exams.length > 0 ? exams.map(e => (
-                      <button key={e.id} onClick={() => setSelectedExamId(e.id)} className={`px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[44px] ${selectedExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
+                      <button key={e.id} onClick={() => setSelectedExamId(e.id)} className={`px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-h-[44px] shadow-sm ${selectedExamId === e.id ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
                         {e.exam_name}
                       </button>
                     )) : (
@@ -628,7 +628,7 @@ export default function PracticePage() {
               <button
                 onClick={activeTab === 'flashcards' ? handleGenerateFlashcards : activeTab === 'quiz' ? handleGenerateQuiz : handleGenerateMockTest}
                 disabled={(activeTab !== 'mock-test' && selectedTopic === 'custom' && !customTopic) || generatingFlashcards || generatingQuiz || generatingMockTest}
-                className="w-full mt-10 py-4 rounded-xl bg-orange-600 text-background font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-h-[56px]"
+                className="w-full mt-10 py-4 rounded-xl bg-[#1e3a5f] text-[#c9a84c] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-h-[56px] shadow-xl shadow-[#1e3a5f]/10"
               >
                 {(generatingFlashcards || generatingQuiz || generatingMockTest) ? (
                   <><RefreshCw className="h-4 w-4 animate-spin" /> Processing...</>

@@ -88,7 +88,7 @@ export default function AdminOverviewPage() {
         </div>
         <button
           onClick={() => { setLoading(true); fetchData(); }}
-          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20"
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/20"
         >
           <RefreshCw className="h-3.5 w-3.5" /> Refresh
         </button>
@@ -122,7 +122,7 @@ export default function AdminOverviewPage() {
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-subtle" /> Recent Payments
             </h3>
-            <Link href="/admin/payments" className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest hover:text-indigo-400 transition-colors">
+            <Link href="/admin/payments" className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest hover:opacity-80 transition-colors">
               View All →
             </Link>
           </div>
@@ -136,7 +136,7 @@ export default function AdminOverviewPage() {
                   <p className="text-[10px] text-subtle">{p.plan?.replace('_', ' ')} • NPR {p.plan_amount} • {format(new Date(p.created_at), 'MMM dd, HH:mm')}</p>
                 </div>
                 <span className={`shrink-0 ml-3 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                  p.status === 'pending' ? 'bg-orange-500/10 text-orange-600 border border-orange-500/20' :
+                  p.status === 'pending' ? 'bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20' :
                   p.status === 'approved' ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' :
                   'bg-red-500/10 text-red-600 border border-red-500/20'
                 }`}>{p.status}</span>
@@ -152,7 +152,7 @@ export default function AdminOverviewPage() {
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
               <Users className="h-4 w-4 text-subtle" /> Recent Signups
             </h3>
-            <Link href="/admin/users" className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest hover:text-indigo-400 transition-colors">
+            <Link href="/admin/users" className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest hover:opacity-80 transition-colors">
               View All →
             </Link>
           </div>
