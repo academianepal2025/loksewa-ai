@@ -123,21 +123,19 @@ html.font-scale-sm {
   --reading-font-size: 0.875rem; /* text-sm equivalent */
   --reading-line-height: 1.6;
 }
-
 html.font-scale-md {
-  --reading-font-size: 1rem;    /* text-base equivalent */
+  --reading-font-size: 1rem; /* text-base equivalent */
   --reading-line-height: 1.7;
 }
-
 html.font-scale-lg {
-  --reading-font-size: 1.25rem; /* text-xl equivalent */
+  --reading-font-size: 1.25rem; /* text-lg equivalent */
   --reading-line-height: 1.8;
 }
 
 .reading-area {
   font-size: var(--reading-font-size, 1rem) !important;
   line-height: var(--reading-line-height, 1.7) !important;
-  transition: font-size 0.2s ease, line-height 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Admin Panel Distinct Theme ─────────────────────────────────────── */

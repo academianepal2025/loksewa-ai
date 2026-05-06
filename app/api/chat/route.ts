@@ -58,7 +58,16 @@ export async function POST(request: Request) {
       throw new Error('GEMINI_API_KEY is not defined');
     }
 
-    // ── Step 1: Generate query embedding using centralized utility ────
+    // ── Step 1: Fetch User Language Preference ───────────────────
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
+
+    // ── Step 2: Generate query embedding using centralized utility ────
     const queryEmbedding = await generateQueryEmbedding(message);
 
     // ── Step 2: Search relevant document chunks ───────────────────
@@ -102,8 +111,8 @@ export async function POST(request: Request) {
     }
 
     const fullSystemPrompt = contextString
-      ? `${SYSTEM_INSTRUCTION}\n\nContext from student's documents and syllabus intelligence:\n${contextString}`
-      : `${SYSTEM_INSTRUCTION}\n\nNo relevant context was found in the student's documents for this query.`;
+      ? `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nContext from student's documents and syllabus intelligence:\n${contextString}`
+      : `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nNo relevant context was found in the student's documents for this query.`;
 
     // ── Step 4: Convert conversation history to Gemini format ─────
     const geminiHistory = conversationHistory

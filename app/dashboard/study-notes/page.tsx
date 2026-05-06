@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
+import { FontSizeSelector } from '@/components/dashboard/FontSizeSelector';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -280,6 +281,10 @@ export default function StudyNotesPage() {
                 </div>
               ))
             )}
+          </div>
+
+          <div className="p-4 border-t border-border-subtle bg-surface">
+            <FontSizeSelector />
           </div>
         </div>
 

@@ -23,11 +23,14 @@ import {
   X,
   Sparkles,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Type,
+  Globe
 } from 'lucide-react';
 
 import { DashboardProvider, useDashboard } from '@/components/dashboard/DashboardProvider';
 import { OnboardingModal } from '@/components/dashboard/OnboardingModal';
+import { FontSizeSelector } from '@/components/dashboard/FontSizeSelector';
 import { BottomNav } from '@/components/dashboard/BottomNav';
 import { InstallPrompt } from '@/components/dashboard/InstallPrompt';
 import { UpgradeModalProvider, useUpgradeModal } from '@/lib/UpgradeModalContext';
@@ -54,13 +57,14 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const currentPath = usePathname() || '/dashboard';
   const { theme, setTheme } = useTheme();
-  const { t, language, isAdmin } = useDashboard();
+  const { t, language, isAdmin, isPro, updatePreference } = useDashboard();
   const { setSelectedPlan, selectedPlan } = useUpgradeModal();
   const [mounted, setMounted] = useState(false);
   const [fullName, setFullName] = useState('User');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [pendingAdminCount, setPendingAdminCount] = useState(0);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showReadability, setShowReadability] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -166,17 +170,19 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           )}
         </nav>
         <div className={`p-4 border-t border-border-subtle transition-all duration-300 ${isCollapsed ? 'px-2' : 'px-4'}`}>
-           <div className="flex items-center gap-3 mb-6 px-2">
-             <div className="h-10 w-10 bg-[#c9a84c] rounded-xl flex items-center justify-center shadow-lg shadow-[#c9a84c]/20">
-               <User className="h-5 w-5 text-[#1e3a5f]" />
-             </div>
-             {!isCollapsed && (
-               <div className="truncate">
-                 <p className="text-sm font-black text-foreground uppercase tracking-widest">{fullName}</p>
-                 <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">Premium Member</p>
-               </div>
-             )}
-           </div>
+            <div className="flex items-center gap-3 mb-6 px-2">
+              <div className="h-10 w-10 bg-[#c9a84c] rounded-xl flex items-center justify-center shadow-lg shadow-[#c9a84c]/20">
+                <User className="h-5 w-5 text-[#1e3a5f]" />
+              </div>
+              {!isCollapsed && (
+                <div className="truncate">
+                  <p className="text-sm font-black text-foreground uppercase tracking-widest">{fullName}</p>
+                  <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">
+                    {isAdmin ? 'System Admin' : isPro ? 'Premium Member' : 'Standard Member'}
+                  </p>
+                </div>
+              )}
+            </div>
            
            <div className="space-y-1 mt-4">
               <Link
@@ -250,6 +256,36 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                >
                  <Settings className="h-4 w-4" />
                </Link>
+
+               <div className="relative">
+                 <button 
+                    onClick={() => setShowReadability(!showReadability)}
+                    className={`p-2 transition-colors rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center ${showReadability ? 'text-[#c9a84c] bg-[#1e3a5f]/5 border border-[#c9a84c]/20' : 'text-muted hover:text-foreground hover:bg-background'}`}
+                    aria-label="Readability Settings"
+                 >
+                   <Type className="h-4 w-4" />
+                 </button>
+                 {showReadability && (
+                   <div className="absolute right-0 mt-3 w-72 p-6 bg-surface border border-border-subtle rounded-2xl shadow-2xl z-[100] animate-in fade-in zoom-in-95 duration-200">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest">Accessibility</h4>
+                        <button onClick={() => setShowReadability(false)} className="text-muted hover:text-foreground transition-colors">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                      <FontSizeSelector />
+                   </div>
+                 )}
+               </div>
+
+               <button 
+                  onClick={() => updatePreference('language', language === 'en' ? 'np' : 'en')}
+                  className="flex items-center gap-2 px-3 py-2 bg-surface border border-border-subtle rounded-xl text-[10px] font-black uppercase tracking-widest text-subtle hover:text-[#c9a84c] hover:border-[#c9a84c]/20 transition-all shadow-sm"
+                  aria-label="Switch Language"
+               >
+                 <Globe className="h-3.5 w-3.5" />
+                 <span className="hidden sm:inline">{language === 'en' ? 'नेपाली' : 'English'}</span>
+               </button>
             </div>
 
             <div className="h-6 w-px bg-border-subtle" />

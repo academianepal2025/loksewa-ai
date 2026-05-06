@@ -35,6 +35,7 @@ import {
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
+import { FontSizeSelector } from '@/components/dashboard/FontSizeSelector';
 import ReactMarkdown from 'react-markdown';
 import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
@@ -659,6 +660,9 @@ export default function PracticePage() {
                    </div>
                 </div>
              </div>
+             <div className="bg-surface border border-border-subtle rounded-2xl p-6 shadow-sm">
+                <FontSizeSelector />
+             </div>
           </div>
         </div>
       ) : activeTab === 'flashcards' ? (
@@ -687,14 +691,14 @@ export default function PracticePage() {
                           <span className="text-[9px] font-black text-[#c9a84c] bg-[#c9a84c]/5 px-2 py-0.5 rounded tracking-widest uppercase border border-[#c9a84c]/20">{deck[currentFlashIndex].difficulty}</span>
                        </div>
                        <div className="flex-1 flex items-center justify-center text-center px-4">
-                         <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tighter leading-snug">{deck[currentFlashIndex].front}</h3>
+                         <h3 className="reading-area text-xl sm:text-2xl font-black text-foreground tracking-tighter leading-snug">{deck[currentFlashIndex].front}</h3>
                        </div>
                        <div className="text-center pt-4 text-[9px] font-black text-subtle uppercase tracking-widest">Click to reveal</div>
                     </div>
                     <div className="absolute inset-0 backface-hidden bg-background rounded-2xl border border-accent/20 shadow-xl p-8 flex flex-col rotate-y-180 overflow-y-auto">
                        <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-black tracking-widest uppercase rounded w-fit mb-6 border border-accent/20">Resolution</span>
                        <div className="flex-1 flex items-center justify-center text-center px-4">
-                          <p className="text-base sm:text-lg font-medium text-foreground leading-relaxed whitespace-pre-wrap">{deck[currentFlashIndex].back}</p>
+                          <p className="reading-area text-base sm:text-lg font-medium text-foreground leading-relaxed whitespace-pre-wrap">{deck[currentFlashIndex].back}</p>
                        </div>
                        {deck[currentFlashIndex].exam_tip && (
                          <div className="mt-6 bg-surface p-4 rounded-xl border border-border-subtle flex items-start gap-3">
@@ -750,7 +754,7 @@ export default function PracticePage() {
                 <div className="bg-surface border border-border-subtle rounded-2xl p-6 space-y-8">
                    <div className="space-y-3">
                       <div className="flex items-center gap-2"><span className="text-[9px] font-black text-accent uppercase tracking-widest">Inquiry</span></div>
-                      <h3 className="text-lg sm:text-xl font-black text-foreground leading-snug tracking-tighter">{quizQuestions[currentQuizIndex].question}</h3>
+                      <h3 className="reading-area text-lg sm:text-xl font-black text-foreground leading-snug tracking-tighter">{quizQuestions[currentQuizIndex].question}</h3>
                    </div>
                     <div className="grid grid-cols-1 gap-3 sm:gap-4">
                       {Object.entries(quizQuestions[currentQuizIndex].options).map(([key, text]) => {
@@ -777,7 +781,7 @@ export default function PracticePage() {
                    {showExplanation && (
                      <div className="mt-8 p-6 bg-surface border border-border-subtle rounded-2xl animate-fade-in">
                         <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-accent" /><span className="text-[10px] font-black text-accent uppercase tracking-widest">Insight</span></div>
-                        <p className="text-[13px] text-foreground leading-relaxed mb-4">{quizQuestions[currentQuizIndex].explanation}</p>
+                        <p className="reading-area text-[13px] text-foreground leading-relaxed mb-4">{quizQuestions[currentQuizIndex].explanation}</p>
                         {quizQuestions[currentQuizIndex].source_reference && (
                           <div className="flex items-center gap-2 text-[10px] text-subtle font-black uppercase tracking-widest bg-background border border-border-subtle w-fit px-2 py-1 rounded mb-4"><BookOpen className="h-3 w-3" />{quizQuestions[currentQuizIndex].source_reference}</div>
                         )}

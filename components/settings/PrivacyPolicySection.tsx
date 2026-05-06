@@ -40,7 +40,7 @@ export function PrivacyPolicySection() {
       </div>
 
       {isExpanded && (
-        <div ref={printRef} className="prose prose-sm max-w-none text-foreground/90 animate-in fade-in slide-in-from-top-2 duration-300" style={{ lineHeight: '1.75' }}>
+        <div ref={printRef} className="reading-area prose prose-sm max-w-none text-foreground/90 animate-in fade-in slide-in-from-top-2 duration-300" style={{ lineHeight: '1.75' }}>
           <p className="text-[11px] font-black text-[#c9a84c] uppercase tracking-widest mb-6">Loksewa AI Data Protection Protocol</p>
 
         <h2 className="text-[12px] font-black text-foreground mt-8 mb-3 uppercase tracking-widest">1. Introduction</h2>
