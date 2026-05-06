@@ -5,15 +5,17 @@ import { Loader2, Save, ChevronDown, Settings2, Type } from 'lucide-react';
 import { toast } from 'sonner';
 import { FontSizeSelector } from '../dashboard/FontSizeSelector';
 
+import { useDashboard } from '../dashboard/DashboardProvider';
+
 export function StudyPrefsSection({ profile, markDirty, clearDirty }: any) {
+  const dashboard = useDashboard();
+  const { language, updatePreference } = dashboard;
   const prefs = profile?.study_preferences || {};
   const [dailyHours, setDailyHours] = useState(prefs.daily_study_hours ?? 4);
   const [sessionLength, setSessionLength] = useState(prefs.session_length ?? 45);
   const [languagePref, setLanguagePref] = useState(prefs.language_preference ?? 'english');
   const [flashcardMode, setFlashcardMode] = useState(prefs.flashcard_review_mode ?? 'manual');
   const [saving, setSaving] = useState(false);
-
-  const { language, updatePreference } = dashboard;
 
   const isDirty = dailyHours !== (prefs.daily_study_hours ?? 4)
     || sessionLength !== (prefs.session_length ?? 45)
