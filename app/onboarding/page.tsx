@@ -57,9 +57,9 @@ function ProgressBar({ currentStep }: { currentStep: number }) {
         <span>Step {currentStep} of {TOTAL_STEPS}</span>
         <span>{Math.round(progress)}%</span>
       </div>
-      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-border-subtle rounded-full overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-orange-500 to-violet-500 rounded-full transition-all duration-500 ease-out"
+          className="h-full bg-gradient-to-r from-[#1e3a5f] to-[#c9a84c] rounded-full transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -71,37 +71,37 @@ function ProgressBar({ currentStep }: { currentStep: number }) {
 function StepWelcome({ onNext }: { onNext: () => void }) {
   return (
     <div className="flex flex-col items-center text-center animate-fade-in">
-      <div className="h-20 w-20 rounded-3xl bg-gradient-to-br from-orange-500 to-violet-600 flex items-center justify-center mb-8 shadow-xl shadow-orange-200">
-        <GraduationCap className="h-10 w-10 text-white" />
+      <div className="h-20 w-20 rounded-3xl bg-gradient-to-br from-[#1e3a5f] to-[#1e3a5f]/80 flex items-center justify-center mb-8 shadow-xl shadow-[#1e3a5f]/20 border border-[#c9a84c]/20">
+        <GraduationCap className="h-10 w-10 text-[#c9a84c]" />
       </div>
 
-      <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+      <h1 className="text-4xl md:text-5xl font-black text-foreground mb-4 tracking-tighter uppercase">
         Loksewa AI
       </h1>
-      <p className="text-lg text-gray-500 font-light mb-2 max-w-md">
-        Your Personal PSC Preparation Expert
+      <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-2">
+        Integrated Tactical PSC Intelligence
       </p>
 
       <div className="mt-6 flex flex-col items-center gap-3 text-sm text-gray-400">
         <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-orange-400" />
-          <span>AI-powered study plans & practice</span>
+          <Sparkles className="h-4 w-4 text-accent" />
+          <span>AI-POWERED MISSION PARAMETERS</span>
         </div>
         <div className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-orange-400" />
-          <span>Tailored to your exact exam</span>
+          <BookOpen className="h-4 w-4 text-accent" />
+          <span>TAILORED TACTICAL SYLLABUS</span>
         </div>
         <div className="flex items-center gap-2">
-          <Clock className="h-4 w-4 text-orange-400" />
-          <span>Fits your daily schedule</span>
+          <Clock className="h-4 w-4 text-accent" />
+          <span>OPTIMIZED DAILY SCHEDULE</span>
         </div>
       </div>
 
       <button
         onClick={onNext}
-        className="mt-12 px-10 py-4 bg-orange-600 text-white font-semibold rounded-2xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-200 flex items-center gap-2 group"
+        className="mt-12 px-10 py-4 bg-[#1e3a5f] text-[#c9a84c] font-black text-xs uppercase tracking-widest rounded-2xl hover:opacity-90 transition-all shadow-xl shadow-[#1e3a5f]/20 flex items-center gap-2 group border border-[#c9a84c]/20"
       >
-        Get Started
+        Initialize Session
         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
       </button>
     </div>
@@ -143,11 +143,11 @@ function StepExamSetup({
   return (
     <div className="w-full animate-fade-in">
       <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-          Set Up Your Exam
+        <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 uppercase tracking-tighter">
+          Configure Mission
         </h2>
-        <p className="text-gray-500 font-light">
-          Tell us about the exam you&apos;re preparing for
+        <p className="text-[10px] text-subtle font-black uppercase tracking-widest">
+          Define your tactical exam parameters
         </p>
       </div>
 
@@ -162,7 +162,7 @@ function StepExamSetup({
               id="exam-category"
               value={formData.exam_category}
               onChange={(e) => onChange({ exam_category: e.target.value })}
-              className="w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 py-3 pr-10 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+              className="w-full appearance-none rounded-xl border border-border-subtle bg-surface px-4 py-3 pr-10 text-foreground text-[11px] font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
             >
               <option value="">Select a category...</option>
               {EXAM_CATEGORIES.map((cat) => (
@@ -186,10 +186,10 @@ function StepExamSetup({
           <input
             id="exam-name"
             type="text"
-            placeholder='e.g. "Nayab Subba - Prasashan"'
+            placeholder='e.g. NAYAB SUBBA - PRASASHAN'
             value={formData.exam_name}
             onChange={(e) => onChange({ exam_name: e.target.value })}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+            className="w-full rounded-xl border border-border-subtle bg-surface px-4 py-3 text-foreground text-[11px] font-black uppercase tracking-widest placeholder:text-subtle/50 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
           />
           {errors.exam_name && (
             <p className="mt-1 text-xs text-red-500">{errors.exam_name}</p>
@@ -210,10 +210,10 @@ function StepExamSetup({
                 key={d}
                 type="button"
                 onClick={() => onChange({ study_days: d, custom_days: '' })}
-                className={`py-3 rounded-xl border-2 text-sm font-semibold transition-all ${
+                className={`py-3 rounded-xl border-2 text-[10px] font-black uppercase tracking-widest transition-all ${
                   formData.study_days === d && !formData.custom_days
-                    ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    ? 'border-accent bg-accent/5 text-accent shadow-sm'
+                    : 'border-border-subtle bg-surface text-subtle hover:border-accent/30'
                 }`}
               >
                 {d} Days
@@ -226,11 +226,11 @@ function StepExamSetup({
               type="number"
               min={7}
               max={365}
-              placeholder="e.g. 120"
+              placeholder="000"
               value={formData.custom_days}
               onChange={(e) => onChange({ custom_days: e.target.value, study_days: 0 })}
-              className={`flex-1 rounded-xl border bg-white px-4 py-2.5 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all ${
-                formData.custom_days ? 'border-orange-500' : 'border-gray-200'
+              className={`flex-1 rounded-xl border bg-surface px-4 py-2.5 text-foreground text-[11px] font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all ${
+                formData.custom_days ? 'border-accent' : 'border-border-subtle'
               }`}
             />
             <span className="text-xs text-gray-400 font-medium">days</span>
@@ -250,11 +250,11 @@ function StepExamSetup({
           </label>
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-gray-400">1 hour</span>
-              <span className="text-2xl font-bold text-orange-600">
-                {formData.daily_study_hours}h
+              <span className="text-[9px] font-black text-subtle uppercase tracking-widest">MIN: 1H</span>
+              <span className="text-2xl font-black text-accent tracking-tighter">
+                {formData.daily_study_hours}H
               </span>
-              <span className="text-xs text-gray-400">10 hours</span>
+              <span className="text-[9px] font-black text-subtle uppercase tracking-widest">MAX: 10H</span>
             </div>
             <input
               id="study-hours"
@@ -266,7 +266,7 @@ function StepExamSetup({
               onChange={(e) =>
                 onChange({ daily_study_hours: parseInt(e.target.value, 10) })
               }
-              className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-orange-600"
+              className="w-full h-2 bg-border-subtle rounded-full appearance-none cursor-pointer accent-accent"
             />
           </div>
         </div>
@@ -285,10 +285,10 @@ function StepExamSetup({
                 key={num}
                 type="button"
                 onClick={() => onChange({ total_papers: num })}
-                className={`py-3 rounded-xl border-2 text-sm font-semibold transition-all ${
+                className={`py-3 rounded-xl border-2 text-[10px] font-black uppercase tracking-widest transition-all ${
                   formData.total_papers === num
-                    ? 'border-orange-500 bg-orange-50 text-orange-700 shadow-sm'
-                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    ? 'border-accent bg-accent/5 text-accent shadow-sm'
+                    : 'border-border-subtle bg-surface text-subtle hover:border-accent/30'
                 }`}
               >
                 {num} Paper{num > 1 ? 's' : ''}
@@ -310,16 +310,16 @@ function StepExamSetup({
         <button
           onClick={handleSubmit}
           disabled={saving}
-          className="px-8 py-3 bg-orange-600 text-white font-semibold rounded-2xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-200 flex items-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed"
+          className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] font-black text-[11px] uppercase tracking-widest rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-[#1e3a5f]/20 flex items-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed border border-[#c9a84c]/20"
         >
           {saving ? (
             <>
-              <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Saving...
+              <span className="h-4 w-4 border-2 border-[#c9a84c]/30 border-t-[#c9a84c] rounded-full animate-spin" />
+              Processing...
             </>
           ) : (
             <>
-              Save & Continue
+              Commit Parameters
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </>
           )}
@@ -355,14 +355,14 @@ function StepDocuments({
   return (
     <div className="w-full animate-fade-in">
       <div className="text-center mb-8">
-        <div className="h-14 w-14 mx-auto rounded-2xl bg-violet-100 flex items-center justify-center mb-4">
-          <Upload className="h-7 w-7 text-violet-600" />
+        <div className="h-14 w-14 mx-auto rounded-2xl bg-[#1e3a5f]/10 flex items-center justify-center mb-4 border border-[#c9a84c]/20">
+          <Upload className="h-7 w-7 text-[#1e3a5f]" />
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-          Supercharge with Documents
+        <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 uppercase tracking-tighter">
+          Intelligence Feed
         </h2>
-        <p className="text-gray-500 font-light max-w-md mx-auto">
-          After setup, you can upload these documents from your dashboard for a fully personalized experience.
+        <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-md mx-auto">
+          Upload tactical documents for deeper AI integration
         </p>
       </div>
 
@@ -370,22 +370,22 @@ function StepDocuments({
         {tips.map((tip, i) => (
           <div
             key={i}
-            className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 hover:border-orange-100 transition-colors"
+            className="flex gap-4 p-5 bg-surface rounded-2xl border border-border-subtle hover:border-accent/30 transition-colors shadow-sm"
           >
-            <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 font-bold text-sm">
+            <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-[#1e3a5f] flex items-center justify-center text-[#c9a84c] font-black text-xs">
               {i + 1}
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-sm">{tip.title}</h3>
-              <p className="text-gray-500 text-sm font-light mt-0.5">{tip.desc}</p>
+              <h3 className="font-black text-foreground text-[11px] uppercase tracking-widest">{tip.title}</h3>
+              <p className="text-subtle text-[10px] font-medium mt-1 leading-relaxed uppercase tracking-wide">{tip.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 mt-6">
-        <p className="text-sm text-orange-700 text-center font-medium">
-          💡 Don&apos;t worry — you can skip this and upload documents anytime from your dashboard.
+      <div className="bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 rounded-2xl p-4 mt-6">
+        <p className="text-[10px] text-[#1e3a5f] text-center font-black uppercase tracking-widest">
+          💡 DISPATCH: Manual upload available in Command Center at any time.
         </p>
       </div>
 
@@ -400,9 +400,9 @@ function StepDocuments({
         </button>
         <button
           onClick={onNext}
-          className="px-8 py-3 bg-orange-600 text-white font-semibold rounded-2xl hover:bg-orange-700 transition-all shadow-lg shadow-orange-200 flex items-center gap-2 group"
+          className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] font-black text-[11px] uppercase tracking-widest rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-[#1e3a5f]/20 flex items-center gap-2 group border border-[#c9a84c]/20"
         >
-          Continue
+          Initialize Final Phase
           <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
@@ -418,14 +418,14 @@ function StepSuccess() {
         <CheckCircle2 className="h-10 w-10 text-emerald-600" />
       </div>
 
-      <h2 className="text-3xl font-bold text-gray-900 mb-3">You&apos;re All Set!</h2>
-      <p className="text-gray-500 font-light max-w-sm">
-        Your study plan is being prepared by our AI. Redirecting you to your dashboard...
+      <h2 className="text-3xl font-black text-foreground mb-3 uppercase tracking-tighter">System Ready</h2>
+      <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-sm">
+        Tactical study plan optimized. Syncing with Command Center...
       </p>
-
-      <div className="mt-8 flex items-center gap-2 text-sm text-orange-600 font-medium">
-        <span className="h-4 w-4 border-2 border-orange-200 border-t-orange-600 rounded-full animate-spin" />
-        Loading your dashboard
+      
+      <div className="mt-8 flex items-center gap-2 text-[10px] text-[#c9a84c] font-black uppercase tracking-widest">
+        <span className="h-4 w-4 border-2 border-[#c9a84c]/20 border-t-[#c9a84c] rounded-full animate-spin" />
+        Establishing secure terminal link
       </div>
     </div>
   );

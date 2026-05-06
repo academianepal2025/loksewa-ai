@@ -46,23 +46,23 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600/5 rounded-full blur-[100px] -ml-48 -mt-48" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-[100px] -mr-48 -mb-48" />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-[#1e3a5f]/5 rounded-full blur-[100px] -ml-48 -mt-48" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#c9a84c]/5 rounded-full blur-[100px] -mr-48 -mb-48" />
 
       <div className="w-full max-w-md relative z-10">
         <div className="bg-surface border border-border-subtle p-8 sm:p-12 rounded-[2.5rem] shadow-2xl shadow-primary/5 space-y-10">
           <div className="text-center space-y-3">
-            <div className="h-14 w-14 bg-orange-600 text-background rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-orange-600/20 relative group">
+            <div className="h-14 w-14 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-[#1e3a5f]/20 relative group border border-[#c9a84c]/20">
               <KeyRound className="h-7 w-7 relative z-10" />
-              <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
+              <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity" />
             </div>
-            <h1 className="text-3xl font-bold text-orange-600 tracking-tight">
-              {emailSent ? 'Check Your Email' : 'Reset Access Key'}
+            <h1 className="text-3xl font-black text-[#1e3a5f] tracking-tighter uppercase">
+              {emailSent ? 'Check Inbox' : 'Reset Access'}
             </h1>
-            <p className="text-sm font-medium text-subtle">
+            <p className="text-xs font-black text-subtle uppercase tracking-widest">
               {emailSent
-                ? 'We\'ve sent a secure reset link to your email.'
-                : 'Enter your email to receive a password reset link.'}
+                ? 'Mission link dispatched to your terminal.'
+                : 'Enter registered email for secure recovery link.'}
             </p>
           </div>
 
@@ -74,10 +74,10 @@ export default function ForgotPassword() {
                   <CheckCircle2 className="h-10 w-10 text-emerald-500" />
                 </div>
                 <div className="text-center space-y-2">
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="text-sm font-black text-foreground tracking-tighter">
                     Reset link sent to
                   </p>
-                  <p className="text-sm font-bold text-accent break-all">
+                  <p className="text-sm font-black text-accent break-all uppercase tracking-tighter">
                     {sentTo}
                   </p>
                 </div>
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
                     Didn&apos;t receive it? Check your spam folder or{' '}
                     <button
                       onClick={() => setEmailSent(false)}
-                      className="text-accent underline underline-offset-4 hover:text-orange-600 transition-colors"
+                      className="text-accent underline underline-offset-4 hover:text-[#1e3a5f] transition-colors"
                     >
                       try again
                     </button>
@@ -133,12 +133,12 @@ export default function ForgotPassword() {
 
                 <button
                   disabled={isSubmitting}
-                  className="w-full bg-orange-600 text-background py-4.5 rounded-2xl font-bold text-sm hover:opacity-95 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-600/10 active:scale-[0.98] min-h-[60px] disabled:opacity-50"
+                  className="w-full bg-[#1e3a5f] text-[#c9a84c] py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-95 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-[#1e3a5f]/20 active:scale-[0.98] min-h-[56px] disabled:opacity-50 border border-[#c9a84c]/20"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    'Send Reset Link'
+                    'Request Recovery Link'
                   )}
                 </button>
               </form>

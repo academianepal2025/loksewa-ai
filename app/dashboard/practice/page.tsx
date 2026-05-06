@@ -86,24 +86,24 @@ function GenerationOverlay({ step, type }: { step: number; type: 'flashcards' | 
         <div className="text-center mb-10 relative z-10">
           <div className="relative w-20 h-20 mx-auto mb-6">
             <div className="absolute inset-0 rounded-2xl border-4 border-background" />
-            <div className="absolute inset-0 rounded-2xl border-4 border-accent border-t-transparent animate-spin" />
-            <div className="absolute inset-3 rounded-xl bg-accent/10 flex items-center justify-center">
-              {type === 'flashcards' ? <Layers className="h-7 w-7 text-accent animate-pulse" /> : <Dices className="h-7 w-7 text-accent animate-pulse" />}
+            <div className="absolute inset-0 rounded-2xl border-4 border-[#c9a84c] border-t-transparent animate-spin" />
+            <div className="absolute inset-3 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center">
+              {type === 'flashcards' ? <Layers className="h-7 w-7 text-[#c9a84c] animate-pulse" /> : <Dices className="h-7 w-7 text-[#c9a84c] animate-pulse" />}
             </div>
           </div>
-          <h3 className="text-xl font-bold text-foreground tracking-tight">{type === 'flashcards' ? 'Deck Forge' : 'Mission Engine'}</h3>
-          <p className="text-[11px] text-subtle mt-1 font-bold uppercase tracking-wider">Provisioning {type === 'flashcards' ? 'memory' : 'MCQ'} protocols...</p>
+          <h3 className="text-xl font-black text-foreground tracking-tighter uppercase">{type === 'flashcards' ? 'Deck Forge' : 'Mission Engine'}</h3>
+          <p className="text-[10px] text-accent mt-2 font-black uppercase tracking-widest">Provisioning {type === 'flashcards' ? 'memory' : 'MCQ'} protocols...</p>
         </div>
 
         <div className="space-y-6 relative z-10">
           {steps.map((s, i) => (
             <div key={i} className={`flex items-start gap-4 transition-all duration-700 ${i < step ? 'opacity-40' : i === step ? 'opacity-100' : 'opacity-20'}`}>
-              <div className={`mt-0.5 w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 border-2 ${i < step ? 'bg-emerald-500 border-emerald-500 text-white' : i === step ? 'border-accent text-accent animate-pulse' : 'border-border-subtle text-subtle'}`}>
-                {i < step ? <CheckCircle2 className="h-3.5 w-3.5" /> : <span className="text-[10px] font-bold">{i + 1}</span>}
+              <div className={`mt-0.5 w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 border-2 ${i < step ? 'bg-[#1e3a5f] border-[#1e3a5f] text-[#c9a84c]' : i === step ? 'border-[#c9a84c] text-[#c9a84c] animate-pulse' : 'border-border-subtle text-subtle'}`}>
+                {i < step ? <CheckCircle2 className="h-3.5 w-3.5" /> : <span className="text-[10px] font-black">{i + 1}</span>}
               </div>
               <div>
-                <p className={`text-[11px] font-bold uppercase tracking-wider ${i === step ? 'text-foreground' : 'text-subtle'}`}>{s.label}</p>
-                <p className="text-[10px] text-subtle font-medium">{s.detail}</p>
+                <p className={`text-[10px] font-black uppercase tracking-widest ${i === step ? 'text-foreground' : 'text-subtle'}`}>{s.label}</p>
+                <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">{s.detail}</p>
               </div>
             </div>
           ))}
@@ -491,17 +491,17 @@ export default function PracticePage() {
       {generatingQuiz && <GenerationOverlay step={genStepQuiz} type="quiz" />}
 
       {/* Hero Header */}
-      <div className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group">
+      <div className="bg-surface p-6 sm:p-8 rounded-2xl border border-border-subtle relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
         <div className="relative z-10 space-y-4">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-accent" />
-            <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Practice Hub</span>
+            <span className="text-[10px] font-black text-accent uppercase tracking-widest">Practice Hub</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter leading-tight uppercase">
             Master Your <span className="text-accent">Syllabus</span>
           </h1>
-          <p className="text-sm text-subtle font-medium max-w-sm leading-relaxed">
+          <p className="text-xs text-subtle font-medium max-w-sm leading-relaxed">
             Hone your skills through AI-powered active recall and persistent repetition.
           </p>
         </div>
@@ -542,10 +542,10 @@ export default function PracticePage() {
           <div className="lg:col-span-8 space-y-6">
             <div className="bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-8">
-                 <div className="h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground">
-                    <Target className="h-4 w-4" />
-                 </div>
-                 <h2 className="text-lg font-bold text-foreground tracking-tight uppercase tracking-wider">Initialize Session</h2>
+                  <div className="h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground shadow-sm">
+                     <Target className="h-4 w-4" />
+                  </div>
+                  <h2 className="text-sm font-black text-foreground tracking-tighter uppercase tracking-widest">Initialize Session</h2>
               </div>
 
                <div className="mb-8 p-4 bg-background border border-border-subtle rounded-xl space-y-4">
@@ -566,7 +566,7 @@ export default function PracticePage() {
                         icon={Target}
                         title="No Mission Initialized"
                         description="You need to set up an exam in settings before you can practice."
-                        action={<Link href="/dashboard/settings" className="px-6 py-2.5 bg-orange-600 text-background rounded-lg text-[10px] font-bold uppercase">Go to Settings</Link>}
+                        action={<Link href="/dashboard/settings" className="px-6 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-lg text-[10px] font-black uppercase tracking-widest">Go to Settings</Link>}
                       />
                     )}
                   </div>
@@ -577,11 +577,11 @@ export default function PracticePage() {
                     <p className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1">Knowledge Sector</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                        {topics.length > 0 ? topics.map(t => (
-                         <button key={t} onClick={() => setSelectedTopic(t)} className={`p-4 rounded-xl border transition-all text-left flex items-start gap-3 min-h-[64px] ${selectedTopic === t ? 'bg-accent/5 border-accent' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
-                           <div className={`p-2 rounded-lg flex-shrink-0 ${selectedTopic === t ? 'bg-accent text-white' : 'bg-surface text-subtle'}`}>
+                         <button key={t} onClick={() => setSelectedTopic(t)} className={`p-4 rounded-xl border transition-all text-left flex items-start gap-3 min-h-[64px] shadow-sm ${selectedTopic === t ? 'bg-[#c9a84c]/5 border-[#c9a84c]' : 'bg-background border-border-subtle hover:border-[#c9a84c]/40'}`}>
+                           <div className={`p-2 rounded-lg flex-shrink-0 ${selectedTopic === t ? 'bg-[#1e3a5f] text-[#c9a84c]' : 'bg-surface text-subtle'}`}>
                               <BookOpen className="h-3.5 w-3.5" />
                            </div>
-                           <span className={`text-[13px] font-bold leading-tight ${selectedTopic === t ? 'text-foreground' : 'text-subtle'}`}>{t}</span>
+                           <span className={`text-[12px] font-black leading-tight uppercase tracking-widest ${selectedTopic === t ? 'text-foreground' : 'text-subtle'}`}>{t}</span>
                          </button>
                        )) : (
                          <div className="sm:col-span-2 p-6 bg-background border border-dashed border-border-subtle rounded-xl flex items-center gap-4 text-subtle">
@@ -589,14 +589,14 @@ export default function PracticePage() {
                             <p className="text-[11px] font-bold uppercase tracking-wider">No syllabus topics detected</p>
                          </div>
                        )}
-                       <button onClick={() => setSelectedTopic('custom')} className={`p-4 rounded-xl border transition-all text-left flex items-start gap-3 sm:col-span-2 min-h-[64px] ${selectedTopic === 'custom' ? 'bg-accent/5 border-accent' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
-                          <div className={`p-2 rounded-lg flex-shrink-0 ${selectedTopic === 'custom' ? 'bg-accent text-white' : 'bg-surface text-subtle'}`}>
+                       <button onClick={() => setSelectedTopic('custom')} className={`p-4 rounded-xl border transition-all text-left flex items-start gap-3 sm:col-span-2 min-h-[64px] shadow-sm ${selectedTopic === 'custom' ? 'bg-[#c9a84c]/5 border-[#c9a84c]/40' : 'bg-background border-border-subtle hover:border-[#c9a84c]/40'}`}>
+                          <div className={`p-2 rounded-lg flex-shrink-0 ${selectedTopic === 'custom' ? 'bg-[#1e3a5f] text-[#c9a84c]' : 'bg-surface text-subtle'}`}>
                              <Zap className="h-3.5 w-3.5" />
                           </div>
                           <div className="flex-1">
-                            <span className={`text-[11px] font-bold uppercase tracking-wider block mb-1 ${selectedTopic === 'custom' ? 'text-foreground' : 'text-subtle'}`}>Custom Target</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${selectedTopic === 'custom' ? 'text-foreground' : 'text-subtle'}`}>Custom Target</span>
                             {selectedTopic === 'custom' && (
-                              <input type="text" value={customTopic} onChange={e => setCustomTopic(e.target.value)} placeholder="e.g., Constitution of Nepal..." className="w-full bg-background border border-border-subtle focus:border-accent/50 rounded-lg px-3 py-2 text-xs font-bold outline-none mt-2 transition-all placeholder:text-subtle/30 min-h-[44px]" onClick={e => e.stopPropagation()} />
+                              <input type="text" value={customTopic} onChange={e => setCustomTopic(e.target.value)} placeholder="e.g., CONSTITUTION OF NEPAL..." className="w-full bg-background border border-border-subtle focus:border-[#c9a84c]/50 rounded-lg px-3 py-2 text-xs font-black uppercase tracking-widest outline-none mt-2 transition-all placeholder:text-subtle/30 min-h-[44px] shadow-sm" onClick={e => e.stopPropagation()} />
                             )}
                           </div>
                        </button>
@@ -609,9 +609,9 @@ export default function PracticePage() {
                     <p className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1">Density</p>
                     <div className="flex flex-wrap gap-2">
                       {activeTab === 'flashcards' ? [10, 20, 30].map(n => (
-                        <button key={n} onClick={() => setFlashcardCount(n)} className={`px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[44px] ${flashcardCount === n ? 'bg-accent text-white' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>{n} Units</button>
+                        <button key={n} onClick={() => setFlashcardCount(n)} className={`px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-h-[44px] shadow-sm ${flashcardCount === n ? 'bg-[#1e3a5f] text-[#c9a84c]' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>{n} Units</button>
                       )) : [5, 10, 15, 20].map(n => (
-                        <button key={n} onClick={() => setQuizQuestionCount(n)} className={`px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[44px] ${quizQuestionCount === n ? 'bg-accent text-white' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>{n} Steps</button>
+                        <button key={n} onClick={() => setQuizQuestionCount(n)} className={`px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-h-[44px] shadow-sm ${quizQuestionCount === n ? 'bg-[#1e3a5f] text-[#c9a84c]' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>{n} Steps</button>
                       ))}
                     </div>
                   </div>
@@ -651,10 +651,10 @@ export default function PracticePage() {
                       </div>
                    </div>
                    <div className="flex gap-4">
-                      <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-accent"><Sparkles className="h-4 w-4" /></div>
+                      <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-[#c9a84c]"><Sparkles className="h-4 w-4" /></div>
                       <div>
-                        <p className="text-[13px] font-bold text-foreground leading-tight">Act Reference</p>
-                        <p className="text-[11px] text-subtle font-medium mt-1">Citations provided from relevant legal acts and constitutions.</p>
+                        <p className="text-[13px] font-black text-foreground leading-tight uppercase tracking-tighter">Act Reference</p>
+                        <p className="text-[11px] text-subtle font-black uppercase tracking-widest mt-1 opacity-70">Citations from relevant legal acts.</p>
                       </div>
                    </div>
                 </div>
@@ -669,30 +669,30 @@ export default function PracticePage() {
                 <div className="flex items-center justify-between px-2">
                    <div className="space-y-1">
                       <span className="text-[10px] font-bold text-accent uppercase tracking-wider">{selectedTopic === 'custom' ? customTopic : selectedTopic}</span>
-                      <h4 className="text-xl font-bold text-foreground tracking-tight">Active Recall</h4>
+                      <h4 className="text-xl font-black text-foreground tracking-tighter">Active Recall</h4>
                    </div>
                    <div className="text-right">
-                      <span className="text-2xl font-bold text-foreground tracking-tight">{currentFlashIndex + 1}</span>
-                      <span className="text-sm font-bold text-subtle"> / {deck.length}</span>
+                      <span className="text-2xl font-black text-foreground tracking-tighter">{currentFlashIndex + 1}</span>
+                      <span className="text-sm font-black text-subtle"> / {deck.length}</span>
                    </div>
                 </div>
-                <div className="h-1 w-full bg-surface rounded-full overflow-hidden">
-                   <div className="h-full bg-accent transition-all duration-700" style={{ width: `${((currentFlashIndex + 1) / deck.length) * 100}%` }} />
-                </div>
+                 <div className="h-1 w-full bg-surface rounded-full overflow-hidden">
+                    <div className="h-full bg-[#c9a84c] transition-all duration-700 shadow-[0_0_8px_rgba(201,168,76,0.3)]" style={{ width: `${((currentFlashIndex + 1) / deck.length) * 100}%` }} />
+                 </div>
                 <div className="w-full h-[320px] perspective-1000 cursor-pointer group" onClick={() => setIsFlipped(!isFlipped)}>
                   <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
                     <div className="absolute inset-0 backface-hidden bg-surface rounded-2xl border border-border-subtle shadow-sm p-8 flex flex-col justify-between">
                        <div className="flex justify-between items-start">
-                          <span className="px-2 py-0.5 bg-background border border-border-subtle text-subtle text-[9px] font-bold tracking-wider uppercase rounded">Prompt</span>
-                          <span className="text-[9px] font-bold text-accent bg-accent/5 px-2 py-0.5 rounded tracking-wider uppercase border border-accent/20">{deck[currentFlashIndex].difficulty}</span>
+                          <span className="px-2 py-0.5 bg-background border border-border-subtle text-subtle text-[9px] font-black tracking-widest uppercase rounded">Prompt</span>
+                          <span className="text-[9px] font-black text-[#c9a84c] bg-[#c9a84c]/5 px-2 py-0.5 rounded tracking-widest uppercase border border-[#c9a84c]/20">{deck[currentFlashIndex].difficulty}</span>
                        </div>
                        <div className="flex-1 flex items-center justify-center text-center px-4">
-                         <h3 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight leading-snug">{deck[currentFlashIndex].front}</h3>
+                         <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tighter leading-snug">{deck[currentFlashIndex].front}</h3>
                        </div>
-                       <div className="text-center pt-4 text-[9px] font-bold text-subtle uppercase tracking-widest">Click to reveal</div>
+                       <div className="text-center pt-4 text-[9px] font-black text-subtle uppercase tracking-widest">Click to reveal</div>
                     </div>
                     <div className="absolute inset-0 backface-hidden bg-background rounded-2xl border border-accent/20 shadow-xl p-8 flex flex-col rotate-y-180 overflow-y-auto">
-                       <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-bold tracking-wider uppercase rounded w-fit mb-6 border border-accent/20">Resolution</span>
+                       <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-black tracking-widest uppercase rounded w-fit mb-6 border border-accent/20">Resolution</span>
                        <div className="flex-1 flex items-center justify-center text-center px-4">
                           <p className="text-base sm:text-lg font-medium text-foreground leading-relaxed whitespace-pre-wrap">{deck[currentFlashIndex].back}</p>
                        </div>
@@ -708,25 +708,25 @@ export default function PracticePage() {
                  <div className="flex flex-col items-center gap-8">
                    <div className="flex items-center gap-4">
                       <button disabled={currentFlashIndex === 0} onClick={(e) => { e.stopPropagation(); setCurrentFlashIndex(prev => prev - 1); setIsFlipped(false); }} className="p-4 rounded-xl bg-surface border border-border-subtle hover:border-accent/40 text-subtle hover:text-accent transition-all disabled:opacity-30 disabled:pointer-events-none min-h-[44px] min-w-[44px]"><ChevronLeft className="h-5 w-5" /></button>
-                      <div className="px-6 py-3 rounded-xl bg-surface border border-border-subtle font-bold text-[10px] tracking-wider text-subtle uppercase min-h-[44px] flex items-center">{currentFlashIndex + 1} OF {deck.length}</div>
+                      <div className="px-6 py-3 rounded-xl bg-surface border border-border-subtle font-black text-[10px] tracking-widest text-subtle uppercase min-h-[44px] flex items-center">{currentFlashIndex + 1} OF {deck.length}</div>
                       <button disabled={currentFlashIndex === deck.length - 1} onClick={(e) => { e.stopPropagation(); setCurrentFlashIndex(prev => prev + 1); setIsFlipped(false); }} className="p-4 rounded-xl bg-surface border border-border-subtle hover:border-accent/40 text-subtle hover:text-accent transition-all disabled:opacity-30 disabled:pointer-events-none min-h-[44px] min-w-[44px]"><ChevronRight className="h-5 w-5" /></button>
                    </div>
                    <div className={`flex flex-wrap justify-center gap-4 transition-all duration-500 ${isFlipped ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-                      <button onClick={() => handleFlashcardRate('didnt-know')} className="group flex flex-col items-center gap-2 p-5 px-8 rounded-2xl bg-background hover:bg-red-500 text-red-600 hover:text-background border border-red-500/20 transition-all shadow-sm min-h-[44px]"><XIcon className="h-5 w-5" /><span className="text-[9px] font-bold uppercase tracking-wider">Uncertain</span></button>
-                      <button onClick={() => handleFlashcardRate('almost')} className="group flex flex-col items-center gap-2 p-5 px-8 rounded-2xl bg-background hover:bg-amber-500 text-amber-600 hover:text-background border border-amber-500/20 transition-all shadow-sm min-h-[44px]"><RotateCcw className="h-5 w-5" /><span className="text-[9px] font-bold uppercase tracking-wider">Almost</span></button>
-                      <button onClick={() => handleFlashcardRate('got-it')} className="group flex flex-col items-center gap-2 p-5 px-8 rounded-2xl bg-background hover:bg-emerald-500 text-emerald-600 hover:text-background border border-emerald-500/20 transition-all shadow-sm min-h-[44px]"><Check className="h-5 w-5" /><span className="text-[9px] font-bold uppercase tracking-wider">Mastered</span></button>
+                      <button onClick={() => handleFlashcardRate('didnt-know')} className="group flex flex-col items-center gap-2 p-5 px-8 rounded-2xl bg-background hover:bg-red-500 text-red-600 hover:text-background border border-red-500/20 transition-all shadow-sm min-h-[44px]"><XIcon className="h-5 w-5" /><span className="text-[9px] font-black uppercase tracking-widest">Uncertain</span></button>
+                      <button onClick={() => handleFlashcardRate('almost')} className="group flex flex-col items-center gap-2 p-5 px-8 rounded-2xl bg-background hover:bg-amber-500 text-amber-600 hover:text-background border border-amber-500/20 transition-all shadow-sm min-h-[44px]"><RotateCcw className="h-5 w-5" /><span className="text-[9px] font-black uppercase tracking-widest">Almost</span></button>
+                      <button onClick={() => handleFlashcardRate('got-it')} className="group flex flex-col items-center gap-2 p-5 px-8 rounded-2xl bg-background hover:bg-emerald-500 text-emerald-600 hover:text-background border border-emerald-500/20 transition-all shadow-sm min-h-[44px]"><Check className="h-5 w-5" /><span className="text-[9px] font-black uppercase tracking-widest">Mastered</span></button>
                    </div>
                  </div>
                </div>
            ) : (
-             <div className="bg-surface rounded-2xl p-10 text-center border border-border-subtle animate-zoom-in">
-                <div className="h-16 w-16 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto mb-8"><Trophy className="h-8 w-8 text-emerald-500" /></div>
-                <h2 className="text-2xl font-bold text-foreground tracking-tight mb-4">Session Concluded</h2>
-                <div className="flex gap-12 justify-center mb-10">
-                   <div><p className="text-3xl font-bold text-emerald-500 tracking-tight">{Math.round((Object.values(flashcardRatings).filter(r => r === 'got-it').length / deck.length) * 100)}%</p><p className="text-[10px] font-bold text-subtle uppercase tracking-wider mt-1">Accuracy</p></div>
-                   <div><p className="text-3xl font-bold text-red-500 tracking-tight">{Object.values(flashcardRatings).filter(r => r === 'didnt-know').length}</p><p className="text-[10px] font-bold text-subtle uppercase tracking-wider mt-1">Gaps</p></div>
-                </div>
-                <button onClick={() => { setDeck([]); setFlashcardSessionComplete(false); }} className="px-8 py-3.5 rounded-xl bg-orange-600 text-background font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 mx-auto"><RotateCcw className="h-4 w-4" /> Reset Deck</button>
+              <div className="bg-surface rounded-2xl p-10 text-center border border-border-subtle animate-zoom-in shadow-sm">
+                 <div className="h-16 w-16 bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm"><Trophy className="h-8 w-8 text-[#c9a84c]" /></div>
+                 <h2 className="text-2xl font-black text-foreground tracking-tighter uppercase mb-4">Session Concluded</h2>
+                 <div className="flex gap-12 justify-center mb-10">
+                    <div><p className="text-3xl font-black text-[#c9a84c] tracking-tighter">{Math.round((Object.values(flashcardRatings).filter(r => r === 'got-it').length / deck.length) * 100)}%</p><p className="text-[10px] font-black text-subtle uppercase tracking-widest mt-1">Accuracy</p></div>
+                    <div><p className="text-3xl font-black text-red-500 tracking-tighter">{Object.values(flashcardRatings).filter(r => r === 'didnt-know').length}</p><p className="text-[10px] font-black text-subtle uppercase tracking-widest mt-1">Gaps</p></div>
+                 </div>
+                <button onClick={() => { setDeck([]); setFlashcardSessionComplete(false); }} className="px-8 py-3.5 rounded-xl bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2 mx-auto shadow-lg shadow-[#1e3a5f]/10"><RotateCcw className="h-4 w-4" /> Reset Deck</button>
              </div>
            )}
         </div>
@@ -737,20 +737,20 @@ export default function PracticePage() {
              <div className="space-y-10">
                 <div className="flex justify-between items-end px-2">
                    <div className="space-y-1">
-                      <p className="text-[10px] font-bold text-accent uppercase tracking-wider">{selectedTopic === 'custom' ? customTopic : selectedTopic}</p>
-                      <h2 className="text-2xl font-bold text-foreground tracking-tight">Step {currentQuizIndex + 1} of {quizQuestions.length}</h2>
+                      <p className="text-[10px] font-black text-accent uppercase tracking-widest">{selectedTopic === 'custom' ? customTopic : selectedTopic}</p>
+                      <h2 className="text-2xl font-black text-foreground tracking-tighter">Step {currentQuizIndex + 1} of {quizQuestions.length}</h2>
                    </div>
                    <div className="text-right flex items-center gap-4">
-                      {quizStartTime && <div className="text-[11px] font-bold text-subtle flex items-center gap-2 uppercase tracking-wider"><Clock className="h-3.5 w-3.5 text-accent" /> {Math.floor((Date.now() - quizStartTime) / 1000)}s</div>}
+                      {quizStartTime && <div className="text-[11px] font-black text-subtle flex items-center gap-2 uppercase tracking-widest"><Clock className="h-3.5 w-3.5 text-accent" /> {Math.floor((Date.now() - quizStartTime) / 1000)}s</div>}
                    </div>
                 </div>
                 <div className="h-1 w-full bg-surface rounded-full overflow-hidden">
                    <div className="h-full bg-accent transition-all duration-500" style={{ width: `${((currentQuizIndex + 1) / quizQuestions.length) * 100}%` }} />
                 </div>
-                <div className="bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 space-y-8">
+                <div className="bg-surface border border-border-subtle rounded-2xl p-6 space-y-8">
                    <div className="space-y-3">
-                      <div className="flex items-center gap-2"><span className="text-[9px] font-bold text-accent uppercase tracking-wider">Inquiry</span></div>
-                      <h3 className="text-lg sm:text-xl font-bold text-foreground leading-snug tracking-tight">{quizQuestions[currentQuizIndex].question}</h3>
+                      <div className="flex items-center gap-2"><span className="text-[9px] font-black text-accent uppercase tracking-widest">Inquiry</span></div>
+                      <h3 className="text-lg sm:text-xl font-black text-foreground leading-snug tracking-tighter">{quizQuestions[currentQuizIndex].question}</h3>
                    </div>
                     <div className="grid grid-cols-1 gap-3 sm:gap-4">
                       {Object.entries(quizQuestions[currentQuizIndex].options).map(([key, text]) => {
@@ -763,12 +763,12 @@ export default function PracticePage() {
                           if (isCorrect) { buttonStyle = "border-emerald-500/40 bg-emerald-500/5 text-emerald-700"; keyStyle = "bg-emerald-500 text-white"; }
                           else if (isSelected) { buttonStyle = "border-red-500/40 bg-red-500/5 text-red-700"; keyStyle = "bg-red-500 text-white"; }
                           else { buttonStyle = "border-border-subtle opacity-40 grayscale"; }
-                        } else if (isSelected) { buttonStyle = "border-primary bg-orange-600/5"; keyStyle = "bg-orange-600 text-white"; }
+                        } else if (isSelected) { buttonStyle = "border-accent bg-accent/5"; keyStyle = "bg-accent text-white"; }
                         return (
-                          <button key={key} onClick={() => handleQuizAnswer(key)} disabled={hasAnswered} className={`group flex items-center gap-3 p-4 sm:p-5 rounded-xl border transition-all text-left relative overflow-hidden min-h-[56px] ${buttonStyle}`}>
-                             <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-lg flex items-center justify-center font-bold text-sm transition-all flex-shrink-0 ${keyStyle}`}>{key}</div>
-                             <span className="text-[13px] sm:text-[15px] font-bold flex-1">{text}</span>
-                             {hasAnswered && isCorrect && <CheckCircle2 className="h-5 w-5 text-emerald-500 absolute right-4" />}
+                          <button key={key} onClick={() => handleQuizAnswer(key)} disabled={hasAnswered} className={`group flex items-center gap-3 p-4 sm:p-5 rounded-xl border transition-all text-left relative overflow-hidden min-h-[56px] shadow-sm ${buttonStyle}`}>
+                             <div className={`h-8 w-8 sm:h-10 sm:w-10 rounded-lg flex items-center justify-center font-black text-sm transition-all flex-shrink-0 ${keyStyle}`}>{key}</div>
+                             <span className="text-[13px] sm:text-[15px] font-black flex-1 uppercase tracking-widest">{text}</span>
+                             {hasAnswered && isCorrect && <CheckCircle2 className="h-5 w-5 text-[#c9a84c] absolute right-4" />}
                              {hasAnswered && isSelected && !isCorrect && <XIcon className="h-5 w-5 text-red-500 absolute right-4" />}
                           </button>
                         );
@@ -776,13 +776,13 @@ export default function PracticePage() {
                    </div>
                    {showExplanation && (
                      <div className="mt-8 p-6 bg-surface border border-border-subtle rounded-2xl animate-fade-in">
-                        <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-accent" /><span className="text-[10px] font-bold text-accent uppercase tracking-wider">Insight</span></div>
+                        <div className="flex items-center gap-2 mb-3"><Lightbulb className="h-4 w-4 text-accent" /><span className="text-[10px] font-black text-accent uppercase tracking-widest">Insight</span></div>
                         <p className="text-[13px] text-foreground leading-relaxed mb-4">{quizQuestions[currentQuizIndex].explanation}</p>
                         {quizQuestions[currentQuizIndex].source_reference && (
-                          <div className="flex items-center gap-2 text-[10px] text-subtle font-bold uppercase tracking-wider bg-background border border-border-subtle w-fit px-2 py-1 rounded mb-4"><BookOpen className="h-3 w-3" />{quizQuestions[currentQuizIndex].source_reference}</div>
+                          <div className="flex items-center gap-2 text-[10px] text-subtle font-black uppercase tracking-widest bg-background border border-border-subtle w-fit px-2 py-1 rounded mb-4"><BookOpen className="h-3 w-3" />{quizQuestions[currentQuizIndex].source_reference}</div>
                         )}
                         <div className="flex justify-end pt-4">
-                           <button onClick={handleNextQuizQuestion} className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-orange-600 text-background font-bold text-[11px] uppercase tracking-wider hover:opacity-90 transition-all flex items-center justify-center gap-2 min-h-[44px]">{currentQuizIndex === quizQuestions.length - 1 ? 'Conclude Session' : 'Next Question'} <ChevronRight className="h-4 w-4" /></button>
+                           <button onClick={handleNextQuizQuestion} className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-2 min-h-[44px] shadow-lg shadow-[#1e3a5f]/10">{currentQuizIndex === quizQuestions.length - 1 ? 'Conclude Session' : 'Next Question'} <ChevronRight className="h-4 w-4" /></button>
                         </div>
                      </div>
                    )}
@@ -791,11 +791,11 @@ export default function PracticePage() {
            ) : (
              <div className="space-y-8 animate-fade-in">
                 <div className={`p-10 sm:p-14 rounded-2xl text-center relative overflow-hidden border border-border-subtle`}>
-                  <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-[100px] -mr-40 -mt-40" />
-                  <div className="relative z-10 space-y-4">
-                     <div className="h-16 w-16 bg-background border border-border-subtle rounded-2xl flex items-center justify-center mx-auto mb-6"><Trophy className={`h-8 w-8 ${pct >= 70 ? 'text-emerald-500' : 'text-accent'}`} /></div>
-                     <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">Mission Summary: Completed</p>
-                     <h2 className="text-5xl sm:text-6xl font-bold text-foreground tracking-tighter">{score}<span className="text-subtle/30">/</span>{quizQuestions.length}</h2>
+                   <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-[100px] -mr-40 -mt-40" />
+                   <div className="relative z-10 space-y-4">
+                      <div className="h-16 w-16 bg-background border border-border-subtle rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm"><Trophy className={`h-8 w-8 ${pct >= 70 ? 'text-[#c9a84c]' : 'text-accent'}`} /></div>
+                      <p className="text-[10px] font-black text-subtle uppercase tracking-widest">Mission Summary: Completed</p>
+                      <h2 className="text-5xl sm:text-6xl font-black text-foreground tracking-tighter uppercase">{score}<span className="text-subtle/30">/</span>{quizQuestions.length}</h2>
                      <div className="flex justify-center gap-10 mt-6 font-bold">
                         <div><p className="text-2xl text-foreground tracking-tight">{Math.floor(((quizEndTime || 0) - (quizStartTime || 0)) / 1000)}s</p><p className="text-[9px] text-subtle uppercase tracking-wider">Duration</p></div>
                         <div className="w-px bg-border-subtle h-10" />

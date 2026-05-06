@@ -71,13 +71,13 @@ function ThinkingIndicator() {
   return (
     <div className="flex items-start gap-3 max-w-3xl mx-auto">
       <GuruAvatar size="sm" />
-      <div className="bg-surface border border-border-subtle rounded-2xl rounded-tl-sm px-5 py-3.5">
+      <div className="bg-surface border border-border-subtle rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <span className="text-[11px] font-bold text-subtle uppercase tracking-wider">Thinking</span>
+          <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Processing Intelligence</span>
           <span className="flex gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '0ms' }} />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '150ms' }} />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '300ms' }} />
           </span>
         </div>
       </div>
@@ -96,8 +96,8 @@ function MessageBubble({ message }: { message: ChatMessage }) {
         <div className={`flex items-start gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
           {/* Avatar */}
           {isUser ? (
-            <div className="h-7 w-7 rounded-xl bg-accent/10 text-accent flex items-center justify-center flex-shrink-0 text-xs font-black">
-              U
+            <div className="h-7 w-7 rounded-xl bg-[#1e3a5f] text-[#c9a84c] border border-[#c9a84c]/20 flex items-center justify-center flex-shrink-0 text-[10px] font-black uppercase tracking-widest shadow-sm">
+              YOU
             </div>
           ) : (
             <GuruAvatar size="sm" />
@@ -115,7 +115,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 
             <div className={`inline-block text-left reading-area prose prose-sm dark:prose-invert max-w-none text-[15px] leading-[1.8] font-medium prose-headings:text-foreground prose-strong:text-foreground prose-p:text-foreground prose-li:text-foreground prose-ol:text-foreground prose-ul:text-foreground ${
               isUser
-                ? 'bg-[#1e3a5f] text-[#c9a84c] px-5 py-3 rounded-2xl rounded-br-sm shadow-md'
+                ? 'bg-[#1e3a5f] text-[#c9a84c] px-5 py-3 rounded-2xl rounded-br-sm shadow-lg shadow-[#1e3a5f]/10 border border-[#c9a84c]/10'
                 : 'text-foreground'
             }`}>
               {isUser ? (
@@ -126,7 +126,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
             </div>
 
             {message.created_at && (
-              <p className={`text-[10px] font-bold text-muted/50 mt-2 ${isUser ? 'text-right' : ''}`}>
+              <p className={`text-[9px] font-black text-muted/50 mt-2 uppercase tracking-widest ${isUser ? 'text-right' : ''}`}>
                 {new Date(message.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </p>
             )}
@@ -161,9 +161,9 @@ function ChatHistoryPanel({
   return (
     <div className="absolute inset-0 z-30 bg-background/95 backdrop-blur-xl flex flex-col animate-slide-in-right">
       <div className="flex items-center justify-between p-5 border-b border-border-subtle">
-        <h3 className="text-base font-bold text-foreground flex items-center gap-3">
-          <History className="h-4 w-4 text-accent" />
-          Chat History
+        <h3 className="text-sm font-black text-foreground flex items-center gap-3 uppercase tracking-widest">
+          <History className="h-4 w-4 text-[#c9a84c]" />
+          Intelligence History
         </h3>
         <button onClick={onClose} className="p-2 hover:bg-surface rounded-xl transition-colors">
           <X className="h-5 w-5 text-muted" />
@@ -174,18 +174,18 @@ function ChatHistoryPanel({
         {conversations.length === 0 ? (
           <div className="text-center py-20">
             <MessageSquare className="h-8 w-8 text-muted/30 mx-auto mb-3" />
-            <p className="text-muted font-bold text-sm">No previous conversations</p>
+            <p className="text-muted font-black text-[10px] uppercase tracking-widest">No previous transmissions</p>
           </div>
         ) : (
           conversations.slice(0, 10).map((convo, i) => (
             <button
               key={i}
               onClick={() => onSelect(convo.messages)}
-              className="w-full text-left p-4 bg-surface border border-border-subtle rounded-xl hover:border-accent/30 transition-all group"
+              className="w-full text-left p-4 bg-surface border border-border-subtle rounded-xl hover:border-accent/30 transition-all group shadow-sm"
             >
-              <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">{convo.date}</p>
-              <p className="text-sm font-bold text-foreground truncate group-hover:text-accent transition-colors">{convo.firstMessage}</p>
-              <p className="text-[11px] text-muted mt-0.5">{convo.messages.length} messages</p>
+              <p className="text-[9px] font-black text-muted uppercase tracking-widest mb-1">{convo.date}</p>
+              <p className="text-xs font-black text-foreground truncate group-hover:text-[#c9a84c] transition-colors uppercase tracking-widest">{convo.firstMessage}</p>
+              <p className="text-[9px] text-muted mt-1 uppercase font-black tracking-widest">{convo.messages.length} TRANSMISSIONS</p>
             </button>
           ))
         )}
@@ -499,9 +499,9 @@ function GuruContent() {
         <div className="flex items-center gap-3">
           <GuruAvatar size="md" />
           <div className="min-w-0">
-            <h1 className="text-sm font-bold text-foreground tracking-tight">Loksewa Guru</h1>
-            <p className="text-[9px] font-bold text-accent uppercase tracking-wider">
-              {isStreaming ? 'Responding...' : 'Online'}
+            <h1 className="text-sm font-black text-foreground tracking-tighter uppercase">LOKSEWA GURU</h1>
+            <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">
+              {isStreaming ? 'DECODING...' : 'TACTICAL LINK ACTIVE'}
             </p>
           </div>
         </div>
@@ -513,7 +513,7 @@ function GuruContent() {
               <select
                 value={activeExamId || ''}
                 onChange={(e) => { setActiveExamId(e.target.value); setMessages([]); }}
-                className="appearance-none bg-surface text-foreground border border-border-subtle rounded-lg px-3 py-2 pr-8 text-[10px] font-bold focus:ring-1 focus:ring-accent/40 focus:outline-none cursor-pointer min-h-[36px]"
+                className="appearance-none bg-surface text-foreground border border-border-subtle rounded-lg px-3 py-2 pr-8 text-[10px] font-black uppercase tracking-widest focus:ring-1 focus:ring-accent/40 focus:outline-none cursor-pointer min-h-[36px] shadow-sm"
               >
                 {exams.map(e => <option key={e.id} value={e.id}>{e.exam_name}</option>)}
               </select>
@@ -523,7 +523,7 @@ function GuruContent() {
 
           <button
             onClick={() => setShowHistory(true)}
-            className="p-2 rounded-lg bg-surface border border-border-subtle text-subtle hover:text-accent hover:border-accent/20 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center"
+            className="p-2 rounded-lg bg-surface border border-border-subtle text-subtle hover:text-[#c9a84c] hover:border-[#c9a84c]/20 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center shadow-sm"
           >
             <History className="h-4 w-4" />
           </button>
@@ -558,11 +558,11 @@ function GuruContent() {
             <div className="mb-6">
               <GuruAvatar size="lg" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight mb-2">
-              नमस्ते! <span className="text-accent">I&apos;m Loksewa Guru</span>
+            <h2 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter mb-2 uppercase">
+              नमस्ते! <span className="text-[#c9a84c]">I&apos;m Loksewa Guru</span>
             </h2>
-            <p className="text-subtle text-sm font-medium max-w-lg mb-10 leading-relaxed">
-              Your AI-powered Loksewa preparation partner. Ask me anything about your uploaded syllabus, notes, and previous year questions.
+            <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-lg mb-10 leading-relaxed">
+              Your AI-powered Loksewa tactical partner. Ask me anything about your uploaded syllabus, notes, and previous year questions.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
@@ -573,10 +573,10 @@ function GuruContent() {
                   disabled={isStreaming}
                   className="flex items-start gap-3 p-4 bg-surface border border-border-subtle rounded-xl text-left hover:border-accent/40 transition-all group active:scale-[0.99] disabled:opacity-50 min-h-[64px]"
                 >
-                  <div className="p-2 bg-background border border-border-subtle rounded-lg group-hover:bg-accent group-hover:text-background transition-colors flex-shrink-0">
+                  <div className="p-2 bg-background border border-border-subtle rounded-lg group-hover:bg-[#1e3a5f] group-hover:text-[#c9a84c] group-hover:border-[#c9a84c]/30 transition-colors flex-shrink-0">
                     <q.icon className="h-4 w-4 text-subtle group-hover:text-current" />
                   </div>
-                  <span className="text-[12px] font-bold text-subtle group-hover:text-foreground leading-snug mt-1">{q.text}</span>
+                  <span className="text-[11px] font-black text-subtle group-hover:text-foreground leading-snug mt-1 uppercase tracking-widest">{q.text}</span>
                 </button>
               ))}
             </div>
@@ -615,7 +615,7 @@ function GuruContent() {
           <div className="mb-2 px-1">
              <UsageIndicator type="chat" />
           </div>
-          <div className="flex items-end gap-2 bg-surface border border-border-subtle rounded-2xl p-2 focus-within:border-accent/40 transition-all">
+          <div className="flex items-end gap-2 bg-surface border border-border-subtle rounded-2xl p-2 focus-within:border-[#c9a84c]/40 transition-all shadow-sm">
             <textarea
               ref={inputRef}
               value={input}

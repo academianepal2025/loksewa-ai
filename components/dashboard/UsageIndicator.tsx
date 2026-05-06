@@ -53,7 +53,7 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
   const isNearLimit = usage.used >= usage.max;
 
   return (
-    <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-xl border transition-all ${isNearLimit ? 'bg-red-500/5 border-red-500/20 text-red-600' : 'bg-[#1e3a5f]/5 border-[#1e3a5f]/10 text-[#1e3a5f]'}`}>
+    <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-xl border transition-all ${isNearLimit ? 'bg-red-500/5 border-red-500/20 text-red-600' : 'bg-[#c9a84c]/5 border-[#c9a84c]/20 text-[#c9a84c]'}`}>
       <div className="flex flex-col">
          <div className="flex items-center gap-2 mb-1">
             <Zap className={`h-3 w-3 ${isNearLimit ? 'animate-pulse' : ''}`} />
@@ -63,7 +63,7 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
          </div>
          <div className="h-1 w-24 bg-background/50 rounded-full overflow-hidden">
             <div 
-              className={`h-full transition-all duration-500 ${isNearLimit ? 'bg-red-500' : 'bg-[#1e3a5f]'}`} 
+              className={`h-full transition-all duration-500 ${isNearLimit ? 'bg-red-500' : 'bg-[#c9a84c]'}`} 
               style={{ width: `${pct}%` }} 
             />
          </div>

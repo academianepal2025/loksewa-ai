@@ -32,7 +32,7 @@ export default function AdminStatsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#1e3a5f]" />
       </div>
     );
   }
@@ -46,8 +46,8 @@ export default function AdminStatsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">Platform Analytics</h1>
-        <p className="text-xs text-subtle mt-1">Comprehensive platform-wide statistics and trends</p>
+        <h1 className="text-2xl font-black text-foreground tracking-tighter uppercase">Platform Analytics</h1>
+        <p className="text-[10px] text-subtle mt-1 uppercase tracking-widest font-black">Comprehensive Mission Statistics</p>
       </div>
 
       {/* Charts Row */}
@@ -56,12 +56,12 @@ export default function AdminStatsPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           className="bg-surface border border-border-subtle rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-6">
-            <div className="h-8 w-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20">
+            <div className="h-8 w-8 rounded-lg bg-[#1e3a5f]/10 text-[#1e3a5f] flex items-center justify-center border border-[#1e3a5f]/20 shadow-sm">
               <TrendingUp className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">User Growth</h3>
-              <p className="text-[10px] text-subtle">New signups per day (last 30 days)</p>
+              <h3 className="text-sm font-black text-foreground uppercase tracking-widest">User Growth</h3>
+              <p className="text-[10px] text-subtle font-medium">Daily signups (30d)</p>
             </div>
           </div>
           <div className="h-[280px]">
@@ -74,7 +74,7 @@ export default function AdminStatsPage() {
                   contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)', borderRadius: '12px', fontSize: '12px' }}
                   labelFormatter={(v) => `Date: ${v}`}
                 />
-                <Line type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={2.5} dot={{ r: 3, fill: '#6366f1' }} activeDot={{ r: 5 }} name="Signups" />
+                <Line type="monotone" dataKey="count" stroke="#1e3a5f" strokeWidth={2.5} dot={{ r: 3, fill: '#1e3a5f' }} activeDot={{ r: 5 }} name="Signups" />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -84,12 +84,12 @@ export default function AdminStatsPage() {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="bg-surface border border-border-subtle rounded-2xl p-6">
           <div className="flex items-center gap-2 mb-6">
-            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
+            <div className="h-8 w-8 rounded-lg bg-[#c9a84c]/10 text-[#c9a84c] flex items-center justify-center border border-[#c9a84c]/20 shadow-sm">
               <DollarSign className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">Revenue</h3>
-              <p className="text-[10px] text-subtle">Daily revenue in NPR (last 30 days)</p>
+              <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Mission Revenue</h3>
+              <p className="text-[10px] text-subtle font-medium">Daily revenue in NPR (30d)</p>
             </div>
           </div>
           <div className="h-[280px]">
@@ -103,7 +103,7 @@ export default function AdminStatsPage() {
                   formatter={(v: any) => [`NPR ${v}`, 'Revenue']}
                   labelFormatter={(v) => `Date: ${v}`}
                 />
-                <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]} name="Revenue" />
+                <Bar dataKey="amount" fill="#c9a84c" radius={[4, 4, 0, 0]} name="Revenue" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -115,7 +115,7 @@ export default function AdminStatsPage() {
         {/* Plan Distribution Donut */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
           className="bg-surface border border-border-subtle rounded-2xl p-6">
-          <h3 className="text-sm font-bold text-foreground mb-6 flex items-center gap-2">
+          <h3 className="text-sm font-black text-foreground mb-6 flex items-center gap-2 uppercase tracking-widest">
             <Users className="h-4 w-4 text-subtle" /> Plan Distribution
           </h3>
           <div className="h-[250px]">
@@ -149,17 +149,17 @@ export default function AdminStatsPage() {
         {/* Feature Usage */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
           className="bg-surface border border-border-subtle rounded-2xl p-6">
-          <h3 className="text-sm font-bold text-foreground mb-6 flex items-center gap-2">
+          <h3 className="text-sm font-black text-foreground mb-6 flex items-center gap-2 uppercase tracking-widest">
             <Brain className="h-4 w-4 text-subtle" /> Feature Usage
           </h3>
-          <p className="text-3xl font-black text-foreground mb-1">{totalFeatures.toLocaleString()}</p>
-          <p className="text-[10px] font-bold text-subtle uppercase tracking-widest mb-6">Total AI Interactions</p>
+          <p className="text-3xl font-black text-foreground mb-1 tracking-tighter">{totalFeatures.toLocaleString()}</p>
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-6">Total AI Interactions</p>
           <div className="space-y-4">
             {[
-              { label: 'Chat Messages', value: featureUsage.chats || 0, icon: MessageSquare, color: 'bg-purple-500', pct: totalFeatures > 0 ? ((featureUsage.chats || 0)/totalFeatures)*100 : 0 },
-              { label: 'Quiz Attempts', value: featureUsage.quizzes || 0, icon: ClipboardList, color: 'bg-emerald-500', pct: totalFeatures > 0 ? ((featureUsage.quizzes || 0)/totalFeatures)*100 : 0 },
-              { label: 'Study Notes', value: featureUsage.notes || 0, icon: BookOpen, color: 'bg-orange-500', pct: totalFeatures > 0 ? ((featureUsage.notes || 0)/totalFeatures)*100 : 0 },
-              { label: 'Study Plans', value: featureUsage.studyPlans || 0, icon: Brain, color: 'bg-indigo-500', pct: totalFeatures > 0 ? ((featureUsage.studyPlans || 0)/totalFeatures)*100 : 0 },
+              { label: 'Chat Messages', value: featureUsage.chats || 0, icon: MessageSquare, color: 'bg-[#1e3a5f]', pct: totalFeatures > 0 ? ((featureUsage.chats || 0)/totalFeatures)*100 : 0 },
+              { label: 'Quiz Attempts', value: featureUsage.quizzes || 0, icon: ClipboardList, color: 'bg-[#c9a84c]', pct: totalFeatures > 0 ? ((featureUsage.quizzes || 0)/totalFeatures)*100 : 0 },
+              { label: 'Study Notes', value: featureUsage.notes || 0, icon: BookOpen, color: 'bg-[#1e3a5f]/80', pct: totalFeatures > 0 ? ((featureUsage.notes || 0)/totalFeatures)*100 : 0 },
+              { label: 'Study Plans', value: featureUsage.studyPlans || 0, icon: Brain, color: 'bg-[#c9a84c]/80', pct: totalFeatures > 0 ? ((featureUsage.studyPlans || 0)/totalFeatures)*100 : 0 },
             ].map(f => (
               <div key={f.label}>
                 <div className="flex items-center justify-between mb-1">
@@ -179,7 +179,7 @@ export default function AdminStatsPage() {
         {/* Document Processing */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           className="bg-surface border border-border-subtle rounded-2xl p-6">
-          <h3 className="text-sm font-bold text-foreground mb-6 flex items-center gap-2">
+          <h3 className="text-sm font-black text-foreground mb-6 flex items-center gap-2 uppercase tracking-widest">
             <FileText className="h-4 w-4 text-subtle" /> Document Processing
           </h3>
           <div className="text-center mb-6">
@@ -247,7 +247,7 @@ export default function AdminStatsPage() {
                   <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.quizzes}</td>
                   <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.notes}</td>
                   <td className="px-5 py-4 text-center">
-                    <span className="text-sm font-black text-indigo-600 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">{u.total}</span>
+                    <span className="text-sm font-black text-[#1e3a5f] bg-[#1e3a5f]/10 px-3 py-1 rounded-full border border-[#1e3a5f]/20">{u.total}</span>
                   </td>
                 </tr>
               ))}

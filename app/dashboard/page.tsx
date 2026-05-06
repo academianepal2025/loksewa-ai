@@ -42,10 +42,10 @@ function MiniStat({ label, value, icon: Icon, tooltip }: any) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <p className="text-[10px] font-bold text-subtle uppercase tracking-wider leading-none">{label}</p>
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest leading-none">{label}</p>
           <Tooltip content={tooltip} />
         </div>
-        <p className="text-base font-bold text-foreground leading-none truncate">{value}</p>
+        <p className="text-base font-black text-foreground tracking-tighter leading-none truncate">{value}</p>
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ function OperationalCard({ title, desc, icon: Icon, href, color = 'zinc' }: any)
         <div className="h-10 w-10 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground group-hover:bg-[#1e3a5f] group-hover:text-[#c9a84c] transition-all duration-300 mb-6">
           <Icon className="h-5 w-5" />
         </div>
-        <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
+        <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-2 flex items-center gap-2">
           {title}
           <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
         </h3>
@@ -250,9 +250,9 @@ export default function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group"
+          className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group shadow-sm"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-[80px] -mr-32 -mt-32" />
           
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
                   </button>
                 ))}
               </div>
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3 leading-tight">
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tighter text-foreground mb-3 leading-tight uppercase">
                 {exam.exam_name}
               </h1>
               <p className="text-subtle text-sm font-medium max-w-sm mb-8 leading-relaxed">
@@ -294,7 +294,7 @@ export default function DashboardPage() {
                      <path className="text-[#c9a84c]" strokeWidth="2.5" strokeDasharray={`${stats.progress}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <span className="text-xl font-bold text-foreground">{stats.progress}%</span>
+                     <span className="text-xl font-black text-foreground tracking-tighter">{stats.progress}%</span>
                   </div>
                </div>
                <p className="text-[10px] font-black uppercase tracking-widest text-subtle">{t('ready_percent')}</p>
@@ -349,37 +349,37 @@ export default function DashboardPage() {
               
               <div className="flex items-center justify-between mb-8 relative z-10">
                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f] flex items-center justify-center text-background">
+                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f] flex items-center justify-center text-[#c9a84c]">
                       <Sparkles className="h-4 w-4" />
                     </div>
-                    <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">{t('coach_report')}</h3>
+                    <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest">{t('coach_report')}</h3>
                  </div>
-                 <Link href="/dashboard/performance" className="text-[10px] font-bold text-accent flex items-center gap-1 hover:gap-2 transition-all min-h-[44px]">
+                 <Link href="/dashboard/performance" className="text-[10px] font-black text-[#c9a84c] flex items-center gap-1 hover:gap-2 transition-all min-h-[44px] uppercase tracking-widest">
                     {t('full_recap')} <ChevronRight className="h-3 w-3" />
                  </Link>
               </div>
 
               <div className="space-y-6 relative z-10 flex-1">
-                 <div className="p-4 bg-background border border-border-subtle rounded-xl">
-                    <p className="text-[10px] font-bold text-accent uppercase mb-2">{t('strategy_update')}</p>
-                    <p className="text-xs font-medium text-muted leading-relaxed line-clamp-3">
+                 <div className="p-4 bg-background border border-border-subtle rounded-xl shadow-sm">
+                    <p className="text-[10px] font-black text-[#c9a84c] uppercase mb-2 tracking-widest">{t('strategy_update')}</p>
+                    <p className="text-xs font-black text-muted leading-relaxed line-clamp-3 italic uppercase tracking-widest opacity-80">
                       "{stats.feedback}"
                     </p>
                  </div>
 
                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 bg-background border border-border-subtle rounded-xl">
-                       <p className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase mb-1">{t('stronghold')}</p>
-                       <p className="text-[10px] font-bold text-foreground truncate">{stats.stronghold}</p>
+                    <div className="p-4 bg-background border border-border-subtle rounded-xl shadow-sm">
+                       <p className="text-[9px] font-black text-[#c9a84c] uppercase mb-1 tracking-widest">{t('stronghold')}</p>
+                       <p className="text-[10px] font-black text-foreground truncate uppercase tracking-widest">{stats.stronghold}</p>
                     </div>
-                    <div className="p-4 bg-background border border-border-subtle rounded-xl">
-                       <p className="text-[9px] font-bold text-red-600 dark:text-red-400 uppercase mb-1">{t('target_area')}</p>
-                       <p className="text-[10px] font-bold text-foreground truncate">{stats.targetArea}</p>
+                    <div className="p-4 bg-background border border-border-subtle rounded-xl shadow-sm">
+                       <p className="text-[9px] font-black text-red-500 uppercase mb-1 tracking-widest">{t('target_area')}</p>
+                       <p className="text-[10px] font-black text-foreground truncate uppercase tracking-widest">{stats.targetArea}</p>
                     </div>
                  </div>
 
                  <div className="pt-6 border-t border-border-subtle">
-                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3.5 bg-[#1e3a5f] text-background rounded-xl text-[10px] font-bold uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center">
+                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center tracking-widest shadow-lg shadow-[#1e3a5f]/10">
                        {t('brief_guru')}
                     </Link>
                  </div>

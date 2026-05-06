@@ -208,25 +208,25 @@ export default function AdminPaymentsPage() {
     <div className="space-y-6">
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="admin-stat-card bg-surface border border-border-subtle p-5 rounded-2xl">
-          <p className="text-[10px] font-bold text-subtle uppercase tracking-widest mb-1">Total</p>
-          <p className="text-2xl font-black text-foreground">{stats.total}</p>
+        <div className="admin-stat-card bg-surface border border-border-subtle p-4 rounded-2xl shadow-sm">
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1">Total Requests</p>
+          <p className="text-2xl font-black text-foreground tracking-tighter">{stats.total}</p>
         </div>
-        <div className="admin-stat-card bg-orange-500/5 border border-orange-500/10 p-5 rounded-2xl">
-          <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">Pending</p>
-          <p className="text-2xl font-black text-orange-600">{stats.pending}</p>
+        <div className="admin-stat-card bg-accent/5 border border-accent/10 p-4 rounded-2xl shadow-sm">
+          <p className="text-[10px] font-black text-accent uppercase tracking-widest mb-1">Pending Verification</p>
+          <p className="text-2xl font-black text-accent tracking-tighter">{stats.pending}</p>
         </div>
-        <div className="admin-stat-card bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-2xl">
-          <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Approved</p>
-          <p className="text-2xl font-black text-emerald-600">{stats.approved}</p>
+        <div className="admin-stat-card bg-emerald-500/5 border border-emerald-500/10 p-4 rounded-2xl shadow-sm">
+          <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Approved Assets</p>
+          <p className="text-2xl font-black text-emerald-600 tracking-tighter">{stats.approved}</p>
         </div>
-        <div className="admin-stat-card bg-red-500/5 border border-red-500/10 p-5 rounded-2xl">
-          <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">Rejected</p>
-          <p className="text-2xl font-black text-red-600">{stats.rejected}</p>
+        <div className="admin-stat-card bg-red-500/5 border border-red-500/10 p-4 rounded-2xl shadow-sm">
+          <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Rejected Ops</p>
+          <p className="text-2xl font-black text-red-600 tracking-tighter">{stats.rejected}</p>
         </div>
-        <div className="admin-stat-card bg-indigo-500/5 border border-indigo-500/10 p-5 rounded-2xl">
-          <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">Revenue (Month)</p>
-          <p className="text-2xl font-black text-indigo-600">NPR {stats.monthRevenue.toLocaleString()}</p>
+        <div className="admin-stat-card bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 p-4 rounded-2xl shadow-sm">
+          <p className="text-[10px] font-black text-[#1e3a5f] uppercase tracking-widest mb-1">Mission Revenue</p>
+          <p className="text-2xl font-black text-[#1e3a5f] tracking-tighter">NPR {stats.monthRevenue.toLocaleString()}</p>
         </div>
       </div>
 
@@ -241,8 +241,8 @@ export default function AdminPaymentsPage() {
                 <button
                   key={tab}
                   onClick={() => { setActiveTab(tab); setPage(1); }}
-                  className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${
-                    activeTab === tab ? 'bg-indigo-600 text-white shadow-md' : 'text-subtle hover:text-foreground'
+                  className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                    activeTab === tab ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-md' : 'text-subtle hover:text-foreground'
                   }`}
                 >
                   {tab}
@@ -334,10 +334,10 @@ export default function AdminPaymentsPage() {
                     <p className="text-xs font-black text-foreground">NPR {req.plan_amount}</p>
                   </td>
                   <td className="px-5 py-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                      req.status === 'pending' ? 'bg-orange-500/10 text-orange-600 border border-orange-500/20' :
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                      req.status === 'pending' ? 'bg-accent/10 text-accent border border-accent/20' :
                       req.status === 'approved' ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' :
-                      req.status === 'manually_granted' ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20' :
+                      req.status === 'manually_granted' ? 'bg-[#1e3a5f]/10 text-[#1e3a5f] border border-[#1e3a5f]/20' :
                       'bg-red-500/10 text-red-600 border border-red-500/20'
                     }`}>
                       {req.status === 'pending' ? <Clock className="h-3 w-3" /> : req.status === 'approved' || req.status === 'manually_granted' ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}

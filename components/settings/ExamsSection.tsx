@@ -75,14 +75,14 @@ export function ExamsSection({ user, supabase }: any) {
   };
 
   return (
-    <div className="bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8">
+    <div className="bg-surface border border-border-subtle rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-lg font-bold text-foreground tracking-tight mb-1">My Exams</h2>
-          <p className="text-xs text-subtle font-medium">Manage your exam targets and study timelines.</p>
+          <h2 className="text-lg font-black text-foreground tracking-tighter mb-1 uppercase">My Exams</h2>
+          <p className="text-xs text-subtle font-black uppercase tracking-widest opacity-70">Manage your exam targets and study timelines.</p>
         </div>
-        <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:opacity-90">
-          <Plus className="h-3.5 w-3.5" /> Add Exam
+        <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 shadow-lg shadow-[#1e3a5f]/10">
+          <Plus className="h-3.5 w-3.5" /> Add Mission
         </button>
       </div>
 
@@ -98,11 +98,11 @@ export function ExamsSection({ user, supabase }: any) {
             <div key={exam.id} className="bg-background border border-border-subtle rounded-xl p-4 sm:p-5">
               {editingId === exam.id ? (
                 <div className="space-y-3">
-                  <input value={editForm.exam_name || ''} onChange={e => setEditForm(f => ({...f, exam_name: e.target.value}))} className="w-full bg-surface border border-border-subtle rounded-xl px-4 py-2.5 text-sm font-bold outline-none focus:border-accent/50" />
+                  <input value={editForm.exam_name || ''} onChange={e => setEditForm(f => ({...f, exam_name: e.target.value}))} className="w-full bg-surface border border-border-subtle rounded-xl px-4 py-2.5 text-[11px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 shadow-sm" />
                   <div className="flex gap-2">
-                    <button onClick={() => setEditingId(null)} className="px-4 py-2 text-[10px] font-bold text-subtle uppercase">Cancel</button>
-                    <button onClick={handleEdit} disabled={editSaving} className="px-4 py-2 bg-orange-600 text-white rounded-xl text-[10px] font-bold uppercase flex items-center gap-1.5 disabled:opacity-40">
-                      {editSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />} Save
+                    <button onClick={() => setEditingId(null)} className="px-4 py-2 text-[10px] font-black text-subtle uppercase tracking-widest">Cancel</button>
+                    <button onClick={handleEdit} disabled={editSaving} className="px-4 py-2 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10">
+                      {editSaving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />} Sync Changes
                     </button>
                   </div>
                 </div>
@@ -110,11 +110,11 @@ export function ExamsSection({ user, supabase }: any) {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-sm font-bold text-foreground">{exam.exam_name}</h3>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-accent/10 text-accent uppercase tracking-wider">{exam.exam_category}</span>
-                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${exam.status === 'active' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-yellow-500/10 text-yellow-600'}`}>{exam.status}</span>
+                      <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest">{exam.exam_name}</h3>
+                      <span className="text-[8px] font-black px-2 py-0.5 rounded-md bg-[#1e3a5f] text-[#c9a84c] uppercase tracking-widest border border-[#c9a84c]/20 shadow-sm">{exam.exam_category}</span>
+                      <span className={`text-[8px] font-black px-2 py-0.5 rounded-md uppercase tracking-widest shadow-sm border ${exam.status === 'active' ? 'bg-[#c9a84c]/10 text-[#c9a84c] border-[#c9a84c]/20' : 'bg-background text-subtle border-border-subtle'}`}>{exam.status}</span>
                     </div>
-                    <p className="text-[10px] font-bold text-subtle uppercase tracking-wider mt-1">{getDaysRemaining(exam.exam_date)} Days Remaining · {exam.daily_study_hours}h/day · {exam.total_papers} papers</p>
+                    <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-1.5">{getDaysRemaining(exam.exam_date)} Days Remaining · {exam.daily_study_hours}h/day · {exam.total_papers} papers</p>
                   </div>
                   <div className="flex gap-1.5">
                     <button onClick={() => toggleStatus(exam)} className="p-2.5 text-subtle hover:text-foreground hover:bg-surface border border-border-subtle rounded-xl transition-all" title={exam.status === 'active' ? 'Pause' : 'Resume'}>
@@ -139,36 +139,36 @@ export function ExamsSection({ user, supabase }: any) {
         <div className="fixed inset-0 z-[110] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowAdd(false)}>
           <div className="bg-surface border border-border-subtle rounded-2xl p-8 max-w-md w-full shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-lg font-bold text-foreground">Add New Exam</h3>
+              <h3 className="text-lg font-black text-foreground uppercase tracking-tighter">Add New Mission</h3>
               <button onClick={() => setShowAdd(false)} className="text-subtle hover:text-foreground"><X className="h-5 w-5" /></button>
             </div>
             <div className="space-y-4">
               <div className="relative">
-                <label className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1.5 block ml-1">Category</label>
-                <select value={addForm.exam_category} onChange={e => setAddForm(f => ({...f, exam_category: e.target.value}))} className="w-full appearance-none bg-background border border-border-subtle rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-accent/50">
-                  <option value="">Select...</option>
+                <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Category</label>
+                <select value={addForm.exam_category} onChange={e => setAddForm(f => ({...f, exam_category: e.target.value}))} className="w-full appearance-none bg-background border border-border-subtle rounded-xl px-4 py-3 text-[11px] font-black uppercase tracking-widest outline-none focus:border-accent/50 shadow-sm">
+                  <option value="">SELECT CATEGORY...</option>
                   {EXAM_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
-                <ChevronDown className="absolute right-4 top-9 h-4 w-4 text-subtle pointer-events-none" />
+                <ChevronDown className="absolute right-4 top-9 h-4 w-4 text-[#c9a84c] pointer-events-none" />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1.5 block ml-1">Exam Name</label>
-                <input value={addForm.exam_name} onChange={e => setAddForm(f => ({...f, exam_name: e.target.value}))} className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-accent/50" placeholder="e.g., Kharidar 2081" />
+                <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Exam Name</label>
+                <input value={addForm.exam_name} onChange={e => setAddForm(f => ({...f, exam_name: e.target.value}))} className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-[11px] font-black uppercase tracking-widest outline-none focus:border-accent/50 shadow-sm placeholder:text-subtle/30" placeholder="E.G., KHARIDAR 2081" />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1.5 block ml-1">Study Duration</label>
+                <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Study Duration</label>
                 <div className="grid grid-cols-4 gap-2">
                   {DURATION_PRESETS.map(d => (
-                    <button key={d} type="button" onClick={() => setAddForm(f => ({...f, study_days: d, custom_days: ''}))} className={`py-2.5 rounded-xl text-xs font-bold border transition-all ${addForm.study_days === d && !addForm.custom_days ? 'border-accent bg-accent/5 text-accent' : 'bg-background border-border-subtle text-subtle'}`}>{d}d</button>
+                    <button key={d} type="button" onClick={() => setAddForm(f => ({...f, study_days: d, custom_days: ''}))} className={`py-2.5 rounded-xl text-[10px] font-black border transition-all uppercase tracking-widest shadow-sm ${addForm.study_days === d && !addForm.custom_days ? 'border-[#c9a84c] bg-[#c9a84c]/5 text-[#c9a84c]' : 'bg-background border-border-subtle text-subtle'}`}>{d}D</button>
                   ))}
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <label className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1">Daily Hours: <span className="text-accent">{addForm.daily_study_hours}h</span></label>
+                <label className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1">Daily Hours: <span className="text-[#c9a84c]">{addForm.daily_study_hours}H</span></label>
               </div>
-              <input type="range" min="1" max="14" value={addForm.daily_study_hours} onChange={e => setAddForm(f => ({...f, daily_study_hours: parseInt(e.target.value)}))} className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-orange-600" />
-              <button onClick={handleAdd} disabled={addSaving} className="w-full py-3.5 bg-orange-600 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider hover:opacity-90 disabled:opacity-40 flex items-center justify-center gap-2">
-                {addSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Add Exam
+              <input type="range" min="1" max="14" value={addForm.daily_study_hours} onChange={e => setAddForm(f => ({...f, daily_study_hours: parseInt(e.target.value)}))} className="w-full h-1.5 rounded-full appearance-none cursor-pointer accent-[#c9a84c] bg-background border border-border-subtle" />
+              <button onClick={handleAdd} disabled={addSaving} className="w-full py-3.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 flex items-center justify-center gap-2 shadow-lg shadow-[#1e3a5f]/10">
+                {addSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Initialize Mission
               </button>
             </div>
           </div>

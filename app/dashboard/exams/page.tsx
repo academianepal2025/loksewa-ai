@@ -58,53 +58,53 @@ function ExamCard({ exam }: { exam: Exam }) {
   const daysRemaining = getDaysRemaining(exam.exam_date);
 
   return (
-    <div className="group bg-surface rounded-2xl border border-border-subtle overflow-hidden hover:border-accent/40 transition-all duration-300">
+    <div className="group bg-surface rounded-2xl border border-border-subtle overflow-hidden hover:border-[#c9a84c]/40 transition-all duration-300 shadow-sm">
       <div className="p-6 sm:p-7 space-y-6">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
-            <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">Mission Target</p>
-            <h3 className="text-xl font-bold text-foreground tracking-tight leading-tight group-hover:text-accent transition-colors">{exam.exam_name}</h3>
+            <p className="text-[10px] font-black text-subtle uppercase tracking-widest">MISSION TARGET</p>
+            <h3 className="text-xl font-black text-foreground tracking-tighter leading-tight group-hover:text-[#c9a84c] transition-colors uppercase">{exam.exam_name}</h3>
           </div>
-          <span className="text-[9px] font-bold px-2 py-0.5 rounded-md bg-accent/10 text-accent uppercase tracking-wider border border-accent/20">
+          <span className="text-[9px] font-black px-2 py-0.5 rounded-md bg-[#1e3a5f] text-[#c9a84c] uppercase tracking-widest border border-[#c9a84c]/20 shadow-sm">
             {exam.status}
           </span>
         </div>
 
         <div className="flex justify-between items-end">
-          <div className="px-3 py-1 rounded-lg bg-background border border-border-subtle text-subtle text-[10px] font-bold tracking-wider uppercase">
+          <div className="px-3 py-1 rounded-lg bg-background border border-border-subtle text-subtle text-[9px] font-black tracking-widest uppercase shadow-sm">
             {exam.exam_category}
           </div>
           <div className="text-right">
-            <span className="text-3xl font-bold text-foreground leading-none tracking-tight">{daysRemaining}</span>
-            <span className="text-[9px] text-subtle block uppercase font-bold tracking-wider mt-1">Days Left</span>
+            <span className="text-3xl font-black text-foreground leading-none tracking-tighter">{daysRemaining}</span>
+            <span className="text-[9px] text-subtle block uppercase font-black tracking-widest mt-1">Days Left</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-3 p-3 bg-background rounded-xl border border-border-subtle group-hover:border-accent/20 transition-colors">
-            <CalendarDays className="h-4 w-4 text-accent" />
+          <div className="flex items-center gap-3 p-3 bg-background border border-border-subtle group-hover:border-[#c9a84c]/20 transition-colors shadow-sm rounded-xl">
+            <CalendarDays className="h-4 w-4 text-[#c9a84c]" />
              <div className="flex flex-col">
-                <span className="text-[9px] font-bold text-subtle uppercase tracking-wider leading-none mb-1">Duration</span>
-                <span className="text-[11px] font-bold text-foreground truncate">{daysRemaining} Day Plan</span>
+                <span className="text-[9px] font-black text-subtle uppercase tracking-widest leading-none mb-1">Duration</span>
+                <span className="text-[10px] font-black text-foreground truncate uppercase tracking-widest">{daysRemaining} Day Plan</span>
              </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-background rounded-xl border border-border-subtle group-hover:border-accent/20 transition-colors">
-            <Clock className="h-4 w-4 text-accent" />
+          <div className="flex items-center gap-3 p-3 bg-background border border-border-subtle group-hover:border-[#c9a84c]/20 transition-colors shadow-sm rounded-xl">
+            <Clock className="h-4 w-4 text-[#c9a84c]" />
              <div className="flex flex-col">
-                <span className="text-[9px] font-bold text-subtle uppercase tracking-wider leading-none mb-1">Intensity</span>
-                <span className="text-[11px] font-bold text-foreground">{exam.daily_study_hours}h Daily</span>
+                <span className="text-[9px] font-black text-subtle uppercase tracking-widest leading-none mb-1">Intensity</span>
+                <span className="text-[10px] font-black text-foreground uppercase tracking-widest">{exam.daily_study_hours}h Daily</span>
              </div>
           </div>
         </div>
 
         <div className="flex items-center justify-between pt-4 border-t border-border-subtle">
-          <div className="flex items-center text-[11px] text-subtle font-bold tracking-wider uppercase">
-            <FileText className="h-4 w-4 mr-2 text-orange-600" />
+          <div className="flex items-center text-[10px] text-subtle font-black tracking-widest uppercase">
+            <FileText className="h-4 w-4 mr-2 text-[#c9a84c]" />
             {exam.total_papers} Papers
           </div>
           <Link
             href={`/dashboard/study-plan`}
-            className="flex items-center gap-2 text-[11px] font-bold text-orange-600 hover:text-accent transition-all uppercase tracking-wider group/link"
+            className="flex items-center gap-2 text-[10px] font-black text-[#c9a84c] hover:text-foreground transition-all uppercase tracking-widest group/link"
           >
             Open Plan
             <ArrowRight className="h-3.5 w-3.5 transform group-hover/link:translate-x-1 transition-transform" />
@@ -171,11 +171,11 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
         <div className="p-6 border-b border-border-subtle flex justify-between items-center relative">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground">
-                <Sparkles className="h-5 w-5 text-accent" />
+                <Sparkles className="h-5 w-5 text-[#c9a84c]" />
             </div>
             <div>
-                <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">Configuration</p>
-                <h2 className="text-xl font-bold text-foreground tracking-tight">New Mission Target</h2>
+                <p className="text-[10px] font-black text-subtle uppercase tracking-widest">Configuration</p>
+                <h2 className="text-xl font-black text-foreground tracking-tighter uppercase">New Mission Target</h2>
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-background rounded-xl transition-all text-subtle">
@@ -192,12 +192,12 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-[10px] font-bold text-subtle uppercase tracking-wider mb-2 ml-1">Category</label>
+              <label className="block text-[10px] font-black text-subtle uppercase tracking-widest mb-2 ml-1">Category</label>
               <div className="relative">
                 <select
                   value={formData.exam_category}
                   onChange={(e) => setFormData(prev => ({ ...prev, exam_category: e.target.value }))}
-                  className="w-full appearance-none rounded-xl bg-background border border-border-subtle px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all"
+                  className="w-full appearance-none rounded-xl bg-background border border-border-subtle px-4 py-3.5 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all shadow-sm"
                 >
                   <option value="">Select Category...</option>
                   {EXAM_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
@@ -207,15 +207,15 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold text-subtle uppercase tracking-wider mb-2 ml-1">Papers</label>
+              <label className="block text-[10px] font-black text-subtle uppercase tracking-widest mb-2 ml-1">Papers</label>
               <div className="flex gap-2">
                 {[1, 2, 3].map(num => (
                   <button
                     key={num}
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, total_papers: num }))}
-                    className={`flex-1 py-3 text-sm font-bold border rounded-xl transition-all ${
-                      formData.total_papers === num ? 'border-accent bg-accent/5 text-accent' : 'bg-background border-border-subtle text-subtle'
+                    className={`flex-1 py-3 text-xs font-black uppercase tracking-widest border rounded-xl transition-all shadow-sm ${
+                      formData.total_papers === num ? 'border-[#c9a84c] bg-[#c9a84c]/5 text-[#c9a84c]' : 'bg-background border-border-subtle text-subtle'
                     }`}
                   >
                     {num}
@@ -226,29 +226,29 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-subtle uppercase tracking-wider mb-2 ml-1">Exam Designation</label>
+            <label className="block text-[10px] font-black text-subtle uppercase tracking-widest mb-2 ml-1">Exam Designation</label>
             <input
               type="text"
-              placeholder="e.g. Officer Level II"
+              placeholder="e.g. OFFICER LEVEL II"
               value={formData.exam_name}
               onChange={(e) => setFormData(prev => ({ ...prev, exam_name: e.target.value }))}
-              className="w-full rounded-xl bg-background border border-border-subtle px-5 py-4 text-sm font-bold focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all placeholder:text-subtle/50"
+              className="w-full rounded-xl bg-background border border-border-subtle px-5 py-4 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all placeholder:text-subtle/50 shadow-sm"
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold text-subtle uppercase tracking-wider mb-2 ml-1">Study Duration</label>
+            <label className="block text-[10px] font-black text-subtle uppercase tracking-widest mb-2 ml-1">Study Duration</label>
             <div className="grid grid-cols-4 gap-2 mb-3">
               {DURATION_PRESETS.map((d) => (
                 <button
                   key={d}
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, study_days: d, custom_days: '' }))}
-                  className={`py-3 text-sm font-bold border rounded-xl transition-all ${
-                    formData.study_days === d && !formData.custom_days ? 'border-accent bg-accent/5 text-accent' : 'bg-background border-border-subtle text-subtle'
+                  className={`py-3 text-xs font-black uppercase tracking-widest border rounded-xl transition-all shadow-sm ${
+                    formData.study_days === d && !formData.custom_days ? 'border-[#c9a84c] bg-[#c9a84c]/5 text-[#c9a84c]' : 'bg-background border-border-subtle text-subtle'
                   }`}
                 >
-                  {d}d
+                  {d}D
                 </button>
               ))}
             </div>
@@ -257,21 +257,21 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
                 type="number"
                 min={7}
                 max={365}
-                placeholder="Custom days"
+                placeholder="CUSTOM DAYS"
                 value={formData.custom_days}
                 onChange={(e) => setFormData(prev => ({ ...prev, custom_days: e.target.value, study_days: 0 }))}
-                className={`flex-1 rounded-xl bg-background border px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all ${
-                  formData.custom_days ? 'border-accent' : 'border-border-subtle'
+                className={`flex-1 rounded-xl bg-background border px-4 py-3 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all shadow-sm ${
+                  formData.custom_days ? 'border-[#c9a84c]' : 'border-border-subtle'
                 }`}
               />
-              <span className="text-[10px] font-bold text-subtle uppercase">days</span>
+              <span className="text-[10px] font-black text-subtle uppercase tracking-widest">days</span>
             </div>
           </div>
 
           <div className="space-y-4">
-            <label className="flex justify-between items-center text-[10px] font-bold text-subtle uppercase tracking-wider ml-1">
+            <label className="flex justify-between items-center text-[10px] font-black text-subtle uppercase tracking-widest ml-1">
                <span>Study Intensity</span>
-               <span className="text-accent">{formData.daily_study_hours} Hours Daily</span>
+               <span className="text-[#c9a84c]">{formData.daily_study_hours} Hours Daily</span>
             </label>
             <input
               type="range"
@@ -279,7 +279,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
               max="14"
               value={formData.daily_study_hours}
               onChange={(e) => setFormData(prev => ({ ...prev, daily_study_hours: parseInt(e.target.value) }))}
-              className="w-full h-1.5 bg-background border border-border-subtle rounded-full appearance-none cursor-pointer accent-accent"
+              className="w-full h-1.5 bg-background border border-border-subtle rounded-full appearance-none cursor-pointer accent-[#c9a84c]"
             />
           </div>
 
@@ -287,7 +287,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-orange-600 text-background font-bold text-base py-4 rounded-xl hover:opacity-90 transition-all disabled:opacity-50 active:scale-[0.99]"
+              className="w-full bg-[#1e3a5f] text-[#c9a84c] font-black text-xs uppercase tracking-widest py-3.5 rounded-xl hover:opacity-90 transition-all disabled:opacity-50 active:scale-[0.99] shadow-lg shadow-[#1e3a5f]/10"
             >
               {saving ? 'Synchronizing...' : 'Initialize Mission'}
             </button>
@@ -325,24 +325,24 @@ export default function ExamsPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Visual Header */}
-      <div className="bg-surface p-8 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+       <div className="bg-surface p-6 sm:p-8 rounded-2xl border border-border-subtle relative overflow-hidden shadow-sm">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-[80px] -mr-32 -mt-32" />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
           <div className="space-y-4">
              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-accent" />
-                <span className="text-[10px] font-bold uppercase tracking-wider text-accent">Active Missions</span>
+                <Sparkles className="h-4 w-4 text-[#c9a84c]" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a84c]">Active Missions</span>
              </div>
-             <h1 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
-                Target <span className="text-accent">Exams</span>
+             <h1 className="text-3xl font-black text-foreground tracking-tighter leading-tight uppercase">
+                Target <span className="text-[#c9a84c]">Exams</span>
              </h1>
-             <p className="text-sm text-subtle font-medium max-w-sm leading-relaxed">
+             <p className="text-xs text-subtle font-medium max-w-sm leading-relaxed">
                 Strategic tracking of your Public Service Commission objectives and examination timelines.
              </p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-orange-600 text-background px-8 py-3.5 rounded-xl font-bold text-sm flex items-center gap-3 hover:opacity-90 transition-all"
+            className="bg-[#1e3a5f] text-[#c9a84c] px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
           >
             <Plus className="h-5 w-5" />
             Add Mission
@@ -357,15 +357,15 @@ export default function ExamsPage() {
           ))}
         </div>
       ) : exams.length === 0 ? (
-        <div className="bg-surface p-16 sm:p-24 rounded-2xl text-center border border-border-subtle border-dashed">
-          <div className="h-20 w-20 bg-background border border-border-subtle rounded-2xl flex items-center justify-center mx-auto mb-8">
-            <History className="h-10 w-10 text-subtle opacity-40" />
+        <div className="bg-surface p-16 sm:p-24 rounded-2xl text-center border border-border-subtle border-dashed shadow-sm">
+          <div className="h-20 w-20 bg-background border border-border-subtle rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm">
+            <History className="h-10 w-10 text-[#c9a84c] opacity-40" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground mb-3 tracking-tight">Command Center Empty</h2>
-          <p className="text-subtle max-w-sm mx-auto mb-10 text-sm font-medium leading-relaxed">You haven't initialized any exam objectives yet. Your study journey begins with a target.</p>
+          <h2 className="text-2xl font-black text-foreground mb-3 tracking-tighter uppercase">Command Center Empty</h2>
+          <p className="text-[10px] font-black text-subtle max-w-sm mx-auto mb-10 uppercase tracking-widest leading-relaxed">You haven't initialized any exam objectives yet. Your study journey begins with a target.</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-orange-600 text-background px-10 py-4 rounded-xl font-bold text-base inline-flex items-center gap-3 hover:opacity-90 transition-all"
+            className="bg-[#1e3a5f] text-[#c9a84c] px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest inline-flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
           >
             <Plus className="h-5 w-5" />
             Launch First Mission

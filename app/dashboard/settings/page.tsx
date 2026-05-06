@@ -122,9 +122,9 @@ export default function SettingsPage() {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8 px-1">
-        <span className="text-[10px] font-bold text-accent uppercase tracking-[0.2em]">Control Center</span>
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight mt-1">Settings</h1>
-        <p className="text-sm text-subtle font-medium mt-1">Manage your profile, security, preferences, and account.</p>
+        <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest">Control Center</span>
+        <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter mt-1 uppercase">Settings</h1>
+        <p className="text-xs text-subtle font-medium mt-1">Manage your profile, security, preferences, and account.</p>
       </div>
 
       {/* Mobile pill tabs */}
@@ -134,7 +134,7 @@ export default function SettingsPage() {
             <button
               key={s.id}
               onClick={() => scrollTo(s.id)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all whitespace-nowrap ${
+              className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                 activeSection === s.id
                   ? 'bg-[#1e3a5f] text-[#c9a84c]'
                   : 'bg-surface border border-border-subtle text-subtle'
@@ -156,7 +156,7 @@ export default function SettingsPage() {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all text-left ${
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all text-left ${
                   activeSection === s.id
                     ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20'
                     : 'text-subtle hover:bg-surface hover:text-foreground'

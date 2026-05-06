@@ -44,7 +44,7 @@ export function StudyPlanRegenModal({
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                   className="bg-surface p-8 sm:p-10 rounded-[2.5rem] max-w-md w-full border border-border-subtle shadow-2xl relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/5 rounded-full blur-[40px] -mr-16 -mt-16" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-[40px] -mr-16 -mt-16" />
                   
                   <button
                     onClick={onClose}
@@ -53,56 +53,56 @@ export function StudyPlanRegenModal({
                     <X className="h-5 w-5" />
                   </button>
 
-                  <div className="h-14 w-14 bg-orange-600/10 text-orange-600 border border-orange-600/20 rounded-2xl flex items-center justify-center mb-8">
+                  <div className="h-14 w-14 bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
                     <RefreshCw className="h-7 w-7" />
                   </div>
 
-                  <Dialog.Title className="text-2xl font-bold text-foreground tracking-tight mb-2">
-                    Regenerate Roadmap
+                  <Dialog.Title className="text-2xl font-black text-foreground tracking-tighter mb-2 uppercase">
+                    Reset Roadmap
                   </Dialog.Title>
-                  <Dialog.Description className="text-sm text-subtle font-medium mb-8 leading-relaxed">
-                    Adjust your mission parameters. This will reset all current progress for this exam.
+                   <Dialog.Description className="text-[10px] text-subtle font-black uppercase tracking-widest mb-8 leading-relaxed opacity-70">
+                    Adjust mission parameters. This protocol will purge all current progress logs for this exam.
                   </Dialog.Description>
 
                   <div className="space-y-6 mb-10">
                     {/* Days Input */}
                     <div className="space-y-3">
-                      <label className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1 flex items-center gap-2">
-                        <Calendar className="h-3 w-3" /> Study Duration (Days)
+                      <label className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <Calendar className="h-3 w-3 text-[#c9a84c]" /> Study Duration
                       </label>
                       <div className="relative group">
                         <input
                           type="number"
                           value={days}
                           onChange={(e) => setDays(Math.max(1, parseInt(e.target.value) || 1))}
-                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-sm font-bold focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 outline-none transition-all"
-                          placeholder="Number of days"
+                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-[13px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] outline-none transition-all shadow-sm"
+                          placeholder="DAYS"
                         />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-subtle uppercase">Days</div>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-subtle uppercase tracking-widest">Days</div>
                       </div>
                     </div>
 
                     {/* Hours Input */}
                     <div className="space-y-3">
-                      <label className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1 flex items-center gap-2">
-                        <Clock className="h-3 w-3" /> Daily Study Load (Hours)
+                      <label className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1 flex items-center gap-2">
+                        <Clock className="h-3 w-3 text-[#c9a84c]" /> Daily Load
                       </label>
                       <div className="relative group">
                         <input
                           type="number"
                           value={hours}
                           onChange={(e) => setHours(Math.max(1, Math.min(24, parseInt(e.target.value) || 1)))}
-                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-sm font-bold focus:ring-2 focus:ring-orange-600/20 focus:border-orange-600 outline-none transition-all"
-                          placeholder="Hours per day"
+                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-[13px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] outline-none transition-all shadow-sm"
+                          placeholder="HOURS"
                         />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-subtle uppercase">Hrs/Day</div>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-subtle uppercase tracking-widest">Hrs/Day</div>
                       </div>
                     </div>
 
-                    <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 flex gap-3">
-                      <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0" />
-                      <p className="text-[11px] font-medium text-amber-600/90 leading-tight">
-                        Warning: All checkmarks, notes, and progress logs for this plan will be permanently deleted.
+                    <div className="bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-xl p-4 flex gap-3 shadow-sm">
+                      <AlertTriangle className="h-5 w-5 text-[#c9a84c] flex-shrink-0" />
+                      <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest leading-tight">
+                        Critical: All mission logs and performance data for this roadmap will be purged.
                       </p>
                     </div>
                   </div>
@@ -110,15 +110,15 @@ export function StudyPlanRegenModal({
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
                       onClick={onClose}
-                      className="flex-1 py-4 bg-background border border-border-subtle rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-surface-elevated transition-all active:scale-[0.98]"
+                      className="flex-1 py-4 bg-background border border-border-subtle rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-surface-elevated transition-all active:scale-[0.98] shadow-sm"
                     >
-                      Cancel
+                      Abort
                     </button>
                     <button
                       onClick={() => onConfirm(days, hours)}
-                      className="flex-1 py-4 bg-orange-600 text-background rounded-2xl text-xs font-bold uppercase tracking-widest shadow-xl shadow-orange-600/20 hover:opacity-95 transition-all active:scale-[0.98]"
+                      className="flex-1 py-4 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-[#1e3a5f]/10 hover:opacity-95 transition-all active:scale-[0.98]"
                     >
-                      Regenerate
+                      Re-Deploy
                     </button>
                   </div>
                 </motion.div>

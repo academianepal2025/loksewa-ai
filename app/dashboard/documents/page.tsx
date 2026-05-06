@@ -52,8 +52,8 @@ const DOC_TYPES = [
 
 const STATUS_CONFIG = {
   pending: { color: 'bg-background text-subtle border-border-subtle', icon: Clock },
-  processing: { color: 'bg-orange-600/5 text-orange-600 border-primary/20', icon: Upload },
-  ready: { color: 'bg-emerald-500/5 text-emerald-600 border-emerald-500/20', icon: CheckCircle },
+  processing: { color: 'bg-[#1e3a5f]/5 text-[#c9a84c] border-[#1e3a5f]/20', icon: Upload },
+  ready: { color: 'bg-[#c9a84c]/5 text-[#c9a84c] border-[#c9a84c]/20', icon: CheckCircle },
   failed: { color: 'bg-red-500/5 text-red-600 border-red-500/20', icon: AlertCircle },
 };
 
@@ -70,7 +70,7 @@ function StatusBadge({ status }: { status: DocumentInfo['processing_status'] }) 
   return (
     <div className="flex items-center gap-1.5">
       <Tooltip content={tooltipContent}>
-        <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded border text-[9px] font-bold uppercase tracking-wider cursor-help ${config.color}`}>
+        <span className={`flex items-center gap-1.5 px-2 py-0.5 rounded border text-[8px] font-black uppercase tracking-widest cursor-help shadow-sm ${config.color}`}>
           <config.icon className={`h-2.5 w-2.5 ${status === 'processing' ? 'animate-bounce' : ''}`} />
           {status}
         </span>
@@ -91,20 +91,20 @@ function ProcessingBanner({ isProcessing }: { isProcessing: boolean }) {
   if (!isProcessing) return null;
 
   return (
-    <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 mb-8 flex items-center justify-between animate-fade-in">
+    <div className="bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-xl p-4 mb-8 flex items-center justify-between animate-fade-in shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-accent">
+        <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-[#c9a84c]">
           <Upload className="h-4 w-4 animate-bounce" />
         </div>
         <div>
-          <p className="text-[10px] font-bold text-accent uppercase tracking-wider animate-pulse">{rotatingMessage}</p>
-          <p className="text-[10px] text-subtle font-medium">Your intelligence hub is being updated</p>
+          <p className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest animate-pulse">{rotatingMessage}</p>
+          <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Tactical intelligence extracting</p>
         </div>
       </div>
       <div className="flex gap-1">
-        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
-        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
-        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
+        <span className="h-1 w-1 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="h-1 w-1 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="h-1 w-1 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '300ms' }} />
       </div>
     </div>
   );
@@ -234,10 +234,10 @@ function UploadZone({
   return (
     <div className="flex flex-col space-y-5">
       <div className="flex items-center justify-between">
-          <h3 className="text-[11px] font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
+          <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest flex items-center gap-2">
             {label}
           </h3>
-          {!multi && <span className="text-[9px] bg-background border border-border-subtle px-1.5 py-0.5 rounded text-subtle font-bold uppercase tracking-wider">Single</span>}
+          {!multi && <span className="text-[8px] bg-background border border-border-subtle px-1.5 py-0.5 rounded text-subtle font-black uppercase tracking-widest shadow-sm">Single Target</span>}
       </div>
 
       <input
@@ -254,31 +254,31 @@ function UploadZone({
         onDragLeave={() => setIsOver(false)}
         onDrop={(e) => { e.preventDefault(); setIsOver(false); handleUpload(e.dataTransfer.files); }}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all cursor-pointer group ${
+        className={`relative h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all cursor-pointer group shadow-sm ${
           isOver 
-            ? 'border-accent bg-accent/5' 
-            : 'border-border-subtle hover:border-accent/40 hover:bg-accent/5'
+            ? 'border-[#c9a84c] bg-[#c9a84c]/5' 
+            : 'border-border-subtle hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/5'
         }`}
       >
-        <div className="relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-accent group-hover:scale-110 transition-transform">
+        <div className="relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-[#c9a84c] group-hover:scale-110 transition-transform shadow-sm">
           <FileUp className="h-4 w-4" />
         </div>
         <div className="relative z-10 mt-2 text-center px-4">
-          <p className="text-[10px] font-bold text-foreground uppercase tracking-wider">Drop or Select</p>
-          <p className="text-[9px] text-subtle font-medium">Max 10MB</p>
+          <p className="text-[10px] font-black text-foreground uppercase tracking-widest">Transmit or Drop</p>
+          <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Limit 10MB</p>
         </div>
       </div>
 
       <div className="space-y-2">
         {documents.map((doc) => (
-          <div key={doc.id} className="flex items-center justify-between p-3.5 bg-background border border-border-subtle rounded-xl hover:border-accent/30 transition-all group">
+          <div key={doc.id} className="flex items-center justify-between p-3 bg-background border border-border-subtle rounded-xl hover:border-[#c9a84c]/30 transition-all group">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="h-9 w-9 rounded-lg bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0 text-subtle group-hover:text-orange-600 transition-colors">
+              <div className="h-9 w-9 rounded-lg bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0 text-subtle group-hover:text-[#c9a84c] transition-colors">
                 <File className="h-4 w-4" />
               </div>
               <div className="overflow-hidden">
-                <p className="text-[13px] font-medium text-foreground truncate">{doc.file_name}</p>
-                <p className="text-[10px] text-subtle font-bold uppercase tracking-wider">{new Date(doc.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+                <p className="text-[12px] font-black text-foreground truncate uppercase tracking-widest leading-tight">{doc.file_name}</p>
+                <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-1">{new Date(doc.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 ml-4">
@@ -369,16 +369,16 @@ export default function DocumentsPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 pb-12">
       {/* Header Panel */}
-      <div className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+      <div className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group shadow-sm">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-[80px] -mr-32 -mt-32" />
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative z-10">
           <div className="space-y-4">
              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-accent" />
-                <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Repository</span>
+                <Sparkles className="h-4 w-4 text-[#c9a84c]" />
+                <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest">Repository</span>
              </div>
-             <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
-               Study <span className="text-accent">Materials</span>
+             <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter leading-tight uppercase">
+               Study <span className="text-[#c9a84c]">Materials</span>
              </h1>
              <p className="text-sm text-subtle font-medium max-w-sm leading-relaxed">
                Securely upload and manage your core syllabus and reference notes.
@@ -393,9 +393,9 @@ export default function DocumentsPage() {
               <button
                 key={exam.id}
                 onClick={() => setActiveExamId(exam.id)}
-                className={`px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${
+                className={`px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-h-[36px] shadow-sm ${
                   activeExamId === exam.id 
-                    ? 'bg-orange-600 text-background' 
+                    ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10' 
                     : 'bg-background border border-border-subtle text-subtle hover:text-foreground'
                 }`}
               >
@@ -407,12 +407,12 @@ export default function DocumentsPage() {
       </div>
 
       {!activeExamId ? (
-        <div className="bg-surface p-12 rounded-2xl text-center border border-border-subtle">
+        <div className="bg-surface p-12 rounded-2xl text-center border border-border-subtle shadow-sm">
             <div className="h-12 w-12 rounded-xl bg-background border border-border-subtle flex items-center justify-center mx-auto mb-6">
               <AlertCircle className="h-5 w-5 text-subtle" />
             </div>
-            <h3 className="text-lg font-bold text-foreground tracking-tight">Mission Target Not Set</h3>
-            <p className="text-sm text-subtle mt-2 font-medium max-w-xs mx-auto">Please initialize an exam in the dashboard to start managing documents.</p>
+            <h3 className="text-lg font-black text-foreground tracking-tighter uppercase">Mission Target Not Set</h3>
+            <p className="text-[10px] text-subtle mt-3 font-black uppercase tracking-widest max-w-xs mx-auto">Please initialize an exam in the dashboard to start managing documents.</p>
         </div>
       ) : (
         <div className="space-y-6 sm:space-y-8">
@@ -434,7 +434,7 @@ export default function DocumentsPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {DOC_TYPES.map((type) => (
-                <div key={type.id} className="bg-surface p-6 rounded-2xl border border-border-subtle shadow-sm">
+                <div key={type.id} className="bg-surface p-5 rounded-2xl border border-border-subtle shadow-sm">
                   <UploadZone
                     examId={activeExamId}
                     docType={type.id}

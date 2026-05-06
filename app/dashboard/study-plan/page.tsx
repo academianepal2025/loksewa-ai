@@ -94,10 +94,10 @@ interface StudyProgress {
 
 // ── Day Type Styling ──────────────────────────────────────────────────
 const DAY_TYPE_CONFIG = {
-  study: { bg: 'bg-orange-600/5', border: 'border-border-subtle', text: 'text-orange-600', icon: BookOpen, label: 'Study' },
-  revision: { bg: 'bg-emerald-500/5', border: 'border-emerald-500/20', text: 'text-emerald-600', icon: BookMarked, label: 'Revision' },
+  study: { bg: 'bg-[#1e3a5f]/5', border: 'border-border-subtle', text: 'text-[#c9a84c]', icon: BookOpen, label: 'Study' },
+  revision: { bg: 'bg-[#c9a84c]/5', border: 'border-[#c9a84c]/20', text: 'text-[#c9a84c]', icon: BookMarked, label: 'Revision' },
   rest: { bg: 'bg-background', border: 'border-border-subtle', text: 'text-subtle', icon: Coffee, label: 'Rest' },
-  mock_test: { bg: 'bg-accent/5', border: 'border-accent/20', text: 'text-accent', icon: PenTool, label: 'Mock Test' },
+  mock_test: { bg: 'bg-[#1e3a5f]/10', border: 'border-[#1e3a5f]/20', text: 'text-[#1e3a5f]', icon: PenTool, label: 'Mock Test' },
 };
 
 // ── Generation Steps Animation (Compact) ─────────────────────────────
@@ -119,18 +119,18 @@ function GenerationOverlay({ step }: { step: number }) {
   return (
     <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-xl flex items-center justify-center p-4">
       <div className="bg-surface rounded-2xl shadow-2xl max-w-sm w-full p-8 border border-border-subtle overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full -mr-12 -mt-12" />
+        <div className="absolute top-0 right-0 w-24 h-24 bg-[#c9a84c]/5 rounded-full -mr-12 -mt-12" />
         
         <div className="text-center mb-8 relative z-10">
           <div className="relative w-16 h-16 mx-auto mb-6">
             <div className="absolute inset-0 rounded-xl border-2 border-border-subtle" />
-            <div className="absolute inset-0 rounded-xl border-2 border-accent border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-xl border-2 border-[#c9a84c] border-t-transparent animate-spin" />
             <div className="absolute inset-2.5 rounded-lg bg-background flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-accent animate-pulse" />
+              <Sparkles className="h-5 w-5 text-[#c9a84c] animate-pulse" />
             </div>
           </div>
-          <h3 className="text-xl font-bold text-foreground tracking-tight">AI Strategy Engine</h3>
-          <p className="text-[10px] font-bold text-accent uppercase tracking-wider mt-3 animate-pulse">{rotatingMessage}</p>
+          <h3 className="text-xl font-black text-foreground tracking-tighter uppercase">AI Strategy Engine</h3>
+          <p className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest mt-3 animate-pulse">{rotatingMessage}</p>
         </div>
 
         <div className="space-y-4 relative z-10">
@@ -142,15 +142,15 @@ function GenerationOverlay({ step }: { step: number }) {
               }`}
             >
               <div className={`mt-0.5 w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border ${
-                i < step ? 'bg-emerald-500 border-emerald-500 text-background' : i === step ? 'border-accent text-accent animate-pulse' : 'border-border-subtle text-subtle'
+                i < step ? 'bg-[#1e3a5f] border-[#1e3a5f] text-[#c9a84c]' : i === step ? 'border-[#c9a84c] text-[#c9a84c] animate-pulse' : 'border-border-subtle text-subtle'
               }`}>
-                {i < step ? <Check className="h-3 w-3" /> : <span className="text-[10px] font-bold">{i + 1}</span>}
+                {i < step ? <Check className="h-3 w-3" /> : <span className="text-[10px] font-black">{i + 1}</span>}
               </div>
               <div>
-                <p className={`text-[10px] font-bold uppercase tracking-wider ${i === step ? 'text-foreground' : 'text-subtle'}`}>
+                <p className={`text-[10px] font-black uppercase tracking-widest ${i === step ? 'text-foreground' : 'text-subtle'}`}>
                   {s.label}
                 </p>
-                <p className="text-[11px] text-muted font-medium">{s.detail}</p>
+                <p className="text-[10px] text-muted font-black uppercase tracking-widest mt-0.5">{s.detail}</p>
               </div>
             </div>
           ))}
@@ -176,35 +176,35 @@ function GenerateNotesButton({
 }) {
   if (isGeneratingLocal || status === 'generating') {
     return (
-      <button disabled className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-surface border border-border-subtle rounded-lg flex items-center justify-center gap-2 text-subtle">
-        <RefreshCw className="h-4 w-4 animate-spin" /> Generating...
+      <button disabled className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-background border border-border-subtle rounded-lg flex items-center justify-center gap-2 text-subtle shadow-sm">
+        <RefreshCw className="h-4 w-4 animate-spin" /> Analyzing...
       </button>
     );
   }
   if (status === 'ready') {
     return (
-      <button onClick={onView} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-emerald-500/20 transition-colors">
-        <FileText className="h-4 w-4" /> View Notes
+      <button onClick={onView} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20 rounded-lg flex items-center justify-center gap-2 hover:bg-[#c9a84c]/20 transition-all shadow-sm">
+        <FileText className="h-4 w-4" /> View Intelligence
       </button>
     );
   }
   if (status === 'no_content') {
     return (
-      <button onClick={() => onGenerate(true)} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-yellow-500/10 text-yellow-600 border border-yellow-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-yellow-500/20 transition-colors text-left sm:text-center leading-tight">
-        <AlertCircle className="h-4 w-4 flex-shrink-0" /> <span className="hidden sm:inline">Force Generate</span><span className="sm:hidden">Force</span>
+      <button onClick={() => onGenerate(true)} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-red-500/5 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/10 transition-all text-left sm:text-center leading-tight shadow-sm">
+        <AlertCircle className="h-4 w-4 flex-shrink-0" /> <span className="hidden sm:inline">Force Intel</span><span className="sm:hidden">Force</span>
       </button>
     );
   }
   if (status === 'failed') {
     return (
-      <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-red-500/10 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/20 transition-colors">
-        <RefreshCw className="h-4 w-4" /> Retry Notes
+      <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-red-500/5 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/10 transition-all shadow-sm">
+        <RefreshCw className="h-4 w-4" /> Retry Intel
       </button>
     );
   }
   return (
-    <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-xs font-bold uppercase tracking-wider bg-background border border-accent/40 text-accent rounded-lg flex items-center justify-center gap-2 hover:bg-accent/5 transition-colors">
-      <FileText className="h-4 w-4" /> Generate Notes
+    <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-background border border-[#c9a84c]/40 text-[#c9a84c] rounded-lg flex items-center justify-center gap-2 hover:bg-[#c9a84c]/5 transition-all shadow-sm">
+      <FileText className="h-4 w-4" /> Generate Intel
     </button>
   );
 }
@@ -240,8 +240,8 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                 <Icon className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1">MISSION DAY {day.day_number}</p>
-                <h3 className="text-lg font-bold text-foreground tracking-tight leading-tight">{day.primary_topic || config.label}</h3>
+                <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1">MISSION DAY {day.day_number}</p>
+                <h3 className="text-lg font-black text-foreground tracking-tighter leading-tight uppercase">{day.primary_topic || config.label}</h3>
               </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-background rounded-xl transition-all text-muted">
@@ -253,35 +253,35 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
         <div className="p-5 space-y-5">
           <div className="flex flex-wrap items-center gap-6">
              <div className="flex items-center gap-3">
-                <Clock className="h-4 w-4 text-accent" />
+                <Clock className="h-4 w-4 text-[#c9a84c]" />
                 <div>
-                   <p className="text-[9px] font-bold text-subtle uppercase tracking-wider">Duration</p>
-                   <p className="text-sm font-bold text-foreground">{day.estimated_hours} Hours</p>
+                   <p className="text-[9px] font-black text-subtle uppercase tracking-widest">Duration</p>
+                   <p className="text-sm font-black text-foreground">{day.estimated_hours} Hours</p>
                 </div>
              </div>
              <div className="flex items-center gap-3">
-                <Calendar className="h-4 w-4 text-orange-600" />
+                <Calendar className="h-4 w-4 text-[#c9a84c]" />
                 <div>
-                   <p className="text-[9px] font-bold text-subtle uppercase tracking-wider">Target Date</p>
-                   <p className="text-sm font-bold text-foreground">{new Date(day.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</p>
+                   <p className="text-[9px] font-black text-subtle uppercase tracking-widest">Target Date</p>
+                   <p className="text-sm font-black text-foreground">{new Date(day.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</p>
                 </div>
              </div>
           </div>
 
           <div className="space-y-4">
-            <h4 className="text-[10px] font-bold text-subtle uppercase tracking-wider">Daily Objectives</h4>
+            <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest">Daily Objectives</h4>
             <div className="space-y-1.5">
               {day.subtopics_to_cover.map((sub, i) => {
                 const done = completedSubs.includes(sub);
                 return (
-                  <label key={i} className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer group ${done ? 'bg-background border-transparent opacity-60' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
+                  <label key={i} className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer group shadow-sm ${done ? 'bg-background border-transparent opacity-60' : 'bg-background border-border-subtle hover:border-[#c9a84c]/40'}`}>
                     <div className="mt-0.5">
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${done ? 'bg-emerald-500 border-emerald-500' : 'border-border-subtle group-hover:border-accent/40'}`}>
-                          {done && <Check className="h-2.5 w-2.5 text-white" />}
+                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${done ? 'bg-[#c9a84c] border-[#c9a84c]' : 'border-border-subtle group-hover:border-[#c9a84c]/40'}`}>
+                          {done && <Check className="h-2.5 w-2.5 text-[#1e3a5f]" />}
                       </div>
                       <input type="checkbox" hidden checked={done} onChange={() => onToggleSubtopic(sub)} />
                     </div>
-                    <span className={`reading-area text-[13px] font-medium leading-relaxed ${done ? 'line-through text-subtle' : 'text-foreground'}`}>{sub}</span>
+                    <span className={`reading-area text-[11px] font-black uppercase tracking-widest leading-relaxed ${done ? 'line-through text-subtle' : 'text-foreground'}`}>{sub}</span>
                   </label>
                 );
               })}
@@ -289,33 +289,33 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
           </div>
 
           {day.study_tips && (
-            <div className="bg-accent/5 rounded-xl p-4 border border-accent/20">
+            <div className="bg-[#c9a84c]/5 rounded-xl p-4 border border-[#c9a84c]/20 shadow-sm">
                <div className="flex items-center gap-2 mb-2">
-                 <Zap className="h-3 w-3 text-accent" />
-                 <span className="text-[9px] font-bold text-accent uppercase tracking-wider">Efficiency Tip</span>
+                 <Zap className="h-3 w-3 text-[#c9a84c]" />
+                 <span className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">Efficiency Tip</span>
                </div>
-               <p className="reading-area text-[13px] text-foreground font-medium italic opacity-90 leading-relaxed">{day.study_tips}</p>
+               <p className="reading-area text-[12px] text-foreground font-medium italic opacity-90 leading-relaxed">{day.study_tips}</p>
             </div>
           )}
 
           {!progress?.is_completed && (
-            <div className="bg-background p-5 rounded-xl border border-border-subtle space-y-4">
-              <h4 className="text-[10px] font-bold text-subtle uppercase tracking-wider flex items-center gap-2">
-                <Sparkles className="h-3 w-3 text-accent" /> Session Feedback
+            <div className="bg-background p-4 rounded-xl border border-border-subtle space-y-4 shadow-sm">
+              <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest flex items-center gap-2">
+                <Sparkles className="h-3 w-3 text-[#c9a84c]" /> Session Feedback
               </h4>
               
               <div className="space-y-3">
-                <p className="text-[9px] font-bold text-subtle uppercase tracking-wider">Completion Status</p>
+                <p className="text-[8px] font-black text-subtle uppercase tracking-widest">Completion Status</p>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setFeedbackStatus('finished')}
-                    className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all ${feedbackStatus === 'finished' ? 'bg-orange-600 text-background border-primary' : 'bg-surface text-subtle border-border-subtle'}`}
+                    className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${feedbackStatus === 'finished' ? 'bg-[#1e3a5f] text-[#c9a84c] border-[#1e3a5f]' : 'bg-surface text-subtle border-border-subtle'}`}
                   >
                     Fully Finished
                   </button>
                   <button 
                     onClick={() => setFeedbackStatus('need_revisit')}
-                    className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all ${feedbackStatus === 'need_revisit' ? 'bg-accent text-background border-accent' : 'bg-surface text-subtle border-border-subtle'}`}
+                    className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all shadow-sm ${feedbackStatus === 'need_revisit' ? 'bg-[#c9a84c] text-[#1e3a5f] border-[#c9a84c]' : 'bg-surface text-subtle border-border-subtle'}`}
                   >
                     Need Revisit
                   </button>
@@ -323,7 +323,7 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
               </div>
 
               <div className="space-y-4">
-                <p className="text-[9px] font-bold text-subtle uppercase tracking-wider">Topic Difficulty</p>
+                <p className="text-[8px] font-black text-subtle uppercase tracking-widest">Topic Difficulty</p>
                 <div className="flex gap-2">
                   {[
                     { id: 'easy', label: 'Easy' },
@@ -333,9 +333,9 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                     <button 
                       key={d.id}
                       onClick={() => setDifficulty(d.id as any)}
-                      className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-all ${
+                      className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${
                         difficulty === d.id 
-                          ? 'bg-orange-600 text-background border-primary' 
+                          ? 'bg-[#1e3a5f] text-[#c9a84c] border-[#1e3a5f]' 
                           : 'bg-surface text-subtle border-border-subtle hover:border-muted'
                       }`}
                     >
@@ -346,35 +346,35 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
               </div>
 
               <div className="space-y-3">
-                <p className="text-[10px] font-bold text-muted uppercase">Self-Reflection / Notes</p>
+                <p className="text-[9px] font-black text-muted uppercase">Self-Reflection / Notes</p>
                 <textarea 
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="How did it go? Any specific subtopics that were tricky?"
-                  className="w-full bg-background border border-border-subtle rounded-xl p-3 text-sm font-medium text-foreground focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all resize-none h-20"
+                  placeholder="OBSERVATIONS FROM THIS SESSION..."
+                  className="w-full bg-background border border-border-subtle rounded-xl p-3 text-[11px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all resize-none h-16 shadow-sm placeholder:text-subtle/30"
                 />
               </div>
             </div>
           )}
 
           {progress?.is_completed && (
-            <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10 space-y-3">
-              <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider">
-                <span className="text-emerald-600">Reflection Logged</span>
+            <div className="p-4 rounded-xl bg-[#c9a84c]/5 border border-[#c9a84c]/10 space-y-3">
+              <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
+                <span className="text-[#c9a84c]">Reflection Logged</span>
                 <span className="text-subtle">{new Date(progress.completed_at!).toLocaleDateString()}</span>
               </div>
               <div className="flex gap-6 py-3 border-y border-border-subtle">
                 <div>
-                   <p className="text-[8px] font-bold text-subtle uppercase">Status</p>
-                   <p className="text-[11px] font-bold text-foreground capitalize">{progress.feedback_status?.replace('_', ' ') || 'N/A'}</p>
+                   <p className="text-[7px] font-black text-subtle uppercase">Status</p>
+                   <p className="text-[10px] font-black text-foreground capitalize">{progress.feedback_status?.replace('_', ' ') || 'N/A'}</p>
                 </div>
                 <div>
-                   <p className="text-[8px] font-bold text-subtle uppercase">Difficulty</p>
-                   <p className="text-[11px] font-bold text-foreground capitalize">{progress.difficulty || 'N/A'}</p>
+                   <p className="text-[7px] font-black text-subtle uppercase">Difficulty</p>
+                   <p className="text-[10px] font-black text-foreground capitalize">{progress.difficulty || 'N/A'}</p>
                 </div>
               </div>
               {progress.user_notes && (
-                <p className="text-xs font-medium text-muted italic">"{progress.user_notes}"</p>
+                <p className="text-[10px] font-black text-muted uppercase tracking-widest leading-relaxed">"{progress.user_notes}"</p>
               )}
             </div>
           )}
@@ -382,21 +382,21 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
           <button
             onClick={() => onMarkComplete({ status: feedbackStatus, difficulty, notes })}
             disabled={progress?.is_completed}
-            className={`w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${
-              progress?.is_completed ? 'bg-background border border-border-subtle text-emerald-600' : 'bg-orange-600 text-background hover:opacity-90 active:scale-[0.99]'
+            className={`w-full py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+              progress?.is_completed ? 'bg-background border border-border-subtle text-[#c9a84c]' : 'bg-[#1e3a5f] text-[#c9a84c] hover:opacity-90 active:scale-[0.99] shadow-lg shadow-[#1e3a5f]/10'
             }`}
           >
             {progress?.is_completed ? (
-              <><CheckCircle2 className="h-5 w-5" /> Secured</>
+              <><CheckCircle2 className="h-4 w-4" /> SECURED</>
             ) : (
-              <><Check className="h-5 w-5" /> Mark Day Complete</>
+              <><Check className="h-4 w-4" /> Mark Day Complete</>
             )}
           </button>
           
-          <div className="space-y-4 pt-4 border-t border-border-subtle mt-4">
-            <div className="space-y-3">
+          <div className="space-y-3 pt-4 border-t border-border-subtle mt-4">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-subtle uppercase tracking-wider">Primary Topic</span>
+                <span className="text-[9px] font-black text-subtle uppercase tracking-widest">Primary Topic</span>
                 <GenerateNotesButton 
                   dayNumber={day.day_number}
                   status={noteStatusMap.get(`${day.day_number}-${day.primary_topic}`)}
@@ -407,8 +407,8 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
               </div>
               
               {day.secondary_topic && (
-                <div className="flex items-center justify-between pt-2 border-t border-border-subtle/50">
-                  <span className="text-[10px] font-bold text-subtle uppercase tracking-wider line-clamp-1 flex-1 mr-4">{day.secondary_topic}</span>
+                <div className="flex items-center justify-between pt-1 border-t border-border-subtle/50">
+                  <span className="text-[9px] font-black text-subtle uppercase tracking-widest line-clamp-1 flex-1 mr-4">{day.secondary_topic}</span>
                   <GenerateNotesButton 
                     dayNumber={day.day_number}
                     status={noteStatusMap.get(`${day.day_number}-${day.secondary_topic}`)}
@@ -420,8 +420,8 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
               )}
 
               {day.revision_topics && day.revision_topics.length > 0 && day.revision_topics.map((revTopic, idx) => (
-                <div key={idx} className="flex items-center justify-between pt-2 border-t border-border-subtle/50">
-                  <span className="text-[10px] font-bold text-subtle uppercase tracking-wider line-clamp-1 flex-1 mr-4">Revision: {revTopic}</span>
+                <div key={idx} className="flex items-center justify-between pt-1 border-t border-border-subtle/50">
+                  <span className="text-[9px] font-black text-subtle uppercase tracking-widest line-clamp-1 flex-1 mr-4">Revision: {revTopic}</span>
                   <GenerateNotesButton 
                     dayNumber={day.day_number}
                     status={noteStatusMap.get(`${day.day_number}-${revTopic}`)}
@@ -800,17 +800,17 @@ export default function StudyPlanPage() {
       />
 
       {/* Header (Minimalist) */}
-      <div className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group">
+      <div className="bg-surface p-6 rounded-2xl border border-border-subtle relative overflow-hidden group">
          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
             <div className="space-y-4">
-               <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
-                  Study <span className="text-accent">Roadmap</span>
+               <h1 className="text-3xl font-black text-foreground tracking-tighter leading-tight">
+                  STUDY <span className="text-[#c9a84c]">ROADMAP</span>
                </h1>
                <div className="flex flex-wrap gap-2 mb-6">
                   {exams.map((e: Exam) => (
                     <button 
-                      key={e.id} onClick={() => { setActiveExamId(e.id); setPlan(null); }} className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all min-h-[36px] ${activeExamId === e.id ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
+                      key={e.id} onClick={() => { setActiveExamId(e.id); setPlan(null); }} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all min-h-[36px] shadow-sm ${activeExamId === e.id ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
                       {e.exam_name}
                     </button>
                   ))}
@@ -819,16 +819,16 @@ export default function StudyPlanPage() {
 
             {planData && (
               <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
-                  <div className="bg-background border border-border-subtle p-4 sm:p-5 rounded-xl">
-                     <p className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-2">{t('timeline')}</p>
-                     <p className="text-xl sm:text-2xl font-bold text-foreground">{daysRem} <span className="text-[10px] text-subtle font-bold uppercase tracking-wider ml-1">{t('days_left')}</span></p>
+                  <div className="bg-background border border-border-subtle p-4 rounded-xl">
+                     <p className="text-[8px] font-black text-subtle uppercase tracking-widest mb-2">{t('timeline')}</p>
+                     <p className="text-2xl font-black text-foreground">{daysRem} <span className="text-[9px] text-subtle font-black uppercase tracking-widest ml-1">{t('days_left')}</span></p>
                   </div>
-                 <div className="bg-background border border-border-subtle p-4 sm:p-5 rounded-xl">
-                    <p className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-2">{t('milestones')}</p>
+                 <div className="bg-background border border-border-subtle p-4 rounded-xl">
+                    <p className="text-[8px] font-black text-subtle uppercase tracking-widest mb-2">{t('milestones')}</p>
                     <div className="flex items-end gap-2 mb-2">
-                       <p className="text-xl sm:text-2xl font-bold text-foreground leading-none">{completionPct}%</p>
+                       <p className="text-2xl font-black text-foreground leading-none">{completionPct}%</p>
                     </div>
-                    <div className="h-1 bg-border-subtle rounded-full overflow-hidden"><div className="h-full bg-orange-600" style={{width: `${completionPct}%` }} /></div>
+                    <div className="h-1 bg-border-subtle rounded-full overflow-hidden"><div className="h-full bg-[#c9a84c]" style={{width: `${completionPct}%` }} /></div>
                  </div>
               </div>
             )}
@@ -836,48 +836,48 @@ export default function StudyPlanPage() {
       </div>
 
       {!planData ? (
-        <div className="bg-surface p-8 sm:p-20 rounded-2xl text-center border border-border-subtle shadow-sm">
+        <div className="bg-surface p-12 rounded-2xl text-center border border-border-subtle shadow-sm">
            <div className="h-12 w-12 rounded-lg bg-background border border-border-subtle flex items-center justify-center mx-auto mb-6">
               <Sparkles className="h-5 w-5 text-accent" />
            </div>
-           <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight mb-3">AI Roadmap Generation</h2>
-           <p className="text-sm text-subtle font-medium max-w-sm mx-auto mb-10 leading-relaxed">
+           <h2 className="text-2xl font-black text-foreground tracking-tighter mb-3">AI ROADMAP GENERATION</h2>
+           <p className="text-xs text-subtle font-medium max-w-sm mx-auto mb-10 leading-relaxed">
              Loksewa AI will analyze your syllabus and past performance to build a high-efficiency study timeline.
            </p>
            
            {errorMsg && (
-             <div className="mb-8 p-4 rounded-xl bg-background border border-border-subtle text-subtle text-[11px] font-bold max-w-md mx-auto flex flex-col items-center gap-2">
-               <AlertTriangle className="h-4 w-4 text-amber-500" />
-               <p className="text-center">{errorMsg}</p>
+             <div className="mb-8 p-4 rounded-xl bg-background border border-border-subtle text-subtle text-[10px] font-black max-w-md mx-auto flex flex-col items-center gap-2 shadow-sm">
+               <AlertTriangle className="h-4 w-4 text-[#c9a84c]" />
+               <p className="text-center uppercase tracking-widest">{errorMsg}</p>
              </div>
            )}
 
-            <button onClick={() => handleGenerate()} className="w-full sm:w-auto bg-orange-600 text-background px-8 py-3 rounded-xl text-xs font-bold hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 min-h-[44px]">
+            <button onClick={() => handleGenerate()} className="w-full sm:w-auto bg-[#1e3a5f] text-[#c9a84c] px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 min-h-[44px] shadow-xl shadow-[#1e3a5f]/10">
               <Zap className="h-4 w-4" /> Build My Roadmap
            </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
            {/* Timeline */}
            <div className="lg:col-span-8 space-y-6">
               {todayPlan && (
-                <div className="bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden group">
+                <div className="bg-surface border border-border-subtle rounded-2xl p-6 shadow-sm relative overflow-hidden group">
                    <div className="flex flex-col sm:flex-row justify-between items-start gap-5 relative z-10">
                       <div className="flex-1 space-y-2.5">
                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 bg-accent/10 text-accent text-[8px] font-bold tracking-wider rounded">MISSION: DAY {todayPlan.day_number}</span>
-                            <span className="text-[8px] font-bold text-subtle uppercase flex items-center gap-1"><Flame className="h-2.5 w-2.5 text-accent" /> {todayPlan.estimated_hours}H Load</span>
+                            <span className="px-2 py-0.5 bg-accent/10 text-accent text-[8px] font-black tracking-widest uppercase rounded">MISSION: DAY {todayPlan.day_number}</span>
+                            <span className="text-[8px] font-black text-subtle uppercase flex items-center gap-1 tracking-widest"><Flame className="h-2.5 w-2.5 text-accent" /> {todayPlan.estimated_hours}H Load</span>
                          </div>
-                         <h2 className="text-2xl sm:text-3xl font-bold text-foreground leading-tight tracking-tight">{todayPlan.primary_topic}</h2>
+                         <h2 className="text-3xl font-black text-foreground leading-tight tracking-tighter">{todayPlan.primary_topic}</h2>
                       </div>
                       <div className="w-full sm:w-32 space-y-2">
-                         <button onClick={() => setSelectedDay(todayPlan)} className="w-full py-2.5 text-xs font-bold uppercase tracking-wider bg-background border border-border-subtle rounded-lg min-h-[44px]">Details</button>
-                         <button onClick={() => markDayComplete(todayPlan, { status: 'finished', difficulty: 'medium', notes: 'Quick complete from dashboard' })} disabled={getProgressForDay(todayPlan.day_number)?.is_completed} className={`w-full py-3 text-xs font-bold uppercase tracking-wider rounded-xl min-h-[44px] ${getProgressForDay(todayPlan.day_number)?.is_completed ? 'bg-emerald-500/10 text-emerald-600' : 'bg-orange-600 text-background'}`}>
+                         <button onClick={() => setSelectedDay(todayPlan)} className="w-full py-2 text-[9px] font-black uppercase tracking-widest bg-background border border-border-subtle rounded-lg min-h-[40px] hover:bg-surface transition-all">Details</button>
+                         <button onClick={() => markDayComplete(todayPlan, { status: 'finished', difficulty: 'medium', notes: 'Quick complete' })} disabled={getProgressForDay(todayPlan.day_number)?.is_completed} className={`w-full py-2 text-[9px] font-black uppercase tracking-widest rounded-lg min-h-[40px] shadow-sm transition-all ${getProgressForDay(todayPlan.day_number)?.is_completed ? 'bg-[#c9a84c]/10 text-[#c9a84c]' : 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10'}`}>
                             {getProgressForDay(todayPlan.day_number)?.is_completed ? 'SECURED' : 'COMPLETE'}
                          </button>
-                         <div className="space-y-3">
+                         <div className="space-y-3 pt-2">
                            <div className="flex items-center justify-between gap-4">
-                             <span className="text-[9px] font-bold text-subtle uppercase truncate max-w-[100px]">{todayPlan.primary_topic}</span>
+                             <span className="text-[8px] font-black text-subtle uppercase truncate max-w-[100px]">{todayPlan.primary_topic}</span>
                              <GenerateNotesButton 
                                 dayNumber={todayPlan.day_number}
                                 status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.primary_topic}`)}
@@ -887,8 +887,8 @@ export default function StudyPlanPage() {
                              />
                            </div>
                            {todayPlan.secondary_topic && (
-                             <div className="flex items-center justify-between gap-4 pt-2 border-t border-border-subtle/30">
-                               <span className="text-[9px] font-bold text-subtle uppercase truncate max-w-[100px]">{todayPlan.secondary_topic}</span>
+                             <div className="flex items-center justify-between gap-4 pt-1 border-t border-border-subtle/30">
+                               <span className="text-[8px] font-black text-subtle uppercase truncate max-w-[100px]">{todayPlan.secondary_topic}</span>
                                <GenerateNotesButton 
                                   dayNumber={todayPlan.day_number}
                                   status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.secondary_topic}`)}
@@ -900,8 +900,8 @@ export default function StudyPlanPage() {
                            )}
                            
                            {todayPlan.revision_topics && todayPlan.revision_topics.length > 0 && todayPlan.revision_topics.slice(0, 2).map((revTopic, idx) => (
-                             <div key={idx} className="flex items-center justify-between gap-4 pt-2 border-t border-border-subtle/30">
-                               <span className="text-[9px] font-bold text-subtle uppercase truncate max-w-[100px]">Rev: {revTopic}</span>
+                             <div key={idx} className="flex items-center justify-between gap-4 pt-1 border-t border-border-subtle/30">
+                               <span className="text-[8px] font-black text-subtle uppercase truncate max-w-[100px]">Rev: {revTopic}</span>
                                <GenerateNotesButton 
                                   dayNumber={todayPlan.day_number}
                                   status={noteStatusMap.get(`${todayPlan.day_number}-${revTopic}`)}
@@ -919,8 +919,8 @@ export default function StudyPlanPage() {
 
                <div className="space-y-4">
                   <div className="flex items-center justify-between px-2">
-                     <h3 className="text-[11px] font-bold text-subtle uppercase tracking-wider">Weekly Schedule</h3>
-                     <button onClick={() => setConfirmRegen(true)} className="text-[9px] font-bold text-subtle hover:text-accent uppercase tracking-wider flex items-center gap-1.5 p-2"><RefreshCw className="h-2.5 w-2.5" /> Reset Plan</button>
+                     <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest">WEEKLY SCHEDULE</h3>
+                     <button onClick={() => setConfirmRegen(true)} className="text-[8px] font-black text-subtle hover:text-accent uppercase tracking-widest flex items-center gap-1.5 p-2"><RefreshCw className="h-2.5 w-2.5" /> Reset</button>
                   </div>
                   <div className="space-y-3">
                      {Object.entries(weeklyGroups).map(([wk, ds]) => {
@@ -930,13 +930,13 @@ export default function StudyPlanPage() {
                         const done = ds.filter(d => getProgressForDay(d.day_number)?.is_completed).length;
                         return (
                           <div key={wk} className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
-                             <button onClick={() => toggleWeek(weekNum)} className="w-full p-4 sm:p-5 flex items-center justify-between hover:bg-background transition-colors min-h-[64px]">
+                             <button onClick={() => toggleWeek(weekNum)} className="w-full p-3 flex items-center justify-between hover:bg-background transition-colors min-h-[56px]">
                                 <div className="flex items-center gap-4 flex-1">
-                                   <div className={`h-10 w-10 rounded-lg flex items-center justify-center font-bold text-base flex-shrink-0 ${open ? 'bg-orange-600 text-background' : 'bg-background border border-border-subtle text-subtle'}`}>{wk}</div>
-                                   <div className="text-left"><h4 className="text-sm font-bold">Week {wk} Summary</h4><p className="text-[11px] text-subtle font-medium truncate max-w-[120px] sm:max-w-xs">{target?.weekly_goal}</p></div>
+                                   <div className={`h-8 w-8 rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0 ${open ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-md shadow-[#1e3a5f]/20' : 'bg-background border border-border-subtle text-subtle'}`}>{wk}</div>
+                                   <div className="text-left"><h4 className="text-[10px] font-black uppercase tracking-widest">Week {wk}</h4><p className="text-[9px] text-subtle font-medium truncate max-w-[120px] sm:max-w-xs">{target?.weekly_goal}</p></div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                   <div className="w-16 h-1 bg-border-subtle rounded-full hidden sm:block"><div className="h-full bg-orange-600" style={{width: `${(done / ds.length) * 100}%` }} /></div>
+                                   <div className="w-16 h-1 bg-border-subtle rounded-full hidden sm:block"><div className="h-full bg-[#c9a84c]" style={{width: `${(done / ds.length) * 100}%` }} /></div>
                                    <ChevronDown className={`h-4 w-4 text-subtle transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
                                 </div>
                              </button>
@@ -947,25 +947,21 @@ export default function StudyPlanPage() {
                                       const fin = getProgressForDay(d.day_number)?.is_completed;
                                       const isT = d.date === todayStr;
                                       return (
-                                        <div key={d.day_number} onClick={() => setSelectedDay(d)} className={`cursor-pointer p-3.5 rounded-xl border transition-all flex flex-col justify-between text-left h-auto min-h-[8rem] relative ${isT ? 'border-accent bg-background' : fin ? 'bg-background opacity-50' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
+                                        <div key={d.day_number} onClick={() => setSelectedDay(d)} className={`cursor-pointer p-3 rounded-xl border transition-all flex flex-col justify-between text-left h-auto min-h-[7rem] relative ${isT ? 'border-accent bg-background' : fin ? 'bg-background opacity-50' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
                                            <div className="flex justify-between items-start">
-                                              <div className="space-y-0.5"><p className="text-[9px] font-bold text-subtle uppercase">{new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}</p><p className="text-sm font-bold leading-none">Day {d.day_number}</p></div>
-                                              <cfg.icon className="h-3.5 w-3.5 text-subtle opacity-40" />
+                                              <div className="space-y-0.5"><p className="text-[8px] font-black text-subtle uppercase tracking-widest">{new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}</p><p className="text-xs font-black leading-none">Day {d.day_number}</p></div>
+                                              <cfg.icon className="h-3 w-3 text-subtle opacity-40" />
                                            </div>
-                                           <p className="text-[11px] font-bold uppercase leading-tight line-clamp-2 mt-2 mb-3">{d.primary_topic || cfg.label}</p>
+                                           <p className="text-[10px] font-black uppercase leading-tight line-clamp-2 mt-2 mb-3">{d.primary_topic || cfg.label}</p>
                                            <div className="mt-auto w-full space-y-1" onClick={e => e.stopPropagation()}>
-                                               <p className="text-[7px] font-bold text-subtle uppercase px-1">Notes Status</p>
                                                <div className="flex gap-1">
-                                                  <div className={`h-1.5 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.primary_topic}`) === 'ready' ? 'bg-emerald-500' : 'bg-border-subtle'}`} title={d.primary_topic} />
+                                                  <div className={`h-1 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.primary_topic}`) === 'ready' ? 'bg-[#c9a84c]' : 'bg-border-subtle'}`} />
                                                   {d.secondary_topic && (
-                                                    <div className={`h-1.5 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.secondary_topic}`) === 'ready' ? 'bg-emerald-500' : 'bg-border-subtle'}`} title={d.secondary_topic} />
-                                                  )}
-                                                  {d.revision_topics && d.revision_topics.length > 0 && (
-                                                    <div className={`h-1.5 flex-1 rounded-full ${d.revision_topics.every(rt => noteStatusMap.get(`${d.day_number}-${rt}`) === 'ready') ? 'bg-emerald-500' : 'bg-border-subtle opacity-50'}`} title="Revision Topics" />
+                                                    <div className={`h-1 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.secondary_topic}`) === 'ready' ? 'bg-[#c9a84c]' : 'bg-border-subtle'}`} />
                                                   )}
                                                </div>
                                             </div>
-                                           {fin && <CheckCircle2 className="absolute top-1 right-1 h-3.5 w-3.5 text-emerald-500" />}
+                                           {fin && <CheckCircle2 className="absolute top-1 right-1 h-3 w-3 text-[#c9a84c]" />}
                                         </div>
                                       );
                                    })}
@@ -982,25 +978,25 @@ export default function StudyPlanPage() {
             <div className="lg:col-span-4 space-y-4">
                <div className="bg-surface border border-border-subtle rounded-2xl p-6 space-y-6 sticky top-24">
                   <div className="space-y-4">
-                     <h2 className="text-[11px] font-bold text-subtle tracking-wider flex items-center gap-2 uppercase">
+                     <h2 className="text-[10px] font-black text-subtle tracking-widest flex items-center gap-2 uppercase">
                         <Clock className="h-3.5 w-3.5 text-accent" /> Active Focus
                      </h2>
-                     <p className="text-[13px] font-medium text-foreground bg-background p-4 rounded-lg border border-border-subtle leading-relaxed">
+                     <p className="text-xs font-medium text-foreground bg-background p-4 rounded-lg border border-border-subtle leading-relaxed">
                         {currentWeekTarget?.weekly_goal || 'Stay consistent with your targets.'}
                      </p>
                   </div>
                   <div className="space-y-4">
-                     <h4 className="text-[10px] font-bold text-subtle uppercase tracking-wider flex items-center gap-2"><Zap className="h-3.5 w-3.5 text-accent" /> Methodology</h4>
+                     <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><Zap className="h-3 w-3 text-accent" /> Methodology</h4>
                       <ul className="space-y-3">
-                         <li className="flex gap-3 items-center"><Sparkles className="h-4 w-4 text-accent" /><p className="text-[11px] font-medium text-muted">Priority Weighting</p></li>
-                         <li className="flex gap-3 items-center"><BookMarked className="h-4 w-4 text-orange-600" /><p className="text-[11px] font-medium text-muted">Spaced Repetition</p></li>
+                         <li className="flex gap-3 items-center"><Sparkles className="h-4 w-4 text-[#c9a84c]" /><p className="text-[10px] font-black uppercase tracking-widest text-muted">Priority Weighting</p></li>
+                         <li className="flex gap-3 items-center"><BookMarked className="h-4 w-4 text-[#c9a84c]" /><p className="text-[10px] font-black uppercase tracking-widest text-muted">Spaced Repetition</p></li>
                       </ul>
                   </div>
                   <div className="pt-4 border-t border-border-subtle">
-                      <div className="bg-orange-600 p-5 rounded-xl text-background">
-                         <p className="text-[9px] font-bold text-accent uppercase tracking-wider mb-2">Phase Intensity</p>
-                         <p className="text-xl font-bold italic opacity-90">Deep Focus</p>
-                         <div className="mt-3 h-1 bg-background/20 rounded-full"><div className="h-full bg-accent w-3/4" /></div>
+                      <div className="bg-[#1e3a5f] p-4 rounded-xl text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/10">
+                         <p className="text-[9px] font-black uppercase tracking-widest mb-2 opacity-70">Phase Intensity</p>
+                         <p className="text-xl font-black italic">Deep Focus</p>
+                         <div className="mt-3 h-1 bg-background/20 rounded-full overflow-hidden"><div className="h-full bg-[#c9a84c] w-3/4 shadow-[0_0_8px_rgba(201,168,76,0.5)]" /></div>
                       </div>
                   </div>
                   

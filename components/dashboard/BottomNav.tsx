@@ -50,15 +50,15 @@ export function BottomNav() {
             key={item.href}
             href={item.href}
             className={`flex flex-col items-center justify-center min-w-[64px] min-h-[44px] gap-1 transition-all ${
-              isActive ? 'text-accent' : 'text-subtle'
+              isActive ? 'text-[#c9a84c]' : 'text-subtle'
             }`}
           >
             <item.icon className={`h-5 w-5 ${isActive ? 'scale-110' : ''} transition-transform`} />
-            <span className="text-[10px] font-bold uppercase tracking-wider">
+            <span className="text-[10px] font-black uppercase tracking-widest">
               {t(item.key as any).split(' ')[0]} {/* Keep it short for mobile */}
             </span>
             {isActive && (
-              <span className="absolute bottom-2 h-1 w-1 rounded-full bg-accent" />
+              <span className="absolute bottom-2 h-1 w-1 rounded-full bg-[#c9a84c] shadow-[0_0_8px_rgba(201,168,76,0.5)]" />
             )}
           </Link>
         );

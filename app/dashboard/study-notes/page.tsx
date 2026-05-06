@@ -188,25 +188,22 @@ export default function StudyNotesPage() {
     }
   };
 
-  if (loading) {
     return (
       <div className="flex h-[calc(100vh-5rem)] items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1e3a5f]"></div>
       </div>
     );
-  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-4rem)] bg-background">
       {/* Header */}
-      <div className="flex-none p-6 border-b border-border-subtle bg-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10 shadow-sm">
+      <div className="flex-none p-5 border-b border-border-subtle bg-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10 shadow-sm">
         <div>
-          <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-foreground tracking-tighter flex items-center gap-2 uppercase">
             <BookOpen className="h-6 w-6 text-accent" /> AI Study Notes
           </h1>
-          <p className="text-xs text-subtle font-medium mt-1 uppercase tracking-wider">Your unified knowledge base</p>
+          <p className="text-[10px] text-subtle font-black mt-1 uppercase tracking-widest">Unified Tactical Intelligence</p>
         </div>
-
       </div>
 
       <div className="flex-1 flex overflow-hidden">
@@ -217,7 +214,7 @@ export default function StudyNotesPage() {
               <select
                 value={selectedExamId}
                 onChange={(e) => setSelectedExamId(e.target.value)}
-                className="w-full px-3 py-2 bg-background border border-border-subtle rounded-xl text-xs font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all appearance-none uppercase tracking-wider"
+                className="w-full px-3 py-2 bg-background border border-border-subtle rounded-xl text-[10px] font-black text-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all appearance-none uppercase tracking-widest"
               >
                 <option value="all">All Exams</option>
                 {exams.map(ex => (
@@ -247,7 +244,7 @@ export default function StudyNotesPage() {
             ) : (
               Object.entries(groupedNotes).map(([week, weekNotes]) => (
                 <div key={week} className="space-y-2">
-                  <h3 className="text-[10px] font-bold text-subtle uppercase tracking-wider px-2 flex items-center gap-2">
+                  <h3 className="text-[9px] font-black text-subtle uppercase tracking-widest px-2 flex items-center gap-2">
                     <Calendar className="h-3 w-3" /> Week {week}
                   </h3>
                   <div className="space-y-1">
@@ -269,12 +266,12 @@ export default function StudyNotesPage() {
                         } border`}
                       >
                         <div className="flex justify-between items-start">
-                          <span className="text-[10px] font-bold text-subtle bg-background px-1.5 py-0.5 rounded border border-border-subtle">Day {note.day_number}</span>
+                          <span className="text-[10px] font-black text-subtle bg-background px-1.5 py-0.5 rounded border border-border-subtle uppercase tracking-widest">Day {note.day_number}</span>
                           {note.notes_content?.has_pyq_content && (
-                            <span className="text-[8px] font-bold text-orange-600 bg-orange-600/10 px-1.5 py-0.5 rounded">PYQ INC</span>
+                            <span className="text-[8px] font-black text-accent bg-accent/10 px-1.5 py-0.5 rounded uppercase tracking-widest">PYQ INC</span>
                           )}
                         </div>
-                        <p className={`text-sm font-bold mt-2 line-clamp-2 leading-tight ${activeNote?.id === note.id ? 'text-accent' : 'text-foreground'}`}>
+                        <p className={`text-sm font-black mt-2 line-clamp-2 leading-tight tracking-tighter ${activeNote?.id === note.id ? 'text-accent' : 'text-foreground'}`}>
                           {note.topic}
                         </p>
                       </button>
@@ -305,14 +302,14 @@ export default function StudyNotesPage() {
               <div className="flex flex-wrap gap-3 justify-between items-end mb-8 border-b border-border-subtle pb-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-bold text-subtle rounded-lg uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-black text-subtle rounded-lg uppercase tracking-widest flex items-center gap-1.5">
                       <Calendar className="h-3 w-3" /> Day {activeNote.day_number}
                     </span>
-                    <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-bold text-subtle rounded-lg uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-black text-subtle rounded-lg uppercase tracking-widest flex items-center gap-1.5">
                       <Hash className="h-3 w-3" /> {activeNote.notes_content?.word_count} Words
                     </span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">{activeNote.topic}</h2>
+                  <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tighter uppercase">{activeNote.topic}</h2>
                 </div>
                 
                 <div className="flex items-center gap-2">
@@ -324,25 +321,25 @@ export default function StudyNotesPage() {
                       <button 
                         onClick={handleSaveEdit} 
                         disabled={isSaving}
-                        className="px-4 py-2.5 bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-emerald-700 transition-colors flex items-center gap-2"
+                        className="px-4 py-2.5 bg-[#c9a84c] text-[#1e3a5f] font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-[#c9a84c]/10"
                       >
-                        {isSaving ? <span className="animate-pulse">Saving...</span> : <><Check className="h-4 w-4" /> Save</>}
+                        {isSaving ? <span className="animate-pulse">Syncing...</span> : <><Check className="h-4 w-4" /> Sync Note</>}
                       </button>
                     </>
                   ) : (
                     <>
                       <button 
                         onClick={() => setIsEditing(true)} 
-                        className="px-4 py-2.5 bg-surface text-foreground font-bold text-xs uppercase tracking-wider rounded-xl border border-border-subtle hover:bg-background transition-colors flex items-center gap-2"
+                        className="px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest rounded-xl border border-border-subtle hover:bg-background transition-colors flex items-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
                       >
                         <Edit3 className="h-4 w-4" /> Edit
                       </button>
                       <button 
                         onClick={handleDownloadPDF} 
                         disabled={isDownloading}
-                        className="px-4 py-2.5 bg-accent text-background font-bold text-xs uppercase tracking-wider rounded-xl hover:opacity-90 transition-colors flex items-center gap-2"
+                        className="px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
                       >
-                        <Download className={`h-4 w-4 ${isDownloading ? 'animate-bounce' : ''}`} /> PDF
+                        <Download className={`h-4 w-4 ${isDownloading ? 'animate-bounce' : ''}`} /> Export PDF
                       </button>
                     </>
                   )}
@@ -350,12 +347,12 @@ export default function StudyNotesPage() {
               </div>
 
               {activeNote.notes_content?.generated_from_general_knowledge && (
-                <div className="mb-8 bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-5 flex gap-4 items-start">
-                  <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                <div className="mb-8 bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-2xl p-5 flex gap-4 items-start shadow-sm">
+                  <AlertCircle className="h-5 w-5 text-[#c9a84c] flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-sm font-bold text-yellow-700 dark:text-yellow-500">General Knowledge Generation</h4>
-                    <p className="text-xs font-medium text-yellow-600/80 mt-1 leading-relaxed">
-                      No uploaded materials were found for this topic. These notes were generated using general PSC syllabus knowledge. For higher accuracy, please upload relevant PDFs.
+                    <h4 className="text-[11px] font-black text-[#c9a84c] uppercase tracking-widest">General Knowledge Generation</h4>
+                    <p className="text-[10px] font-black text-subtle uppercase tracking-widest mt-2 leading-relaxed opacity-70">
+                      No uploaded materials found for this topic. These notes were generated using general PSC syllabus knowledge.
                     </p>
                   </div>
                 </div>

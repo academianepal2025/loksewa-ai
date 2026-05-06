@@ -27,7 +27,7 @@ export function DataPrivacySection({ user }: any) {
 
       // Title & Header
       doc.setFontSize(22);
-      doc.setTextColor(249, 115, 22); // Orange primary
+      doc.setTextColor(30, 58, 95); // Deep Blue #1e3a5f
       doc.text('Loksewa AI - Data Export', 14, 20);
       
       doc.setFontSize(10);
@@ -51,7 +51,7 @@ export function DataPrivacySection({ user }: any) {
           head: [columns.map(c => c.replace(/_/g, ' ').toUpperCase())],
           body: tableData.map(row => columns.map(c => String(row[c] || ''))),
           styles: { fontSize: 8, cellPadding: 2 },
-          headStyles: { fillColor: [249, 115, 22] },
+          headStyles: { fillColor: [30, 58, 95] }, // Deep Blue
           margin: { left: 14, right: 14 },
         });
 
@@ -103,35 +103,35 @@ export function DataPrivacySection({ user }: any) {
   };
 
   return (
-    <div className="bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8">
-      <h2 className="text-lg font-bold text-foreground tracking-tight mb-1">Data & Privacy</h2>
+    <div className="bg-surface border border-border-subtle rounded-2xl p-6">
+      <h2 className="text-lg font-black text-foreground tracking-tighter mb-1 uppercase">Data & Privacy</h2>
       <p className="text-xs text-subtle font-medium mb-6">Export your data or clear specific histories.</p>
 
       <div className="space-y-4">
         {/* Export */}
-        <div className="bg-background border border-border-subtle rounded-xl p-5">
-          <h3 className="text-sm font-bold text-foreground mb-1">Export My Data (PDF)</h3>
-          <p className="text-[11px] text-subtle font-medium mb-4 leading-relaxed">Download all your Loksewa AI data including study plans, quiz history, notes, and exam information as a professionally formatted PDF document.</p>
-          <button onClick={handleExport} disabled={exporting} className="flex items-center gap-2 px-5 py-2.5 bg-orange-600 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:opacity-90 disabled:opacity-40">
-            {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />} Export as PDF
+        <div className="bg-background border border-border-subtle rounded-xl p-5 shadow-sm">
+          <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-1.5">Export My Data (PDF)</h3>
+          <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4 leading-relaxed opacity-70">Download all mission data including study plans, quiz history, and notes as a tactical PDF document.</p>
+          <button onClick={handleExport} disabled={exporting} className="flex items-center gap-2 px-5 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10">
+            {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />} Export Mission Data
           </button>
         </div>
 
         {/* Clear Chat */}
-        <div className="bg-background border border-border-subtle rounded-xl p-5">
-          <h3 className="text-sm font-bold text-foreground mb-1">Clear Chat History</h3>
-          <p className="text-[11px] text-subtle font-medium mb-4 leading-relaxed">Permanently delete all your Loksewa Guru conversation history across all exams. This cannot be undone.</p>
-          <button onClick={() => setClearChatOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-red-600">
-            <Trash2 className="h-3.5 w-3.5" /> Clear Chat History
+        <div className="bg-background border border-border-subtle rounded-xl p-5 shadow-sm">
+          <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-1.5">Clear Chat History</h3>
+          <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4 leading-relaxed opacity-70">Permanently delete all Loksewa Guru conversation history across all exams. Irreversible.</p>
+          <button onClick={() => setClearChatOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-sm">
+            <Trash2 className="h-3.5 w-3.5" /> Purge Chat History
           </button>
         </div>
 
         {/* Clear Quiz */}
-        <div className="bg-background border border-border-subtle rounded-xl p-5">
-          <h3 className="text-sm font-bold text-foreground mb-1">Clear Quiz History</h3>
-          <p className="text-[11px] text-subtle font-medium mb-4 leading-relaxed">Permanently delete all your quiz attempts. This will reset your performance charts and topic score history.</p>
-          <button onClick={() => setClearQuizOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-red-600">
-            <Trash2 className="h-3.5 w-3.5" /> Clear Quiz History
+        <div className="bg-background border border-border-subtle rounded-xl p-5 shadow-sm">
+          <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-1.5">Clear Quiz History</h3>
+          <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4 leading-relaxed opacity-70">Permanently delete all quiz attempts and reset performance analytics. Irreversible.</p>
+          <button onClick={() => setClearQuizOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-sm">
+            <Trash2 className="h-3.5 w-3.5" /> Purge Quiz History
           </button>
         </div>
       </div>

@@ -66,9 +66,9 @@ export function ProfileSection({ user, profile, supabase, markDirty, clearDirty,
   };
 
   return (
-    <div className="bg-surface border border-border-subtle rounded-2xl p-6 sm:p-8">
-      <h2 className="text-lg font-bold text-foreground tracking-tight mb-1">Profile</h2>
-      <p className="text-xs text-subtle font-medium mb-6">Manage your personal information and profile photo.</p>
+    <div className="bg-surface border border-border-subtle rounded-2xl p-6">
+      <h2 className="text-lg font-black text-foreground tracking-tighter mb-1 uppercase">Profile</h2>
+      <p className="text-xs text-subtle font-black uppercase tracking-widest opacity-70 mb-6">Manage your personal information and profile photo.</p>
 
       <div className="flex flex-col sm:flex-row gap-8 items-start">
         {/* Avatar */}
@@ -76,7 +76,7 @@ export function ProfileSection({ user, profile, supabase, markDirty, clearDirty,
           {photoPreview ? (
             <img src={photoPreview} alt="Avatar" className="h-24 w-24 rounded-full object-cover border-2 border-border-subtle" />
           ) : (
-            <div className="h-24 w-24 rounded-full bg-blue-900 text-white flex items-center justify-center text-2xl font-bold border-2 border-border-subtle">
+            <div className="h-24 w-24 rounded-full bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center text-2xl font-black border-2 border-[#c9a84c]/20">
               {initials}
             </div>
           )}
@@ -89,34 +89,34 @@ export function ProfileSection({ user, profile, supabase, markDirty, clearDirty,
         {/* Fields */}
         <div className="flex-1 space-y-4 w-full">
           <div>
-            <label className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1.5 block ml-1">Full Name</label>
+            <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Full Name</label>
             <input
               value={fullName}
               onChange={e => setFullName(e.target.value)}
-              className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-sm font-bold text-foreground outline-none focus:border-accent/50 transition-all"
-              placeholder="Your full name"
+              className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-[13px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 transition-all placeholder:text-subtle/30 shadow-sm"
+              placeholder="ENTRY FULL NAME"
             />
           </div>
           <div>
-            <label className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1.5 block ml-1">Phone Number</label>
+            <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Phone Number</label>
             <input
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-sm font-bold text-foreground outline-none focus:border-accent/50 transition-all"
+              className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-[13px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 transition-all placeholder:text-subtle/30 shadow-sm"
               placeholder="+9779812345678"
             />
           </div>
           <div>
-            <label className="text-[10px] font-bold text-subtle uppercase tracking-wider mb-1.5 block ml-1">Email</label>
-            <input value={user?.email || ''} readOnly className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-sm font-medium text-subtle cursor-not-allowed" />
+            <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Email</label>
+            <input value={user?.email || ''} readOnly className="w-full bg-background/50 border border-border-subtle rounded-xl px-4 py-3 text-[13px] font-black uppercase tracking-widest text-subtle cursor-not-allowed" />
           </div>
           <button
             onClick={handleSave}
             disabled={saving || !isDirty}
-            className="flex items-center gap-2 px-6 py-3 bg-orange-600 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#1e3a5f]/10"
           >
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
-            Save Profile
+            Save Mission Profile
           </button>
         </div>
       </div>

@@ -79,8 +79,8 @@ export default function ResetPassword() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-orange-600" />
-          <span className="text-sm text-subtle font-medium">Verifying reset link...</span>
+          <Loader2 className="h-8 w-8 animate-spin text-[#1e3a5f]" />
+          <span className="text-[10px] text-subtle font-black uppercase tracking-widest">Verifying Recovery Session...</span>
         </div>
       </div>
     );
@@ -93,21 +93,21 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-orange-600/5 rounded-full blur-[100px] -ml-48 -mt-48" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-[100px] -mr-48 -mb-48" />
+      <div className="absolute top-0 left-0 w-96 h-96 bg-[#1e3a5f]/5 rounded-full blur-[100px] -ml-48 -mt-48" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#c9a84c]/5 rounded-full blur-[100px] -mr-48 -mb-48" />
 
       <div className="w-full max-w-md relative z-10">
         <div className="bg-surface border border-border-subtle p-8 sm:p-12 rounded-[2.5rem] shadow-2xl shadow-primary/5 space-y-10">
           <div className="text-center space-y-3">
-            <div className="h-14 w-14 bg-orange-600 text-background rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-orange-600/20 relative group">
+            <div className="h-14 w-14 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl shadow-[#1e3a5f]/20 relative group border border-[#c9a84c]/20">
               <ShieldCheck className="h-7 w-7 relative z-10" />
-              <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity" />
+              <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity" />
             </div>
-            <h1 className="text-3xl font-bold text-orange-600 tracking-tight">
+            <h1 className="text-3xl font-black text-[#1e3a5f] tracking-tighter uppercase">
               New Access Key
             </h1>
-            <p className="text-sm font-medium text-subtle">
-              Enter your new password below.
+            <p className="text-[10px] font-black text-subtle uppercase tracking-widest">
+              Establish new secure credentials
             </p>
           </div>
 
@@ -205,7 +205,7 @@ export default function ResetPassword() {
 
             <button
               disabled={isSubmitting}
-              className="w-full bg-orange-600 text-background py-4.5 rounded-2xl font-bold text-sm hover:opacity-95 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-orange-600/10 active:scale-[0.98] min-h-[60px] disabled:opacity-50"
+              className="w-full bg-[#1e3a5f] text-[#c9a84c] py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:opacity-95 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-[#1e3a5f]/20 active:scale-[0.98] min-h-[56px] disabled:opacity-50 border border-[#c9a84c]/20"
             >
               {isSubmitting ? (
                 <Loader2 className="h-5 w-5 animate-spin" />

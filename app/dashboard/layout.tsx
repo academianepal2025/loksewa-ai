@@ -115,9 +115,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-2.5 text-sm font-bold rounded-xl transition-all group min-h-[44px] relative ${
+                className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative ${
                   isActive 
-                  ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20' 
+                  ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/10 border border-[#c9a84c]/10' 
                   : 'text-subtle hover:bg-background hover:text-foreground'
                 }`}
               >
@@ -138,7 +138,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                {!isCollapsed && <p className="px-4 text-[10px] font-black text-[#c9a84c] uppercase tracking-[0.2em] mb-2">Command Center</p>}
                <Link
                 href="/admin"
-                className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'justify-between px-4'} py-2.5 text-sm font-bold rounded-xl transition-all group min-h-[44px] relative ${
+                className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'justify-between px-4'} py-2.5 text-sm font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative ${
                   currentPath.startsWith('/admin') 
                   ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20' 
                   : 'text-subtle hover:bg-background hover:text-foreground'
@@ -149,7 +149,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                   {!isCollapsed && <span>Admin Console</span>}
                 </div>
                 {pendingAdminCount > 0 && !isCollapsed && (
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold animate-pulse-badge ${
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-black animate-pulse-badge ${
                     currentPath.startsWith('/admin')
                     ? 'bg-[#c9a84c] text-[#1e3a5f]'
                     : 'bg-red-500 text-white'
@@ -166,16 +166,50 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           )}
         </nav>
         <div className={`p-4 border-t border-border-subtle transition-all duration-300 ${isCollapsed ? 'px-2' : 'px-4'}`}>
-           <div className={`bg-background rounded-xl p-3 flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} transition-all`}>
-              <div className="h-8 w-8 rounded-lg bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0">
-                <User className="h-4 w-4 text-muted" />
-              </div>
-               {!isCollapsed && (
-                 <div className="flex-1 min-w-0">
-                   <p className="text-[9px] font-bold truncate text-subtle uppercase tracking-wider">PROFILE</p>
-                   <p className="text-xs font-bold truncate text-foreground">{fullName}</p>
-                 </div>
-               )}
+           <div className="flex items-center gap-3 mb-6 px-2">
+             <div className="h-10 w-10 bg-[#c9a84c] rounded-xl flex items-center justify-center shadow-lg shadow-[#c9a84c]/20">
+               <User className="h-5 w-5 text-[#1e3a5f]" />
+             </div>
+             {!isCollapsed && (
+               <div className="truncate">
+                 <p className="text-sm font-black text-foreground uppercase tracking-widest">{fullName}</p>
+                 <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">Premium Member</p>
+               </div>
+             )}
+           </div>
+           
+           <div className="space-y-1 mt-4">
+              <Link
+                href="/dashboard/settings"
+                className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative ${
+                  currentPath === '/dashboard/settings' 
+                  ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20 border border-[#c9a84c]/10' 
+                  : 'text-subtle hover:bg-background hover:text-foreground'
+                }`}
+              >
+                <Settings className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-4 w-4`} />
+                {!isCollapsed && <span>{t('settings')}</span>}
+                {isCollapsed && (
+                  <div className="absolute left-full ml-3 px-3 py-2 bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-[100] shadow-xl border border-[#c9a84c]/10">
+                    {t('settings')}
+                  </div>
+                )}
+              </Link>
+
+              <form action="/auth/signout" method="post">
+                <button
+                  type="submit"
+                  className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative text-red-500 hover:bg-red-500/10`}
+                >
+                  <LogOut className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-4 w-4`} />
+                  {!isCollapsed && <span>{t('logout')}</span>}
+                  {isCollapsed && (
+                    <div className="absolute left-full ml-3 px-3 py-2 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-[100] shadow-xl border border-red-500/10">
+                      {t('logout')}
+                    </div>
+                  )}
+                </button>
+              </form>
            </div>
         </div>
       </aside>
@@ -223,7 +257,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             <form action="/auth/signout" method="post">
                <button
                 type="submit"
-                className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-muted hover:text-red-500 uppercase tracking-widest transition-colors min-h-[44px]"
+                className="flex items-center gap-2 px-3 py-2 text-[10px] font-black text-muted hover:text-red-500 uppercase tracking-widest transition-colors min-h-[44px]"
                 title={t('logout')}
               >
                 <LogOut className="h-4 w-4" />

@@ -429,24 +429,24 @@ export default function PerformancePage() {
     return (
       <div className="p-8 flex items-center justify-center h-[60vh]">
         <div className="text-center p-8 bg-surface border border-border-subtle rounded-2xl max-w-md">
-          <BookOpen className="w-12 h-12 text-subtle mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-foreground">No Exam Selected</h2>
-          <p className="text-subtle mt-2 mb-6">Create or select an exam in your settings to view performance analytics.</p>
-          <button onClick={() => router.push('/dashboard/settings')} className="bg-foreground text-background px-4 py-2 rounded-xl font-medium text-sm">Go to Settings</button>
+          <BookOpen className="w-12 h-12 text-subtle mx-auto mb-6 opacity-30" />
+          <h2 className="text-xl font-black text-foreground uppercase tracking-tighter">NO MISSION PROFILE</h2>
+          <p className="text-[10px] font-black text-subtle mt-2 mb-8 uppercase tracking-widest">Select an active exam roadmap to view performance intelligence.</p>
+          <button onClick={() => router.push('/dashboard/settings')} className="bg-[#1e3a5f] text-[#c9a84c] px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-[#1e3a5f]/10 hover:opacity-90 transition-all">Command Settings</button>
         </div>
       </div>
     );
   }
 
   const overallCoverage = gapData?.analysis?.overall_coverage_percentage || 0;
-  const pieData = [{ name: 'Coverage', value: overallCoverage, fill: '#10b981' }]; // Emerald 500
+  const pieData = [{ name: 'Coverage', value: overallCoverage, fill: '#c9a84c' }]; // Gold Accent
 
   return (
     <div className="p-4 md:p-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 max-w-7xl mx-auto">
       
       {/* EXAM SELECTOR HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter leading-tight uppercase">
           Performance <span className="text-accent">Analytics</span>
         </h1>
         <div className="flex flex-wrap items-center gap-2">
@@ -471,43 +471,43 @@ export default function PerformancePage() {
 
       {/* HEADER STATS */}
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-subtle flex items-center gap-2"><Activity className="w-4 h-4"/> Study Streak</p>
+        <div className="bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col justify-between">
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><Activity className="w-3.5 h-3.5"/> Streak</p>
           <div className="mt-4">
-            <span className="text-3xl font-bold text-foreground">{stats.studyStreak}</span>
-            <span className="text-sm text-subtle ml-1">Days</span>
+            <span className="text-3xl font-black text-foreground">{stats.studyStreak}</span>
+            <span className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1">Days</span>
           </div>
         </div>
-        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-subtle flex items-center gap-2"><Target className="w-4 h-4"/> Quiz Avg</p>
+        <div className="bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col justify-between">
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><Target className="w-3.5 h-3.5"/> Quiz</p>
           <div className="mt-4">
-            <span className="text-3xl font-bold text-foreground">{stats.quizAvg}%</span>
+            <span className="text-3xl font-black text-foreground">{stats.quizAvg}%</span>
           </div>
         </div>
-        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-subtle flex items-center gap-2"><PenTool className="w-4 h-4"/> Mock Avg</p>
+        <div className="bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col justify-between">
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><PenTool className="w-3.5 h-3.5"/> Mock</p>
           <div className="mt-4">
-            <span className="text-3xl font-bold text-foreground">{stats.mockAvg}%</span>
+            <span className="text-3xl font-black text-foreground">{stats.mockAvg}%</span>
           </div>
         </div>
-        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-subtle flex items-center gap-2"><Sparkles className="w-4 h-4"/> Predicted Score</p>
+        <div className="bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col justify-between">
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><Sparkles className="w-3.5 h-3.5"/> Predicted</p>
           <div className="mt-4">
-            <span className="text-3xl font-bold text-accent">{predictedScore}%</span>
+            <span className="text-3xl font-black text-accent">{predictedScore}%</span>
             <div className="h-1 w-full bg-border-subtle rounded-full mt-2"><div className="h-full bg-accent rounded-full" style={{ width: `${predictedScore}%` }} /></div>
           </div>
         </div>
-        <div className="bg-surface border border-border-subtle p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-subtle flex items-center gap-2"><TrendingUp className="w-4 h-4"/> Mission Progress</p>
+        <div className="bg-surface border border-border-subtle p-5 rounded-2xl flex flex-col justify-between shadow-sm">
+          <p className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><TrendingUp className="w-3.5 h-3.5"/> Progress</p>
           <div className="mt-4">
-            <span className="text-3xl font-bold text-foreground">{roadmapProgress}%</span>
-            <div className="h-1 w-full bg-border-subtle rounded-full mt-2"><div className="h-full bg-emerald-500 rounded-full" style={{ width: `${roadmapProgress}%` }} /></div>
+            <span className="text-3xl font-black text-foreground tracking-tighter">{roadmapProgress}%</span>
+            <div className="h-1 w-full bg-border-subtle rounded-full mt-2"><div className="h-full bg-[#1e3a5f] rounded-full" style={{ width: `${roadmapProgress}%` }} /></div>
           </div>
         </div>
-        <div className="bg-accent/5 border border-accent/20 p-6 rounded-2xl flex flex-col justify-between">
-          <p className="text-sm font-medium text-accent flex items-center gap-2"><Calendar className="w-4 h-4"/> Days left</p>
+        <div className="bg-[#1e3a5f] p-5 rounded-2xl flex flex-col justify-between shadow-lg shadow-[#1e3a5f]/10 border border-[#c9a84c]/20">
+          <p className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest flex items-center gap-2"><Calendar className="w-3.5 h-3.5"/> Days Left</p>
           <div className="mt-4">
-            <span className="text-3xl font-bold text-accent">{stats.daysToExam}</span>
+            <span className="text-3xl font-black text-[#c9a84c] tracking-tighter">{stats.daysToExam}</span>
           </div>
         </div>
       </div>
@@ -515,13 +515,13 @@ export default function PerformancePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* GAP ANALYSIS PANEL */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-surface border border-border-subtle rounded-2xl p-6">
+          <div className="bg-surface border border-border-subtle rounded-2xl p-5">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-accent"/> Notes Coverage
+              <h2 className="text-xs font-black text-foreground uppercase tracking-widest flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-accent"/> Notes Coverage
               </h2>
               <button onClick={fetchGapAnalysis} disabled={analyzingGaps} className="p-2 text-subtle hover:text-foreground transition-colors rounded-full hover:bg-background">
-                <RefreshCw className={`w-4 h-4 ${analyzingGaps ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-3.5 h-3.5 ${analyzingGaps ? 'animate-spin' : ''}`} />
               </button>
             </div>
 
@@ -541,23 +541,23 @@ export default function PerformancePage() {
                           barSize={10} data={pieData}
                           startAngle={90} endAngle={-270}
                         >
-                          <RadialBar background dataKey="value" cornerRadius={10} />
-                          <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-2xl font-bold fill-foreground">
-                            {overallCoverage}%
-                          </text>
-                        </RadialBarChart>
+                         <RadialBar background dataKey="value" cornerRadius={10} />
+                         <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-2xl font-black fill-foreground uppercase tracking-tighter">
+                           {overallCoverage}%
+                         </text>
+                       </RadialBarChart>
                      </ResponsiveContainer>
                    </div>
-                   <p className="text-sm font-medium text-subtle mt-2">Overall Syllabus Coverage</p>
+                    <p className="text-[10px] font-black text-subtle mt-2 uppercase tracking-widest">Syllabus Coverage</p>
                 </div>
 
                 <div className="md:col-span-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                   <table className="w-full text-left text-sm">
                     <thead className="sticky top-0 bg-surface/90 backdrop-blur pb-2 z-10">
-                      <tr className="text-subtle font-medium border-b border-border-subtle">
-                        <th className="pb-2 font-medium">Topic</th>
-                        <th className="pb-2 font-medium">Coverage</th>
-                        <th className="pb-2 font-medium text-right">Action</th>
+                      <tr className="text-[9px] font-black text-subtle uppercase tracking-widest border-b border-border-subtle">
+                        <th className="pb-2 font-black">Topic</th>
+                        <th className="pb-2 font-black">Status</th>
+                        <th className="pb-2 font-black text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border-subtle/50">
@@ -565,17 +565,17 @@ export default function PerformancePage() {
                         <tr key={i} className="group">
                           <td className="py-3 pr-4 font-medium text-foreground max-w-[200px] truncate" title={gap.topic}>{gap.topic}</td>
                           <td className="py-3">
-                            {gap.coverage_status === 'good' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"><CheckCircle className="w-3 h-3 mr-1"/> Good</span>}
-                            {gap.coverage_status === 'partial' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">Partial</span>}
-                            {gap.coverage_status === 'missing' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20"><AlertTriangle className="w-3 h-3 mr-1"/> Missing</span>}
+                            {gapData.coverage_status === 'good' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20"><CheckCircle className="w-3 h-3 mr-1"/> Secured</span>}
+                            {gapData.coverage_status === 'partial' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 border border-amber-500/20">Partial</span>}
+                            {gapData.coverage_status === 'missing' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-red-500/10 text-red-600 border border-red-500/20"><AlertTriangle className="w-3 h-3 mr-1"/> Missing</span>}
                           </td>
                           <td className="py-3 text-right">
-                            {gap.coverage_status === 'missing' && (
+                            {gapData.coverage_status === 'missing' && (
                               <button 
                                 onClick={() => router.push(`/dashboard/guru?query=I need notes and an explanation for the topic: ${encodeURIComponent(gap.topic)}`)}
-                                className="text-xs bg-accent text-white px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 ml-auto font-medium"
+                                className="text-[9px] bg-[#1e3a5f] text-[#c9a84c] px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all flex items-center gap-1 ml-auto font-black uppercase tracking-widest shadow-lg shadow-[#1e3a5f]/10"
                               >
-                                Fill Gap <ArrowRight className="w-3 h-3"/>
+                                Deploy Intel <ArrowRight className="w-3 h-3"/>
                               </button>
                             )}
                           </td>
@@ -594,8 +594,8 @@ export default function PerformancePage() {
 
           {/* QUIZ PERFORMANCE CHARTS */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-surface border border-border-subtle rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Quiz Scores Over Time</h3>
+            <div className="bg-surface border border-border-subtle rounded-2xl p-5">
+              <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest mb-6">Quiz Scores Over Time</h3>
               <div className="h-64">
                 {quizData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -616,8 +616,8 @@ export default function PerformancePage() {
               </div>
             </div>
 
-            <div className="bg-surface border border-border-subtle rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Average by Topic (%)</h3>
+            <div className="bg-surface border border-border-subtle rounded-2xl p-5">
+              <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest mb-6">Average by Topic (%)</h3>
               <div className="h-64">
                 {topicAverages.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -626,11 +626,11 @@ export default function PerformancePage() {
                       <XAxis type="number" domain={[0, 100]} hide />
                       <YAxis dataKey="topic" type="category" tick={{fill: '#888888', fontSize: 11}} axisLine={false} tickLine={false} width={80} />
                       <RechartsTooltip cursor={{fill: 'var(--bg-background)'}} contentStyle={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-subtle)', borderRadius: '12px' }}/>
-                      <Bar dataKey="avg" radius={[0, 4, 4, 0]}>
-                        {topicAverages.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.avg < 50 ? '#ef4444' : entry.avg < 75 ? '#f59e0b' : '#10b981'} />
-                        ))}
-                      </Bar>
+                       <Bar dataKey="avg" radius={[0, 4, 4, 0]}>
+                         {topicAverages.map((entry, index) => (
+                           <Cell key={`cell-${index}`} fill={entry.avg < 50 ? '#ef4444' : entry.avg < 75 ? '#c9a84c' : '#1e3a5f'} />
+                         ))}
+                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
@@ -639,8 +639,8 @@ export default function PerformancePage() {
               </div>
             </div>
 
-            <div className="bg-surface border border-border-subtle rounded-2xl p-6 md:col-span-2">
-              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Time Allocation (Hours by Subject)</h3>
+            <div className="bg-surface border border-border-subtle rounded-2xl p-5 md:col-span-2">
+              <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest mb-6">Time Allocation (Hours)</h3>
               <div className="h-64">
                 {timeAllocation.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -664,15 +664,15 @@ export default function PerformancePage() {
         <div className="space-y-6">
           {/* WEAKEST TOPICS */}
           {topicAverages.length > 0 && (
-            <div className="bg-surface border border-border-subtle rounded-2xl p-6">
-              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-500" /> Focus Areas
+            <div className="bg-surface border border-border-subtle rounded-2xl p-5">
+              <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-3.5 h-3.5 text-red-500" /> Focus Areas
               </h3>
               <div className="space-y-3">
                 {topicAverages.slice(0, 3).map((t, i) => (
-                  <div key={i} className="p-3 border border-red-500/20 bg-red-500/5 rounded-xl flex items-center justify-between">
-                     <span className="text-sm font-medium text-foreground truncate max-w-[150px]">{t.topic}</span>
-                     <span className="text-sm font-bold text-red-600">{t.avg}%</span>
+                  <div key={i} className="p-3 border border-red-500/20 bg-red-500/5 rounded-xl flex items-center justify-between shadow-sm">
+                     <span className="text-[10px] font-black text-foreground truncate max-w-[150px] uppercase tracking-widest">{t.topic}</span>
+                     <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">{t.avg}%</span>
                   </div>
                 ))}
               </div>
@@ -680,10 +680,10 @@ export default function PerformancePage() {
           )}
 
           {/* AI FEEDBACK */}
-          <div className="bg-surface border border-border-subtle rounded-2xl p-6 flex flex-col h-full min-h-[300px]">
+          <div className="bg-surface border border-border-subtle rounded-2xl p-5 flex flex-col h-full min-h-[300px]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-bold text-subtle uppercase tracking-wider flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-accent" /> Weekly Feedback
+              <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-accent" /> Weekly Feedback
               </h3>
             </div>
             
@@ -705,9 +705,9 @@ export default function PerformancePage() {
             <button 
               onClick={generateFeedback}
               disabled={generatingFeedback}
-              className="w-full py-2.5 bg-background hover:bg-accent/5 text-foreground hover:text-accent border border-border-subtle hover:border-accent/30 rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2 mt-auto"
+              className="w-full py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 mt-auto shadow-lg shadow-[#1e3a5f]/10"
             >
-              {feedback ? 'Regenerate Feedback' : 'Generate Feedback'} 
+              {feedback ? 'Regenerate' : 'Generate'} 
               <Sparkles className="w-3 h-3" />
             </button>
           </div>
@@ -715,14 +715,14 @@ export default function PerformancePage() {
       </div>
 
       {/* HEATMAP */}
-      <div className="bg-surface border border-border-subtle rounded-2xl p-6 overflow-x-auto">
-        <h3 className="text-sm font-bold text-subtle uppercase tracking-wider mb-6">Study Heatmap (Last 90 Days)</h3>
+      <div className="bg-surface border border-border-subtle rounded-2xl p-6 overflow-x-auto shadow-sm">
+        <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest mb-6">Mission Persistence (Last 90 Days)</h3>
         <div className="flex gap-1 min-w-max pb-2">
           {heatmapDays.map((day, i) => {
             const intensity = day.count === 0 ? 'bg-background border border-border-subtle' : 
-                              day.count === 1 ? 'bg-emerald-500/30 border border-emerald-500/20' : 
-                              day.count === 2 ? 'bg-emerald-500/60 border border-emerald-500/20' : 
-                              'bg-emerald-500 border border-emerald-600';
+                              day.count === 1 ? 'bg-[#c9a84c]/30 border border-[#c9a84c]/20' : 
+                              day.count === 2 ? 'bg-[#c9a84c]/60 border border-[#c9a84c]/20' : 
+                              'bg-[#c9a84c] border border-[#c9a84c] shadow-[0_0_8px_rgba(201,168,76,0.3)]';
             return (
               <Tooltip key={i} content={`${day.count} sessions on ${day.date}`}>
                 <div className={`w-3.5 h-3.5 rounded-sm ${intensity} transition-all hover:ring-2 ring-accent/50`} />
@@ -733,9 +733,9 @@ export default function PerformancePage() {
         <div className="flex items-center gap-2 mt-2 text-xs text-subtle justify-end min-w-max">
            <span>Less</span>
            <div className="w-3 h-3 rounded-sm bg-background border border-border-subtle"></div>
-           <div className="w-3 h-3 rounded-sm bg-emerald-500/30 border border-emerald-500/20"></div>
-           <div className="w-3 h-3 rounded-sm bg-emerald-500/60 border border-emerald-500/20"></div>
-           <div className="w-3 h-3 rounded-sm bg-emerald-500 border border-emerald-600"></div>
+           <div className="w-3 h-3 rounded-sm bg-[#c9a84c]/30 border border-[#c9a84c]/20"></div>
+           <div className="w-3 h-3 rounded-sm bg-[#c9a84c]/60 border border-[#c9a84c]/20"></div>
+           <div className="w-3 h-3 rounded-sm bg-[#c9a84c] border border-[#c9a84c]"></div>
            <span>More</span>
         </div>
       </div>
