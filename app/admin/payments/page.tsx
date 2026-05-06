@@ -132,7 +132,10 @@ export default function AdminPaymentsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ paymentRequestId: reviewingRequest.id, action: reviewAction, adminNotes })
       });
-      if (!res.ok) throw new Error('Failed');
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed');
+
       // Update locally
       setRequests(prev => prev.map(r => r.id === reviewingRequest.id ? { ...r, status: reviewAction, admin_notes: adminNotes, reviewed_at: new Date().toISOString() } : r));
       // Recalculate stats
@@ -144,7 +147,10 @@ export default function AdminPaymentsPage() {
       });
       toast.success(reviewAction === 'approved' ? `Plan activated for ${reviewingRequest.user_email}` : 'Payment rejected');
       setReviewingRequest(null); setReviewAction(null); setAdminNotes('');
-    } catch { toast.error('Operation failed'); }
+    } catch (error: any) { 
+      console.error('Payment review error:', error);
+      toast.error(error.message || 'Operation failed'); 
+    }
     finally { setIsSubmitting(false); }
   };
 

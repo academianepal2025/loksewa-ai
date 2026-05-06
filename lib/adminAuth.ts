@@ -27,16 +27,21 @@ export async function verifyAdmin() {
       .from('profiles')
       .select('is_admin')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
     if (profileError) {
       console.error('[adminAuth] Profile fetch error:', profileError);
-      return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }), user: null, supabase };
+      return { error: NextResponse.json({ error: `Database error: ${profileError.message}` }, { status: 500 }), user: null, supabase };
     }
 
-    if (!profile?.is_admin) {
+    if (!profile) {
+      console.warn('[adminAuth] Profile not found for user:', user.id);
+      return { error: NextResponse.json({ error: 'User profile not found' }, { status: 403 }), user: null, supabase };
+    }
+
+    if (!profile.is_admin) {
       console.warn('[adminAuth] User is not admin:', user.email);
-      return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }), user: null, supabase };
+      return { error: NextResponse.json({ error: 'Access denied: Admin privileges required' }, { status: 403 }), user: null, supabase };
     }
 
     console.log('[adminAuth] Admin verified successfully');
