@@ -234,7 +234,7 @@ export default function AdminStatsPage() {
                     <span className={`h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-black ${
                       i === 0 ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20' :
                       i === 1 ? 'bg-zinc-300/20 text-zinc-500 border border-zinc-300/30' :
-                      i === 2 ? 'bg-orange-600/10 text-orange-700 border border-orange-600/20' :
+                      i === 2 ? 'bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20' :
                       'bg-background text-subtle border border-border-subtle'
                     }`}>{i + 1}</span>
                   </td>

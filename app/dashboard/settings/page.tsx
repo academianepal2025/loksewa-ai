@@ -20,7 +20,7 @@ import { HelpSection } from '@/components/settings/HelpSection';
 
 import {
   User, ShieldCheck, BookOpen, CreditCard, Bell,
-  SlidersHorizontal, Database, FileText, AlertTriangle,
+  Settings2, Database, FileText, AlertTriangle,
   HelpCircle
 } from 'lucide-react';
 
@@ -30,7 +30,7 @@ const SECTIONS = [
   { id: 'exams', label: 'My Exams', icon: BookOpen },
   { id: 'subscription', label: 'Subscription & Billing', icon: CreditCard },
   { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'study-prefs', label: 'Study Preferences', icon: SlidersHorizontal },
+  { id: 'study-prefs', label: 'Study Preferences', icon: Settings2 },
   { id: 'data-privacy', label: 'Data & Privacy', icon: Database },
   { id: 'privacy-policy', label: 'Privacy Policy', icon: FileText },
   { id: 'danger-zone', label: 'Danger Zone', icon: AlertTriangle },

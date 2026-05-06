@@ -644,7 +644,7 @@ export default function PracticePage() {
                 <h4 className="text-[10px] font-bold text-subtle uppercase tracking-wider">Protocol Overview</h4>
                 <div className="space-y-6">
                    <div className="flex gap-4">
-                      <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-orange-600"><Info className="h-4 w-4" /></div>
+                      <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-[#c9a84c]"><Info className="h-4 w-4" /></div>
                       <div>
                         <p className="text-[13px] font-bold text-foreground leading-tight">PSC Calibration</p>
                         <p className="text-[11px] text-subtle font-medium mt-1">AI-generated content aligned with official PSC Nepal patterns.</p>
@@ -805,7 +805,7 @@ export default function PracticePage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <button onClick={() => handleGenerateQuiz()} className="p-6 rounded-2xl bg-surface border border-border-subtle hover:border-accent group flex items-center justify-center gap-4 transition-all"><div className="h-10 w-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent group-hover:rotate-180 transition-transform"><RotateCcw className="h-5 w-5" /></div><span className="text-lg font-bold text-foreground">Retake Mission</span></button>
-                  <button onClick={() => setQuizQuestions([])} className="p-6 rounded-2xl bg-surface border border-border-subtle hover:border-primary group flex items-center justify-center gap-4 transition-all"><div className="h-10 w-10 rounded-xl bg-orange-600/10 flex items-center justify-center text-orange-600"><Layers className="h-5 w-5" /></div><span className="text-lg font-bold text-foreground">Deploy New Sector</span></button>
+                  <button onClick={() => setQuizQuestions([])} className="p-6 rounded-2xl bg-surface border border-border-subtle hover:border-primary group flex items-center justify-center gap-4 transition-all"><div className="h-10 w-10 rounded-xl bg-[#c9a84c]/10 flex items-center justify-center text-[#c9a84c]"><Layers className="h-5 w-5" /></div><span className="text-lg font-bold text-foreground">Deploy New Sector</span></button>
                 </div>
                 <div className="space-y-6">
                   <h3 className="text-xl font-bold text-foreground tracking-tight italic">Mission Intelligence Breakdown</h3>
@@ -816,7 +816,7 @@ export default function PracticePage() {
                         <div className="space-y-4 flex-1">
                           <h4 className="text-lg font-bold text-foreground leading-snug">{q.question}</h4>
                           <details className="group">
-                             <summary className="list-none cursor-pointer flex items-center gap-2 text-[10px] font-bold text-muted hover:text-orange-600 transition-colors"><span className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-lg group-open:rotate-180 transition-transform"><ChevronRight className="h-3 w-3" /></span>VIEW RATIONALE</summary>
+                             <summary className="list-none cursor-pointer flex items-center gap-2 text-[10px] font-bold text-muted hover:text-[#c9a84c] transition-colors"><span className="bg-slate-100 dark:bg-slate-800 p-1.5 rounded-lg group-open:rotate-180 transition-transform"><ChevronRight className="h-3 w-3" /></span>VIEW RATIONALE</summary>
                              <div className="pt-4 space-y-4">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                    {Object.entries(q.options).map(([opt, text]) => (
@@ -903,7 +903,7 @@ export default function PracticePage() {
                         window.dispatchEvent(new CustomEvent('usage-updated'));
                       } catch (err: any) { setError(err.message); } finally { setIsEvaluating(false); }
                     }} />
-                  <button className={`px-10 py-4 rounded-xl bg-orange-600 text-background font-bold text-sm transition-all flex items-center gap-3 ${isEvaluating ? 'opacity-50' : 'hover:opacity-90'}`}>
+                  <button className={`px-10 py-4 rounded-xl bg-[#1e3a5f] text-[#c9a84c] font-bold text-sm transition-all flex items-center gap-3 ${isEvaluating ? 'opacity-50' : 'hover:opacity-90'}`}>
                     {isEvaluating ? <><RefreshCw className="h-5 w-5 animate-spin" /> Analyzing Answers...</> : 'Upload for AI Grading'}
                   </button>
                 </div>

@@ -50,12 +50,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ note
             font-weight: 600;
           }
           h2 {
-            border-bottom: 2px solid #ea580c; /* LoksewaAI Orange */
+            border-bottom: 2px solid #c9a84c; /* LoksewaAI Gold */
             padding-bottom: 8px;
             margin-top: 2em;
           }
           h3 {
-            color: #ea580c;
+            color: #c9a84c;
           }
           p { margin-bottom: 1em; }
           ul, ol { margin-bottom: 1em; padding-left: 2em; }
@@ -75,7 +75,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ note
           .header-title {
             font-size: 24px;
             font-weight: bold;
-            color: #ea580c;
+            color: #1e3a5f;
             margin-bottom: 5px;
           }
           .header-subtitle {

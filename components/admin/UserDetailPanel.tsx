@@ -240,7 +240,7 @@ export function UserDetailPanel({ isOpen, onClose, userId }: UserDetailPanelProp
                       { label: 'Documents', value: usage?.documents || 0, icon: FileText, color: 'text-blue-500 bg-blue-500/10' },
                       { label: 'Chats', value: usage?.chats || 0, icon: MessageSquare, color: 'text-purple-500 bg-purple-500/10' },
                       { label: 'Quizzes', value: usage?.quizzes || 0, icon: ClipboardList, color: 'text-emerald-500 bg-emerald-500/10' },
-                      { label: 'Notes', value: usage?.notes || 0, icon: BookOpen, color: 'text-orange-500 bg-orange-500/10' },
+                      { label: 'Notes', value: usage?.notes || 0, icon: BookOpen, color: 'text-[#c9a84c] bg-[#c9a84c]/10' },
                       { label: 'Plans', value: usage?.studyPlans || 0, icon: Brain, color: 'text-indigo-500 bg-indigo-500/10' },
                       { label: 'Streak', value: usage?.studyStreak || 0, icon: Flame, color: 'text-red-500 bg-red-500/10' },
                     ].map((s) => (
@@ -274,7 +274,7 @@ export function UserDetailPanel({ isOpen, onClose, userId }: UserDetailPanelProp
                               p.status === 'approved' ? 'text-emerald-500' :
                               p.status === 'rejected' ? 'text-red-500' :
                               p.status === 'manually_granted' ? 'text-blue-500' :
-                              'text-orange-500'
+                              'text-[#c9a84c]'
                             }`}>{p.status}</span>
                           </div>
                         </div>

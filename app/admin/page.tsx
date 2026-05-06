@@ -60,7 +60,7 @@ export default function AdminOverviewPage() {
   const statCards = data ? [
     { label: 'Total Users', value: data.totalUsers, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
     { label: 'Active Subscribers', value: data.activeSubscribers, icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-    { label: 'Pending Payments', value: data.pendingPayments, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+    { label: 'Pending Payments', value: data.pendingPayments, icon: Clock, color: 'text-[#c9a84c]', bg: 'bg-[#c9a84c]/10', border: 'border-[#c9a84c]/20' },
     { label: 'Documents', value: data.totalDocuments, icon: FileText, color: 'text-purple-500', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
     { label: 'Study Plans', value: data.totalStudyPlans, icon: Calendar, color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
   ] : [];

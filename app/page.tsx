@@ -41,7 +41,7 @@ export default function Home() {
               <Link href="#pricing" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Pricing</Link>
               <Link href="#faq" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">FAQ</Link>
               <Link href="/auth/signin" className="text-sm font-bold text-[#1e3a5f] hover:opacity-70 transition-all">Sign In</Link>
-              <Link href={getStartedHref} className="px-7 py-3 text-sm font-black text-[#1e3a5f] bg-[#c9a84c] rounded-2xl hover:scale-105 transition-all shadow-xl shadow-orange-100 uppercase tracking-widest">
+              <Link href={getStartedHref} className="px-7 py-3 text-sm font-black text-[#1e3a5f] bg-[#c9a84c] rounded-2xl hover:scale-105 transition-all shadow-xl shadow-[#c9a84c]/20 uppercase tracking-widest">
                 {session ? "Go to Dashboard" : "Get Started"}
               </Link>
             </div>
@@ -69,7 +69,7 @@ export default function Home() {
                   Your personal AI tutor specialized in the Nepal PSC syllabus. Personalized study plans, smart notes, and unlimited practice.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
-                  <Link href={getStartedHref} className="w-full sm:w-auto px-10 py-5 text-lg font-black text-[#1e3a5f] bg-[#c9a84c] rounded-[2rem] hover:scale-105 transition-all shadow-2xl shadow-orange-100 flex items-center justify-center group uppercase tracking-widest">
+                  <Link href={getStartedHref} className="w-full sm:w-auto px-10 py-5 text-lg font-black text-[#1e3a5f] bg-[#c9a84c] rounded-[2rem] hover:scale-105 transition-all shadow-2xl shadow-[#c9a84c]/20 flex items-center justify-center group uppercase tracking-widest">
                     Start Preparing Free
                     <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -145,7 +145,7 @@ export default function Home() {
                   title: "Personal AI Mentor",
                   desc: "Ask any question to Loksewa Guru, your 24/7 AI tutor specialized in Loksewa syllabus.",
                   icon: Globe,
-                  color: "bg-orange-50 text-[#c9a84c]"
+                  color: "bg-[#c9a84c]/10 text-[#c9a84c]"
                 },
                 {
                   title: "Verified Content",

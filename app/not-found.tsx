@@ -16,7 +16,7 @@ export default function NotFound() {
           <div className="h-24 w-24 bg-red-500/10 rounded-3xl flex items-center justify-center text-red-500 mx-auto mb-6">
             <AlertCircle className="h-12 w-12" />
           </div>
-          <div className="absolute -top-2 -right-2 bg-orange-600 text-background text-[10px] font-bold px-2 py-1 rounded-lg">
+          <div className="absolute -top-2 -right-2 bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-bold px-2 py-1 rounded-lg border border-[#c9a84c]/20">
             404
           </div>
         </div>
@@ -38,7 +38,7 @@ export default function NotFound() {
           </button>
           <Link 
             href="/dashboard"
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-orange-600 text-background rounded-xl text-[10px] font-bold uppercase tracking-wider hover:opacity-90 transition-all"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-bold uppercase tracking-wider hover:opacity-90 transition-all border border-[#c9a84c]/20"
           >
             <Home className="h-4 w-4" /> Workspace
           </Link>

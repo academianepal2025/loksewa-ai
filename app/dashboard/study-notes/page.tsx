@@ -303,13 +303,13 @@ export default function StudyNotesPage() {
                 <div>
                   <div className="flex items-center gap-3 mb-3">
                     <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-black text-subtle rounded-lg uppercase tracking-widest flex items-center gap-1.5">
-                      <Calendar className="h-3 w-3" /> Day {activeNote.day_number}
+                      <Calendar className="h-3 w-3" /> Day {activeNote!.day_number}
                     </span>
                     <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-black text-subtle rounded-lg uppercase tracking-widest flex items-center gap-1.5">
-                      <Hash className="h-3 w-3" /> {activeNote.notes_content?.word_count} Words
+                      <Hash className="h-3 w-3" /> {activeNote!.notes_content?.word_count} Words
                     </span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tighter uppercase">{activeNote.topic}</h2>
+                  <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tighter uppercase">{activeNote!.topic}</h2>
                 </div>
                 
                 <div className="flex items-center gap-2">
@@ -346,7 +346,7 @@ export default function StudyNotesPage() {
                 </div>
               </div>
 
-              {activeNote.notes_content?.generated_from_general_knowledge && (
+              {activeNote!.notes_content?.generated_from_general_knowledge && (
                 <div className="mb-8 bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-2xl p-5 flex gap-4 items-start shadow-sm">
                   <AlertCircle className="h-5 w-5 text-[#c9a84c] flex-shrink-0 mt-0.5" />
                   <div>
@@ -380,7 +380,7 @@ export default function StudyNotesPage() {
                     prose-hr:border-border-subtle"
                   >
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {activeNote.notes_content!.full_markdown}
+                      {activeNote!.notes_content!.full_markdown}
                     </ReactMarkdown>
                   </div>
                 )}

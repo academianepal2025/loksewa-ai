@@ -538,7 +538,7 @@ export default function OnboardingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-3">
-          <span className="h-8 w-8 border-3 border-orange-200 border-t-orange-600 rounded-full animate-spin" />
+          <span className="h-8 w-8 border-3 border-[#c9a84c]/20 border-t-[#c9a84c] rounded-full animate-spin" />
           <span className="text-sm text-gray-400 font-medium">Checking your account...</span>
         </div>
       </div>
