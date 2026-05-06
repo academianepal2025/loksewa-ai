@@ -281,7 +281,13 @@ export default function DashboardPage() {
                 <Link href="/dashboard/study-plan" className="px-8 py-3 bg-[#c9a84c] text-[#1e3a5f] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2 min-h-[44px] min-w-[160px] shadow-lg shadow-[#c9a84c]/20">
                   {t('continue_study')} <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
-                <div className="px-6 py-3 bg-background border border-border-subtle rounded-xl text-xs font-black upper             <div className="hidden lg:flex flex-col items-center justify-center text-center p-8 bg-background border border-border-subtle rounded-2xl">
+                <div className="px-6 py-3 bg-background border border-border-subtle rounded-xl text-xs font-black uppercase tracking-widest text-foreground flex items-center justify-center gap-2">
+                   {stats.streak} {t('streak')} 🔥
+                </div>
+              </div>
+            </div>
+
+            <div className="hidden lg:flex flex-col items-center justify-center text-center p-8 bg-background border border-border-subtle rounded-2xl">
                <div className="relative h-28 w-28 mb-4">
                   <svg className="h-full w-full" viewBox="0 0 36 36">
                      <path className="text-border-subtle" strokeWidth="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
@@ -292,11 +298,6 @@ export default function DashboardPage() {
                   </div>
                </div>
                <p className="text-[10px] font-black uppercase tracking-widest text-subtle">{t('ready_percent')}</p>
-            </div>r">
-                     <span className="text-xl font-bold text-foreground">{stats.progress}%</span>
-                  </div>
-               </div>
-               <p className="text-[10px] font-bold uppercase tracking-wider text-subtle">{t('ready_percent')}</p>
             </div>
           </div>
         </motion.div>
