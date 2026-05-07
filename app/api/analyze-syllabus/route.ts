@@ -42,7 +42,18 @@ CRITICAL PERFORMANCE RULES:
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { examId, userId, language = 'en' } = body;
+    const { examId, userId } = body;
+
+    const supabase = await createClient();
+
+    // Fetch user language preference from DB for true sync
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
 
     if (!examId || !userId) {
       return NextResponse.json({ success: false, message: 'Missing examId or userId' }, { status: 400 });
@@ -52,7 +63,6 @@ export async function POST(request: Request) {
       throw new Error('GEMINI_API_KEY is not defined in environment variables');
     }
 
-    const supabase = await createClient();
 
     // 1. Fetch all documents for this exam to see what's actually there
     const { data: allDocs } = await supabase.from('documents').select('id, doc_type, exam_id').eq('exam_id', examId);
@@ -113,7 +123,7 @@ Syllabus Content:
 ${combinedSyllabusText}`;
 
     // 5. Call Gemini API with structured output using centralized utility
-    const analysisData = await generateJSON(getSystemInstruction(language), userMessage);
+    const analysisData = await generateJSON(getSystemInstruction(userLang), userMessage);
 
     // 7. Insert into syllabus_analysis table
     const { data: insertedRow, error: insertError } = await supabase

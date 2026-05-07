@@ -3,12 +3,14 @@ import { createClient } from '@/lib/supabase/server';
 import { generateMultimodalJSON } from '@/lib/ai';
 import { checkUserLimits } from '@/lib/checkUserLimits';
 
-const EVALUATION_SYSTEM_PROMPT = `You are an expert PSC Nepal (Loksewa Ayog) Examiner.
+function getEvaluationPrompt(lang: string) {
+  const isNp = lang === 'np';
+  return `You are an expert PSC Nepal (Loksewa Ayog) Examiner.
 Your task is to grade a student's handwritten answer sheet against the provided Mock Test questions.
 
 1.  **OCR & Reading**: Accurately transcribe and understand the handwritten content from the provided image(s).
 2.  **Grading**: Evaluate each answer based on accuracy, relevance, and presentation.
-3.  **Feedback**: Provide constructive feedback for each question. Highlight what they did well and where they can improve.
+3.  **Feedback**: Provide constructive feedback for each question in ${isNp ? 'Nepali (with English terms in brackets)' : 'English'}. Highlight what they did well and where they can improve.
 4.  **Overall Assessment**: Summarize their performance and provide a total score.
 
 Return ONLY valid JSON in this format:
@@ -26,6 +28,7 @@ Return ONLY valid JSON in this format:
     }
   ]
 }`;
+}
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -39,6 +42,15 @@ export async function POST(request: Request) {
     body = await request.json();
     const { fileUrl, testJson, examId, submissionId } = body;
     const userId = user.id;
+
+    // Fetch user language preference from DB for true sync
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
 
     if (!fileUrl || !testJson) {
       return NextResponse.json({ success: false, message: 'Missing required parameters' }, { status: 400 });
@@ -77,7 +89,7 @@ export async function POST(request: Request) {
 
     // 3. Call Gemini
     const evaluation = await generateMultimodalJSON(
-      EVALUATION_SYSTEM_PROMPT, 
+      getEvaluationPrompt(userLang), 
       userPrompt, 
       [{ mimeType, data: base64Image }]
     );

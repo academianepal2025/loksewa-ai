@@ -35,7 +35,6 @@ import {
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
-import { FontSizeSelector } from '@/components/dashboard/FontSizeSelector';
 import ReactMarkdown from 'react-markdown';
 import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
@@ -659,9 +658,6 @@ export default function PracticePage() {
                       </div>
                    </div>
                 </div>
-             </div>
-             <div className="bg-surface border border-border-subtle rounded-2xl p-6 shadow-sm">
-                <FontSizeSelector />
              </div>
           </div>
         </div>

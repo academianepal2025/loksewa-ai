@@ -41,8 +41,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { examId, topic, count, language = 'en' } = body;
+    const { examId, topic, count } = body;
     const userId = user.id;
+
+    // Fetch user language preference from DB for true sync
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
 
     if (!examId || !topic || !count) {
       return NextResponse.json(
@@ -94,7 +103,7 @@ export async function POST(request: Request) {
 
     // 2. Call Gemini API with JSON response via centralized utility
     const userMessage = `Create ${count} flashcards on: ${topic}\n\nContent:\n${contextContent}`;
-    const parsed = await generateJSON(getSystemInstruction(language), userMessage);
+    const parsed = await generateJSON(getSystemInstruction(userLang), userMessage);
 
     const flashcards = parsed?.flashcards;
     if (!Array.isArray(flashcards) || flashcards.length === 0) {

@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
+import { useUpgradeModal } from '@/lib/UpgradeModalContext';
+import { useDashboard } from '@/components/dashboard/DashboardProvider';
 
 // ── Types ─────────────────────────────────────────────────────────────
 interface ChatMessage {
@@ -48,11 +50,11 @@ interface ConversationGroup {
 }
 
 // ── Suggested Questions ───────────────────────────────────────────────
-const SUGGESTED_QUESTIONS = [
-  { text: 'What are my most important syllabus topics?', icon: BookOpen },
-  { text: 'Quiz me on today\'s study topic', icon: Sparkles },
-  { text: 'What topics appear most in my PYQs?', icon: ScrollText },
-  { text: 'Summarize my weakest area', icon: FileText },
+const getSuggestedQuestions = (t: any) => [
+  { text: t('guru_suggested_1'), icon: BookOpen },
+  { text: t('guru_suggested_2'), icon: Sparkles },
+  { text: t('guru_suggested_3'), icon: ScrollText },
+  { text: t('guru_suggested_4'), icon: FileText },
 ];
 
 // ── Guru Avatar ───────────────────────────────────────────────────────
@@ -67,13 +69,13 @@ function GuruAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 }
 
 // ── Thinking Indicator ────────────────────────────────────────────────
-function ThinkingIndicator() {
+function ThinkingIndicator({ t }: { t: any }) {
   return (
     <div className="flex items-start gap-3 max-w-3xl mx-auto">
       <GuruAvatar size="sm" />
       <div className="bg-surface border border-border-subtle rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-sm">
         <div className="flex items-center gap-2.5">
-          <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Processing Intelligence</span>
+          <span className="text-[10px] font-black text-subtle uppercase tracking-widest">{t('guru_processing')}</span>
           <span className="flex gap-1">
             <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '0ms' }} />
             <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -153,17 +155,19 @@ function ChatHistoryPanel({
   conversations,
   onSelect,
   onClose,
+  t,
 }: {
   conversations: ConversationGroup[];
   onSelect: (msgs: ChatMessage[]) => void;
   onClose: () => void;
+  t: any;
 }) {
   return (
     <div className="absolute inset-0 z-30 bg-background/95 backdrop-blur-xl flex flex-col animate-slide-in-right">
       <div className="flex items-center justify-between p-5 border-b border-border-subtle">
         <h3 className="text-sm font-black text-foreground flex items-center gap-3 uppercase tracking-widest">
           <History className="h-4 w-4 text-[#c9a84c]" />
-          Intelligence History
+          {t('guru_history')}
         </h3>
         <button onClick={onClose} className="p-2 hover:bg-surface rounded-xl transition-colors">
           <X className="h-5 w-5 text-muted" />
@@ -174,7 +178,7 @@ function ChatHistoryPanel({
         {conversations.length === 0 ? (
           <div className="text-center py-20">
             <MessageSquare className="h-8 w-8 text-muted/30 mx-auto mb-3" />
-            <p className="text-muted font-black text-[10px] uppercase tracking-widest">No previous transmissions</p>
+            <p className="text-muted font-black text-[10px] uppercase tracking-widest">{t('guru_no_history')}</p>
           </div>
         ) : (
           conversations.slice(0, 10).map((convo, i) => (
@@ -185,7 +189,7 @@ function ChatHistoryPanel({
             >
               <p className="text-[9px] font-black text-muted uppercase tracking-widest mb-1">{convo.date}</p>
               <p className="text-xs font-black text-foreground truncate group-hover:text-[#c9a84c] transition-colors uppercase tracking-widest">{convo.firstMessage}</p>
-              <p className="text-[9px] text-muted mt-1 uppercase font-black tracking-widest">{convo.messages.length} TRANSMISSIONS</p>
+              <p className="text-[9px] text-muted mt-1 uppercase font-black tracking-widest">{convo.messages.length} {t('guru_transmissions')}</p>
             </button>
           ))
         )}
@@ -207,6 +211,8 @@ function GuruContent() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const { showUpgradeModal } = useUpgradeModal();
+  const { t, language } = useDashboard();
 
   const [exams, setExams] = useState<Exam[]>([]);
   const [activeExamId, setActiveExamId] = useState<string | null>(null);
@@ -386,6 +392,12 @@ function GuruContent() {
 
       if (!res.ok) {
         const errorData = await res.json();
+        if (errorData.error === 'limit_reached') {
+          showUpgradeModal('chat_limit');
+          setIsStreaming(false);
+          setMessages(prev => prev.slice(0, -1)); // Remove the user message
+          return;
+        }
         throw new Error(errorData.error || 'Failed to get response');
       }
 
@@ -499,9 +511,9 @@ function GuruContent() {
         <div className="flex items-center gap-3">
           <GuruAvatar size="md" />
           <div className="min-w-0">
-            <h1 className="text-sm font-black text-foreground tracking-tighter uppercase">LOKSEWA GURU</h1>
+            <h1 className="text-sm font-black text-foreground tracking-tighter uppercase">{t('guru_title')}</h1>
             <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">
-              {isStreaming ? 'DECODING...' : 'TACTICAL LINK ACTIVE'}
+              {isStreaming ? t('guru_status_thinking') : t('guru_status_active')}
             </p>
           </div>
         </div>
@@ -533,7 +545,7 @@ function GuruContent() {
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black hover:opacity-90 transition-all min-h-[36px] shadow-sm shadow-[#1e3a5f]/10"
           >
             <Plus className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline uppercase tracking-widest">New</span>
+            <span className="hidden sm:inline uppercase tracking-widest">{t('guru_new_chat')}</span>
           </button>
         </div>
       </div>
@@ -544,6 +556,7 @@ function GuruContent() {
           conversations={pastConversations}
           onSelect={(msgs) => { setMessages(msgs); setShowHistory(false); }}
           onClose={() => setShowHistory(false)}
+          t={t}
         />
       )}
 
@@ -559,14 +572,14 @@ function GuruContent() {
               <GuruAvatar size="lg" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter mb-2 uppercase">
-              नमस्ते! <span className="text-[#c9a84c]">I&apos;m Loksewa Guru</span>
+              {t('guru_empty_title')}
             </h2>
             <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-lg mb-10 leading-relaxed">
-              Your AI-powered Loksewa tactical partner. Ask me anything about your uploaded syllabus, notes, and previous year questions.
+              {t('guru_empty_subtitle')}
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
-              {SUGGESTED_QUESTIONS.map((q, i) => (
+              {getSuggestedQuestions(t).map((q, i) => (
                 <button
                   key={i}
                   onClick={() => sendMessage(q.text)}
@@ -590,7 +603,7 @@ function GuruContent() {
             {isStreaming && messages[messages.length - 1]?.role !== 'assistant' && (
               <div className="py-5">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6">
-                  <ThinkingIndicator />
+                  <ThinkingIndicator t={t} />
                 </div>
               </div>
             )}
@@ -621,7 +634,7 @@ function GuruContent() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Guru anything..."
+              placeholder={t('guru_placeholder')}
               disabled={isStreaming}
               rows={1}
               className="flex-1 bg-transparent px-3 py-2.5 text-[15px] font-medium text-foreground placeholder:text-subtle focus:outline-none disabled:opacity-50 resize-none leading-relaxed min-h-[44px] max-h-[160px]"
@@ -635,7 +648,7 @@ function GuruContent() {
             </button>
           </div>
           <p className="text-center text-[9px] text-subtle/60 font-bold mt-2 tracking-wider uppercase">
-            AI responses are based on your uploaded materials
+            {t('guru_ai_disclaimer')}
           </p>
         </div>
       </div>

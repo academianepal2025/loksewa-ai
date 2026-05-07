@@ -48,7 +48,23 @@ export const translations = {
     high_energy: 'High Energy',
     recall_spacing: 'Recall Spacing',
     priority_weighting: 'Priority Weighting',
-    days_left: 'Days Left'
+    days_left: 'Days Left',
+    guru_title: 'LOKSEWA GURU',
+    guru_status_active: 'TACTICAL LINK ACTIVE',
+    guru_status_thinking: 'DECODING...',
+    guru_processing: 'Processing Intelligence',
+    guru_empty_title: "नमस्ते! I'm Loksewa Guru",
+    guru_empty_subtitle: "Your AI-powered Loksewa tactical partner. Ask me anything about your uploaded syllabus, notes, and previous year questions.",
+    guru_suggested_1: 'What are my most important syllabus topics?',
+    guru_suggested_2: "Quiz me on today's study topic",
+    guru_suggested_3: 'What topics appear most in my PYQs?',
+    guru_suggested_4: 'Summarize my weakest area',
+    guru_placeholder: 'Ask Guru anything...',
+    guru_history: 'Intelligence History',
+    guru_new_chat: 'New Chat',
+    guru_transmissions: 'TRANSMISSIONS',
+    guru_no_history: 'No previous transmissions',
+    guru_ai_disclaimer: 'AI responses are based on your uploaded materials'
   },
   np: {
     // Nav
@@ -97,7 +113,23 @@ export const translations = {
     high_energy: 'उच्च ऊर्जा',
     recall_spacing: 'अन्तराल अभ्यास',
     priority_weighting: 'प्राथमिकता भार',
-    days_left: 'दिन बाँकी'
+    days_left: 'दिन बाँकी',
+    guru_title: 'लोकसेवा गुरु',
+    guru_status_active: 'सक्रिय सम्पर्क',
+    guru_status_thinking: 'प्रशोधन हुँदै...',
+    guru_processing: 'प्रशोधन हुँदैछ',
+    guru_empty_title: "नमस्ते! म लोकसेवा गुरु हुँ",
+    guru_empty_subtitle: "तपाईको एआई-आधारित लोकसेवा रणनीतिक साझेदार। तपाईंका सामग्रीहरू, पाठ्यक्रम र विगतका प्रश्नहरूका बारेमा मलाई केहि पनि सोध्नुहोस्।",
+    guru_suggested_1: 'मेरो लागि सबैभन्दा महत्त्वपूर्ण पाठ्यक्रम शीर्षकहरू के के हुन्?',
+    guru_suggested_2: 'आजको अध्ययन विषयमा मलाई प्रश्न सोध्नुहोस्',
+    guru_suggested_3: 'विगतका प्रश्नहरूमा कुन शीर्षकहरू बढी सोधिएका छन्?',
+    guru_suggested_4: 'मेरो कमजोर क्षेत्रको सारांश दिनुहोस्',
+    guru_placeholder: 'गुरुलाई केहि सोध्नुहोस्...',
+    guru_history: 'खुफिया इतिहास',
+    guru_new_chat: 'नयाँ च्याट',
+    guru_transmissions: 'सन्देशहरू',
+    guru_no_history: 'कुनै पुरानो सन्देशहरू छैनन्',
+    guru_ai_disclaimer: 'एआई प्रतिक्रियाहरू तपाईंका सामग्रीहरूमा आधारित छन्'
   }
 };
 

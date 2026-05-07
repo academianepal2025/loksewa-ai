@@ -26,7 +26,18 @@ Maximum 300 words total. Be specific, not generic.`;
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { examId, userId, language = 'en' } = body;
+    const { examId, userId } = body;
+
+    const supabase = await createClient();
+
+    // Fetch user language preference from DB for true sync
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
 
     if (!examId || !userId) {
       return NextResponse.json({ success: false, message: 'Missing examId or userId' }, { status: 400 });
@@ -36,7 +47,6 @@ export async function POST(request: Request) {
       throw new Error('GEMINI_API_KEY is not defined in environment variables');
     }
 
-    const supabase = await createClient();
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const dateStr = sevenDaysAgo.toISOString();
@@ -121,7 +131,7 @@ ${gapContext}
 Please generate my weekly performance review based on this data.`;
 
     // 6. Call Gemini 2.0 Flash via centralized utility
-    const responseText = await generateText(getSystemInstruction(language), userPrompt);
+    const responseText = await generateText(getSystemInstruction(userLang), userPrompt);
 
     // 7. Persist to weekly_feedback table
     const { error: insertError } = await supabase.from('weekly_feedback').insert({

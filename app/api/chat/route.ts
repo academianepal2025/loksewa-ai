@@ -54,6 +54,28 @@ export async function POST(request: Request) {
       );
     }
 
+    // ── Step 0.5: Increment Usage Immediately ──────────────────────
+    const today = new Date().toISOString().split('T')[0];
+    try {
+      const { error: rpcError } = await supabase.rpc('increment_chat_usage', { 
+        p_user_id: userId, 
+        p_usage_date: today 
+      });
+      
+      if (rpcError) {
+        // Fallback: Direct upsert if RPC is missing/fails
+        const { data: current } = await supabase.from('daily_usage').select('chat_messages_sent').eq('user_id', userId).eq('usage_date', today).maybeSingle();
+        await supabase.from('daily_usage').upsert({
+          user_id: userId,
+          usage_date: today,
+          chat_messages_sent: (current?.chat_messages_sent || 0) + 1,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,usage_date' });
+      }
+    } catch (e) {
+      console.warn('Usage increment failed:', e);
+    }
+
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is not defined');
     }
@@ -142,14 +164,11 @@ export async function POST(request: Request) {
           }
           controller.close();
 
-          // ── Step 7: Save messages & Increment Usage ─────────────────
+          // ── Step 7: Save messages ──────────────────────────────────
           try {
-            await Promise.all([
-               supabase.from('chat_messages').insert([
-                { user_id: userId, exam_id: examId, role: 'user', content: message },
-                { user_id: userId, exam_id: examId, role: 'assistant', content: fullResponse }
-              ]),
-              supabase.rpc('increment_chat_usage', { p_user_id: userId, p_usage_date: new Date().toISOString().split('T')[0] })
+             await supabase.from('chat_messages').insert([
+              { user_id: userId, exam_id: examId, role: 'user', content: message },
+              { user_id: userId, exam_id: examId, role: 'assistant', content: fullResponse }
             ]);
           } catch (saveError) {
             console.error('Background tasks failed:', saveError);

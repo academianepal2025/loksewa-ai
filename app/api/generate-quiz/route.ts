@@ -42,8 +42,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { examId, topic, questionCount = 10, language = 'en' } = body;
+    const { examId, topic, questionCount = 10 } = body;
     const userId = user.id;
+
+    // Fetch user language preference from DB for true sync
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
 
     if (!examId || !topic) {
       return NextResponse.json(
@@ -108,7 +117,7 @@ Focus on authentic Loksewa Ayog patterns.
 Content Context:
 ${contextContent}`;
 
-    const parsedData = await generateJSON(getSystemInstruction(language), userMessage);
+    const parsedData = await generateJSON(getSystemInstruction(userLang), userMessage);
 
     if (!parsedData.questions || !Array.isArray(parsedData.questions)) {
       throw new Error('AI failed to generate a valid list of questions.');

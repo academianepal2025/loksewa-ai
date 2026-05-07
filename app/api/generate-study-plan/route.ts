@@ -49,7 +49,18 @@ Return ONLY valid JSON:
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { examId, userId, language = 'en', overrideDays, overrideHours } = body;
+    const { examId, userId, overrideDays, overrideHours } = body;
+
+    const supabase = await createClient();
+
+    // Fetch user language preference from DB for true sync
+    const { data: prefs } = await supabase
+      .from('user_preferences')
+      .select('language')
+      .eq('user_id', userId)
+      .maybeSingle();
+    
+    const userLang = prefs?.language || 'en';
 
     if (!examId || !userId) {
       return NextResponse.json({ success: false, message: 'Missing examId or userId' }, { status: 400 });
@@ -59,7 +70,6 @@ export async function POST(request: Request) {
       throw new Error('GEMINI_API_KEY is not defined in environment variables');
     }
 
-    const supabase = await createClient();
 
     // If overrideHours is provided, update user_exams table
     if (overrideHours) {
@@ -111,7 +121,7 @@ Syllabus Analysis JSON:
 ${JSON.stringify(analysis.analysis_data, null, 2)}`;
 
     console.log(`Generating study plan for ${exam.exam_name} (${daysRemaining} days remaining, ${studyHours} hours/day)...`);
-    let planData = await generateJSON(getSystemInstruction(language), userMessage);
+    let planData = await generateJSON(getSystemInstruction(userLang), userMessage);
 
     // Normalize potential nested structures from Gemini
     if (planData.plan && Array.isArray(planData.plan.daily_plans)) {

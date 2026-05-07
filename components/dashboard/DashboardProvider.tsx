@@ -100,7 +100,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         ]);
 
         if (prof) setIsAdmin(!!prof.is_admin);
-        if (sub) {
+        if (sub && sub.plan !== 'free') {
           setIsPro(true);
           setSubscription(sub);
         }
@@ -161,7 +161,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
 
     // Upsert to DB
     try {
-      await supabase.from('user_preferences').upsert(newPrefs);
+      await supabase.from('user_preferences').upsert(newPrefs, { onConflict: 'user_id' });
     } catch (e) {
       console.warn("DB Sync failed, persisting locally only", e);
     }

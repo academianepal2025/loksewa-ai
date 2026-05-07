@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
-import { FontSizeSelector } from '@/components/dashboard/FontSizeSelector';
 import { useRotatingMessages } from '@/lib/hooks';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
@@ -1000,9 +999,6 @@ export default function StudyPlanPage() {
                       </div>
                   </div>
                   
-                  <div className="pt-2">
-                    <FontSizeSelector />
-                  </div>
                </div>
             </div>
          </div>

@@ -24,7 +24,6 @@ import {
   Activity
 } from 'lucide-react';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
-import { FontSizeSelector } from '@/components/dashboard/FontSizeSelector';
 
 // ─── Types ───────────────────────────────────────────────────────────
 interface DocumentAnalysis {
@@ -310,9 +309,6 @@ export default function IntelligenceHubPage() {
                      </p>
                   </div>
 
-                  <div className="bg-surface border border-border-subtle p-6 rounded-2xl">
-                    <FontSizeSelector />
-                  </div>
                 </div>
               </div>
             )}
