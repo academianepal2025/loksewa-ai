@@ -188,11 +188,13 @@ export default function StudyNotesPage() {
     }
   };
 
+  if (loading) {
     return (
       <div className="flex h-[calc(100vh-5rem)] items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1e3a5f]"></div>
       </div>
     );
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-4rem)] bg-background">

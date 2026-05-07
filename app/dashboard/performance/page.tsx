@@ -680,7 +680,8 @@ export default function PerformancePage() {
           )}
 
           {/* AI FEEDBACK */}
-          <div className="bg-surface border border-border-subtle rounded-2xl p-5 flex flex-col h-full min-h-[300px]">
+          {/* AI FEEDBACK */}
+          <div className="bg-surface border border-border-subtle rounded-2xl p-5 flex flex-col h-full min-h-[400px] relative overflow-hidden">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest flex items-center gap-2">
                 <Sparkles className="w-3.5 h-3.5 text-accent" /> Weekly Feedback
@@ -715,7 +716,8 @@ export default function PerformancePage() {
       </div>
 
       {/* HEATMAP */}
-      <div className="bg-surface border border-border-subtle rounded-2xl p-6 overflow-x-auto shadow-sm">
+      {/* HEATMAP */}
+      <div className="bg-surface border border-border-subtle rounded-2xl p-6 overflow-x-auto shadow-sm relative z-0">
         <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest mb-6">Mission Persistence (Last 90 Days)</h3>
         <div className="flex gap-1 min-w-max pb-2">
           {heatmapDays.map((day, i) => {
