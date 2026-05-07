@@ -10,7 +10,6 @@ import { toast } from 'sonner';
 import {
   FileText,
   Search,
-  Download,
   Edit3,
   Check,
   X,
@@ -58,8 +57,6 @@ export default function StudyNotesPage() {
   const [editContent, setEditContent] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // PDF
-  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -162,31 +159,6 @@ export default function StudyNotesPage() {
     }
   };
 
-  const handleDownloadPDF = async () => {
-    if (!activeNote) return;
-    setIsDownloading(true);
-    toast('Generating PDF...', { icon: '📄' });
-    try {
-      const res = await fetch(`/api/notes/${activeNote.id}/pdf`);
-      if (!res.ok) throw new Error('Failed to generate PDF');
-      
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `LoksewaAI_Notes_Day${activeNote.day_number}_${activeNote.topic.replace(/\\s+/g, '_')}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-      
-      toast.success('PDF downloaded successfully');
-    } catch (e: any) {
-      toast.error(e.message);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -295,7 +267,7 @@ export default function StudyNotesPage() {
               </div>
               <h2 className="text-xl font-bold text-foreground mb-2">Select a Note</h2>
               <p className="text-sm text-subtle font-medium leading-relaxed">
-                Choose a generated study note from the sidebar to view, edit, or download as PDF.
+                Choose a generated study note from the sidebar to view or edit.
               </p>
             </div>
           ) : (
@@ -336,13 +308,6 @@ export default function StudyNotesPage() {
                         className="px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest rounded-xl border border-border-subtle hover:bg-background transition-colors flex items-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
                       >
                         <Edit3 className="h-4 w-4" /> Edit
-                      </button>
-                      <button 
-                        onClick={handleDownloadPDF} 
-                        disabled={isDownloading}
-                        className="px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
-                      >
-                        <Download className={`h-4 w-4 ${isDownloading ? 'animate-bounce' : ''}`} /> Export PDF
                       </button>
                     </>
                   )}
