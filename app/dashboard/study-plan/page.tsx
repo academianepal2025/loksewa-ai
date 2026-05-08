@@ -843,7 +843,7 @@ export default function StudyPlanPage() {
         onToggleSubtopic={s => toggleSubtopic(selectedDay, s)} 
         onMarkComplete={f => markDayComplete(selectedDay, f)} 
         noteStatusMap={noteStatusMap}
-        isGeneratingLocal={generatingNotesForTopic}
+        generatingNotesForTopic={generatingNotesForTopic}
         onGenerateNote={(d, topic, subtopics, force) => handleGenerateNote(d, topic, subtopics, force)}
         onViewNote={(day, topic) => router.push(`/dashboard/study-notes?day=${day}&topic=${encodeURIComponent(topic)}`)}
       />}
