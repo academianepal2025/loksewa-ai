@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { documentId } = body;
+    const { documentId, language } = body;
     
     if (!documentId) {
       return NextResponse.json({ success: false, message: 'Missing documentId' }, { status: 400 });
@@ -175,6 +175,23 @@ Rules:
         docType: document.doc_type
       }),
     }).catch((err) => console.error('Failed to trigger background embedding API:', err));
+
+    // 10. If this is a syllabus, automatically trigger syllabus analysis
+    if (document.doc_type === 'syllabus') {
+      const analyzeUrl = new URL('/api/analyze-syllabus', request.url);
+      fetch(analyzeUrl.toString(), {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Cookie': request.headers.get('cookie') || '' 
+        },
+        body: JSON.stringify({ 
+          examId: document.exam_id, 
+          userId: document.user_id, 
+          language: language || 'en' 
+        }),
+      }).catch((err) => console.error('Failed to trigger background syllabus analysis:', err));
+    }
 
     return NextResponse.json({ success: true, message: 'Document processed successfully' });
     

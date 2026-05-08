@@ -24,8 +24,7 @@ export async function incrementUsage(userId: string, type: UsageType) {
   try {
     // Attempt RPC first
     const { error: rpcError } = await supabase.rpc(rpcName, { 
-      p_user_id: userId,
-      p_usage_date: today // Many RPCs expect this now
+      p_user_id: userId
     });
 
     if (rpcError) {
@@ -42,8 +41,7 @@ export async function incrementUsage(userId: string, type: UsageType) {
       const { error: upsertError } = await supabase.from('daily_usage').upsert({
         user_id: userId,
         usage_date: today,
-        [columnName]: ((current as any)?.[columnName] || 0) + 1,
-        updated_at: new Date().toISOString()
+        [columnName]: ((current as any)?.[columnName] || 0) + 1
       }, { onConflict: 'user_id,usage_date' });
 
       if (upsertError) {

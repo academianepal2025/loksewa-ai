@@ -219,8 +219,11 @@ ${JSON.stringify(analysis.analysis_data, null, 2)}`;
        throw new Error(`AI generated an invalid plan: ${valError.message}`);
     }
 
-    // 5. Save to study_plans table
-    console.log('Saving plan to database...');
+    // 5. Delete existing study plans for this exam to ensure only one active plan exists
+    console.log('Purging old study plans...');
+    await supabase.from('study_plans').delete().eq('exam_id', examId).eq('user_id', userId);
+
+    console.log('Saving new plan to database...');
     const { data: insertedPlan, error: insertError } = await supabase
       .from('study_plans')
       .insert({

@@ -216,14 +216,14 @@ function GenerateNotesButton({
 }
 
 // ── Day Detail Modal (Compact) ────────────────────────────────────────
-function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, noteStatusMap, isGeneratingLocal, onGenerateNote, onViewNote }: { 
+function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, noteStatusMap, generatingNotesForTopic, onGenerateNote, onViewNote }: { 
   day: DailyPlan; 
   onClose: () => void; 
   progress: StudyProgress | null; 
   onToggleSubtopic: (subtopic: string) => void; 
   onMarkComplete: (feedback: { status: 'finished' | 'need_revisit', difficulty: 'easy' | 'medium' | 'hard', notes: string }) => void;
   noteStatusMap: Map<string, string>;
-  isGeneratingLocal: boolean;
+  generatingNotesForTopic: string | null;
   onGenerateNote: (day: DailyPlan, topic: string, subtopics: string[], force: boolean) => void;
   onViewNote: (day: number, topic: string) => void;
 }) {
@@ -451,8 +451,8 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                 <GenerateNotesButton 
                   dayNumber={day.day_number}
                   status={noteStatusMap.get(`${day.day_number}-${day.primary_topic}`)}
-                  isGeneratingLocal={isGeneratingLocal}
-                  onGenerate={(force) => onGenerateNote(day, day.primary_topic, day.subtopics_to_cover, force)}
+                  isGeneratingLocal={generatingNotesForTopic === day.primary_topic}
+                  onGenerate={(force) => onGenerateNote(day, day.primary_topic, [], force)}
                   onView={() => onViewNote(day.day_number, day.primary_topic)}
                 />
               </div>
@@ -463,7 +463,7 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                   <GenerateNotesButton 
                     dayNumber={day.day_number}
                     status={noteStatusMap.get(`${day.day_number}-${day.secondary_topic}`)}
-                    isGeneratingLocal={isGeneratingLocal}
+                    isGeneratingLocal={generatingNotesForTopic === day.secondary_topic}
                     onGenerate={(force) => onGenerateNote(day, day.secondary_topic!, [], force)}
                     onView={() => onViewNote(day.day_number, day.secondary_topic!)}
                   />
@@ -476,7 +476,7 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                   <GenerateNotesButton 
                     dayNumber={day.day_number}
                     status={noteStatusMap.get(`${day.day_number}-${revTopic}`)}
-                    isGeneratingLocal={isGeneratingLocal}
+                    isGeneratingLocal={generatingNotesForTopic === revTopic}
                     onGenerate={(force) => onGenerateNote(day, revTopic, [], force)}
                     onView={() => onViewNote(day.day_number, revTopic)}
                   />
@@ -508,8 +508,8 @@ export default function StudyPlanPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [errorType, setErrorType] = useState<'no_syllabus' | 'api' | null>(null);
   const [noteStatusMap, setNoteStatusMap] = useState<Map<string, string>>(new Map());
-  const [generatingNotesFor, setGeneratingNotesFor] = useState<number | null>(null);
-
+  const [generatingNotesForTopic, setGeneratingNotesForTopic] = useState<string | null>(null);
+  const [missingContentPrompt, setMissingContentPrompt] = useState<{day: DailyPlan, topic: string, subtopics: string[]} | null>(null);
   const fetchExams = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -631,7 +631,7 @@ export default function StudyPlanPage() {
 
   const handleGenerateNote = async (day: DailyPlan, topicToGen: string, subtopicsToGen: string[], force = false) => {
     if (!activeExamId) return;
-    setGeneratingNotesFor(day.day_number);
+    setGeneratingNotesForTopic(topicToGen);
     toast(`Generating notes for ${topicToGen}...`, { icon: '⏳' });
     
     try {
@@ -652,22 +652,31 @@ export default function StudyPlanPage() {
       
       if (!res.ok) {
         if (res.status === 403) {
-          toast.error("Daily limit reached", { description: "Upgrade to Pro for unlimited note generations." });
-          showUpgradeModal('notes_limit');
+          if (data.is_pro) {
+             toast.error(data.message || 'Daily limit reached');
+          } else {
+             toast.error("Daily limit reached", { description: "Upgrade to Pro for unlimited note generations." });
+             showUpgradeModal('notes_limit');
+          }
         } else {
           throw new Error(data.error || 'Failed to generate notes');
         }
-        setGeneratingNotesFor(null);
+        setGeneratingNotesForTopic(null);
       } else if (data.status === 'no_content_found') {
-        toast.error("No relevant study material found. Please upload notes.");
-        setGeneratingNotesFor(null);
+        setMissingContentPrompt({ day, topic: topicToGen, subtopics: subtopicsToGen });
+        setGeneratingNotesForTopic(null);
       } else {
         // Success
         window.dispatchEvent(new CustomEvent('usage-updated'));
+        
+        // If it was forced, automatically redirect to it
+        if (force) {
+          router.push(`/dashboard/study-notes?day=${day.day_number}&topic=${encodeURIComponent(topicToGen)}`);
+        }
       }
     } catch (e: any) {
       toast.error(e.message);
-      setGeneratingNotesFor(null);
+      setGeneratingNotesForTopic(null);
     }
   };
 
@@ -834,7 +843,7 @@ export default function StudyPlanPage() {
         onToggleSubtopic={s => toggleSubtopic(selectedDay, s)} 
         onMarkComplete={f => markDayComplete(selectedDay, f)} 
         noteStatusMap={noteStatusMap}
-        isGeneratingLocal={generatingNotesFor === selectedDay.day_number}
+        isGeneratingLocal={generatingNotesForTopic}
         onGenerateNote={(d, topic, subtopics, force) => handleGenerateNote(d, topic, subtopics, force)}
         onViewNote={(day, topic) => router.push(`/dashboard/study-notes?day=${day}&topic=${encodeURIComponent(topic)}`)}
       />}
@@ -849,6 +858,41 @@ export default function StudyPlanPage() {
         initialDays={daysRem || 30}
         initialHours={exams.find((e: Exam) => e.id === activeExamId)?.daily_study_hours || 4}
       />
+
+      {missingContentPrompt && (
+        <div className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in" onClick={() => setMissingContentPrompt(null)}>
+          <div className="bg-surface rounded-2xl shadow-2xl max-w-md w-full border border-border-subtle overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="p-6 text-center space-y-4">
+              <div className="h-12 w-12 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto mb-2">
+                <AlertCircle className="h-6 w-6" />
+              </div>
+              <h3 className="text-xl font-black text-foreground uppercase tracking-tighter">Missing Intel</h3>
+              <p className="text-[11px] font-medium text-subtle leading-relaxed">
+                We couldn't find any content for <strong className="text-foreground">{missingContentPrompt.topic}</strong> in your uploaded documents. 
+                Do you want to upload study materials for this topic, or force the AI to generate notes using its general knowledge?
+              </p>
+            </div>
+            <div className="p-4 bg-background border-t border-border-subtle flex flex-col gap-3">
+              <button
+                onClick={() => router.push('/dashboard/documents')}
+                className="w-full py-3 rounded-xl bg-[#1e3a5f] text-[#c9a84c] border border-[#1e3a5f] text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center gap-2"
+              >
+                <BookMarked className="h-4 w-4" /> Upload Study Materials
+              </button>
+              <button
+                onClick={() => {
+                   const { day, topic, subtopics } = missingContentPrompt;
+                   setMissingContentPrompt(null);
+                   handleGenerateNote(day, topic, subtopics, true);
+                }}
+                className="w-full py-3 rounded-xl bg-red-500/5 text-red-600 border border-red-500/20 text-[10px] font-black uppercase tracking-widest hover:bg-red-500/10 transition-all flex justify-center items-center gap-2"
+              >
+                <Zap className="h-4 w-4" /> Force Generate with AI
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Header (Minimalist) */}
       <div className="bg-surface p-6 rounded-2xl border border-border-subtle relative overflow-hidden group">
@@ -932,7 +976,7 @@ export default function StudyPlanPage() {
                              <GenerateNotesButton 
                                 dayNumber={todayPlan.day_number}
                                 status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.primary_topic}`)}
-                                isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
+                                isGeneratingLocal={generatingNotesForTopic === todayPlan.primary_topic}
                                 onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.primary_topic, todayPlan.subtopics_to_cover, force)}
                                 onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.primary_topic)}`)}
                              />
@@ -943,7 +987,7 @@ export default function StudyPlanPage() {
                                <GenerateNotesButton 
                                   dayNumber={todayPlan.day_number}
                                   status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.secondary_topic}`)}
-                                  isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
+                                  isGeneratingLocal={generatingNotesForTopic === todayPlan.secondary_topic}
                                   onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.secondary_topic!, [], force)}
                                   onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.secondary_topic!)}`)}
                                />
@@ -956,7 +1000,7 @@ export default function StudyPlanPage() {
                                <GenerateNotesButton 
                                   dayNumber={todayPlan.day_number}
                                   status={noteStatusMap.get(`${todayPlan.day_number}-${revTopic}`)}
-                                  isGeneratingLocal={generatingNotesFor === todayPlan.day_number}
+                                  isGeneratingLocal={generatingNotesForTopic === revTopic}
                                   onGenerate={(force) => handleGenerateNote(todayPlan, revTopic, [], force)}
                                   onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(revTopic)}`)}
                                />

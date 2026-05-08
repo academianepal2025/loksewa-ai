@@ -49,7 +49,12 @@ export async function POST(request: Request) {
     const limits = await checkUserLimits(userId);
     if (!limits.allowed && limits.exceeded_limit === 'chat_limit') {
       return new Response(
-        JSON.stringify({ error: 'limit_reached', limit_type: 'chat_limit' }),
+        JSON.stringify({ 
+           error: 'limit_reached', 
+           limit_type: 'chat_limit',
+           is_pro: limits.plan !== 'free',
+           message: limits.plan !== 'free' ? 'You have reached your daily guru limit. Come back tomorrow for more.' : 'Daily limit reached.' 
+        }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }

@@ -127,13 +127,13 @@ function UploadZone({
   documents: DocumentInfo[];
   onUploadStart: () => void;
   onUploadFinish: () => void;
-  onDelete: (id: string, url: string) => void;
+  onDelete: (id: string, url: string, docType: string, examId: string) => void;
 }) {
   const [isOver, setIsOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
   const { showUpgradeModal } = useUpgradeModal();
-  const { isPro, isAdmin } = useDashboard();
+  const { isPro, isAdmin, language } = useDashboard();
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -212,7 +212,7 @@ function UploadZone({
       fetch('/api/process-document', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentId: docData.id }),
+        body: JSON.stringify({ documentId: docData.id, language }),
       })
       .then(async (res) => {
         if (!res.ok) {
@@ -284,7 +284,7 @@ function UploadZone({
             <div className="flex items-center gap-3 ml-4">
               <StatusBadge status={doc.processing_status} />
               <button 
-                onClick={(e) => { e.stopPropagation(); onDelete(doc.id, doc.file_url); }}
+                onClick={(e) => { e.stopPropagation(); onDelete(doc.id, doc.file_url, doc.doc_type, examId); }}
                 className="text-subtle hover:text-red-500 p-1.5 transition-colors rounded-lg hover:bg-red-500/5"
                 title="Delete"
               >
@@ -303,7 +303,7 @@ export default function DocumentsPage() {
   const [activeExamId, setActiveExamId] = useState<string | null>(null);
   const [documents, setDocuments] = useState<DocumentInfo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [docToDelete, setDocToDelete] = useState<{id: string, url: string} | null>(null);
+  const [docToDelete, setDocToDelete] = useState<{id: string, url: string, doc_type: string, exam_id: string} | null>(null);
   
   const supabase = createClient();
 
@@ -351,11 +351,17 @@ export default function DocumentsPage() {
     return () => clearInterval(interval);
   }, [activeExamId, fetchDocs]);
 
-  const handleDelete = async (id: string, url: string) => {
+  const handleDelete = async (id: string, url: string, doc_type: string, exam_id: string) => {
     try {
       const { error: chunkError } = await supabase.from('document_chunks').delete().eq('document_id', id);
       const { error: storageError } = await supabase.storage.from('user-documents').remove([url]);
       const { error: dbError } = await supabase.from('documents').delete().eq('id', id);
+      
+      if (doc_type === 'syllabus') {
+          await supabase.from('syllabus_analysis').delete().eq('exam_id', exam_id);
+          await supabase.from('study_plans').delete().eq('exam_id', exam_id);
+          toast.info('Syllabus Intelligence Purged', { description: 'Associated analysis and study plans have been reset.' });
+      }
       
       if (dbError) throw dbError;
       
@@ -443,9 +449,9 @@ export default function DocumentsPage() {
                     documents={documents.filter(d => d.doc_type === type.id)}
                     onUploadStart={() => {}}
                     onUploadFinish={() => fetchDocs()}
-                    onDelete={(id, url) => {
+                    onDelete={(id, url, doc_type, exam_id) => {
                       // We'll use state to manage which doc is being deleted for the modal
-                      setDocToDelete({ id, url });
+                      setDocToDelete({ id, url, doc_type, exam_id });
                     }}
                   />
                 </div>
@@ -457,7 +463,7 @@ export default function DocumentsPage() {
             isOpen={!!docToDelete}
             onClose={() => setDocToDelete(null)}
             onConfirm={() => {
-              if (docToDelete) handleDelete(docToDelete.id, docToDelete.url);
+              if (docToDelete) handleDelete(docToDelete.id, docToDelete.url, docToDelete.doc_type, docToDelete.exam_id);
             }}
             title="Purge Document Intelligence?"
             description="This will permanently delete the file and all AI-extracted data. This action cannot be undone."

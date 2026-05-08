@@ -57,7 +57,9 @@ IMPORTANT RULES:
   if (!hasContent) {
     instruction += `\n\nCRITICAL: The student has not provided any uploaded study materials for this topic. You must generate general knowledge PSC exam notes based on your own expert knowledge of the Nepal Loksewa syllabus.`;
   } else {
-    instruction += `\n\nCRITICAL: Use the provided context from the student's documents. Even if the context is in a different language, translate and synthesize it into the target language (${isNp ? 'Nepali' : 'English'}).`;
+    instruction += `\n\nCRITICAL: Use the provided context from the student's documents. Even if the context is in a different language, translate and synthesize it into the target language (${isNp ? 'Nepali' : 'English'}).
+    
+YOU MUST CITE YOUR SOURCES. Whenever you use information from the provided context, you MUST explicitly cite it in the text. For example: "(Source: [Document Name])" or "[Document Name]". Do not make up document names. Use the exact document names provided in the context blocks.`;
   }
 
   return instruction;
@@ -105,7 +107,12 @@ export async function POST(request: Request) {
     const limits = await checkUserLimits(user.id);
     if (!limits.allowed && limits.exceeded_limit === 'notes_limit') {
       return NextResponse.json(
-        { error: 'limit_reached', limit_type: 'notes_limit' },
+        { 
+          error: 'limit_reached', 
+          limit_type: 'notes_limit', 
+          is_pro: limits.plan !== 'free',
+          message: limits.plan !== 'free' ? 'You are generating more than usual. Study the generated notes first and come back tomorrow for more.' : 'Daily limit reached.' 
+        },
         { status: 403 }
       );
     }
@@ -166,11 +173,37 @@ export async function POST(request: Request) {
       }
     }
 
+    if (relevantChunks.length === 0 && !force_generate) {
+      // Return missing content status so the frontend can prompt the user
+      await supabase.from('study_notes').update({
+        generation_status: 'no_content',
+        no_content_found: true,
+        updated_at: new Date().toISOString()
+      }).eq('exam_id', examId).eq('day_number', day_number).eq('topic', topic);
+      
+      return NextResponse.json({ success: false, status: 'no_content_found' });
+    }
+
+    // Fetch actual file names for the document IDs to cite them
+    let documentNamesMap: Record<string, string> = {};
+    if (relevantChunks.length > 0) {
+      const docIds = [...new Set(relevantChunks.map((c: any) => c.document_id))];
+      const { data: docs } = await supabase
+        .from('documents')
+        .select('id, file_name')
+        .in('id', docIds);
+      
+      if (docs) {
+        docs.forEach(d => { documentNamesMap[d.id] = d.file_name; });
+      }
+    }
+
     // Build context string
     let contextString = "No specific uploaded materials found for this topic. Please use your expert knowledge of the Loksewa syllabus.";
     if (relevantChunks.length > 0) {
       contextString = relevantChunks.map((c: any) => {
-        const prefix = `[FROM ${c.doc_type?.toUpperCase() || 'DOCUMENT'}]`;
+        const fileName = documentNamesMap[c.document_id] || c.doc_type?.toUpperCase() || 'DOCUMENT';
+        const prefix = `[FROM SOURCE: ${fileName}]`;
         return `${prefix}\n${c.chunk_text}`;
       }).join('\n\n');
     }

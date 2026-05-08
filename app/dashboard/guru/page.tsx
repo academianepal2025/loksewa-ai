@@ -393,7 +393,11 @@ function GuruContent() {
       if (!res.ok) {
         const errorData = await res.json();
         if (errorData.error === 'limit_reached') {
-          showUpgradeModal('chat_limit');
+          if (errorData.is_pro) {
+             toast.error(errorData.message || 'You have reached your daily guru limit. Come back tomorrow for more.');
+          } else {
+             showUpgradeModal('chat_limit');
+          }
           setIsStreaming(false);
           setMessages(prev => prev.slice(0, -1)); // Remove the user message
           return;

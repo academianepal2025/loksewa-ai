@@ -40,52 +40,40 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
     };
   }
 
-  // 2. Check for active paid subscription
+  // 2. Fetch subscription status and usage stats
   const now = new Date().toISOString();
-  const { data: subscription } = await supabase
-    .from('subscriptions')
-    .select('plan, status, expires_at')
-    .eq('user_id', userId)
-    .eq('status', 'active')
-    .gt('expires_at', now)
-    .maybeSingle();
-
-  if (subscription && subscription.plan !== 'free') {
-    return {
-      allowed: true,
-      plan: subscription.plan as any,
-      limits: {
-        documents: { used: 0, max: Infinity, exceeded: false },
-        chat: { used: 0, max: Infinity, exceeded: false },
-        quizzes: { used: 0, max: Infinity, exceeded: false },
-        notes: { used: 0, max: Infinity, exceeded: false },
-        exams: { used: 0, max: Infinity, exceeded: false },
-        mock_tests: { used: 0, max: Infinity, exceeded: false },
-      },
-      exceeded_limit: null,
-    };
-  }
-
-  // 3. Free User Logic
-  const today = new Date().toISOString().split('T')[0];
+  const today = now.split('T')[0];
 
   const [
+    { data: subscription },
     { count: docCount },
     { data: usage },
     { count: examCount }
   ] = await Promise.all([
+    supabase.from('subscriptions').select('plan, status, expires_at').eq('user_id', userId).eq('status', 'active').gt('expires_at', now).maybeSingle(),
     supabase.from('documents').select('*', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('daily_usage').select('*').eq('user_id', userId).eq('usage_date', today).maybeSingle(),
     supabase.from('user_exams').select('*', { count: 'exact', head: true }).eq('user_id', userId)
   ]);
 
-  const limits = {
+  const isPro = subscription && subscription.plan !== 'free';
+  const planType = isPro ? subscription.plan : 'free';
+
+  // 3. Define Limits based on Plan
+  const limits = isPro ? {
+    documents: { used: docCount || 0, max: Infinity, exceeded: false },
+    chat: { used: usage?.chat_messages_sent || 0, max: 20, exceeded: (usage?.chat_messages_sent || 0) >= 20 },
+    quizzes: { used: usage?.quizzes_generated || 0, max: Infinity, exceeded: false },
+    notes: { used: usage?.notes_generated || 0, max: 10, exceeded: (usage?.notes_generated || 0) >= 10 },
+    exams: { used: examCount || 0, max: Infinity, exceeded: false },
+    mock_tests: { used: 0, max: Infinity, exceeded: false },
+  } : {
     documents: { used: docCount || 0, max: 3, exceeded: (docCount || 0) >= 3 },
-    chat: { used: usage?.chat_messages_sent || 0, max: 10, exceeded: (usage?.chat_messages_sent || 0) >= 10 },
+    chat: { used: usage?.chat_messages_sent || 0, max: 5, exceeded: (usage?.chat_messages_sent || 0) >= 5 },
     quizzes: { used: usage?.quizzes_generated || 0, max: 3, exceeded: (usage?.quizzes_generated || 0) >= 3 },
-    notes: { used: usage?.notes_generated || 0, max: 3, exceeded: (usage?.notes_generated || 0) >= 3 },
+    notes: { used: usage?.notes_generated || 0, max: 1, exceeded: (usage?.notes_generated || 0) >= 1 },
     exams: { used: examCount || 0, max: 1, exceeded: (examCount || 0) >= 1 },
-    mock_tests: { used: 0, max: 0, exceeded: true }, // Free users have 0 allowance
+    mock_tests: { used: 0, max: 0, exceeded: true }, 
   };
 
   let exceeded_limit = null;
@@ -94,9 +82,10 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
   else if (limits.quizzes.exceeded) exceeded_limit = 'quiz_limit';
   else if (limits.notes.exceeded) exceeded_limit = 'notes_limit';
   else if (limits.exams.exceeded) exceeded_limit = 'exam_limit';
+
   return {
     allowed: !exceeded_limit,
-    plan: 'free',
+    plan: planType as any,
     limits,
     exceeded_limit,
   };
