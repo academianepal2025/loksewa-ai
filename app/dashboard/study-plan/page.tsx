@@ -615,10 +615,10 @@ export default function StudyPlanPage() {
               });
               if (updatedNote.generation_status === 'ready') {
                 toast.success(`Notes generated for ${updatedNote.topic}!`);
-                setGeneratingNotesFor(null);
+                setGeneratingNotesForTopic(null);
               } else if (updatedNote.generation_status === 'failed') {
                 toast.error(`Generation failed for ${updatedNote.topic}`);
-                setGeneratingNotesFor(null);
+                setGeneratingNotesForTopic(null);
               }
             }
           }
