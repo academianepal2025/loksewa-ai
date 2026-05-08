@@ -43,10 +43,17 @@ interface DailyPlan {
   day_number: number;
   date: string;
   day_type: 'study' | 'revision' | 'rest' | 'mock_test';
+  week_number?: number;
   primary_topic: string;
   secondary_topic: string | null;
   subtopics_to_cover: string[];
   estimated_hours: number;
+  learning_objective?: string;
+  study_method?: string;
+  focus_points?: string[];
+  avoid_mistakes?: string;
+  exam_connection?: string;
+  resources_hint?: string;
   study_tips: string;
   is_revision: boolean;
   revision_topics: string[];
@@ -241,6 +248,9 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
               <div>
                 <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1">MISSION DAY {day.day_number}</p>
                 <h3 className="text-lg font-black text-foreground tracking-tighter leading-tight uppercase">{day.primary_topic || config.label}</h3>
+                {day.study_method && (
+                  <span className="inline-block px-2 py-0.5 mt-2 bg-[#1e3a5f]/10 text-[#1e3a5f] border border-[#1e3a5f]/20 rounded text-[9px] font-black uppercase tracking-widest">Method: {day.study_method}</span>
+                )}
               </div>
             </div>
             <button onClick={onClose} className="p-2 hover:bg-background rounded-xl transition-all text-muted">
@@ -250,6 +260,13 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
         </div>
 
         <div className="p-5 space-y-5">
+          {day.learning_objective && (
+            <div className="bg-[#1e3a5f]/5 border-l-2 border-[#1e3a5f] p-4 rounded-r-xl shadow-sm">
+               <p className="text-[10px] font-black text-[#1e3a5f] uppercase tracking-widest mb-1">Learning Objective</p>
+               <p className="text-xs font-medium text-foreground leading-relaxed">{day.learning_objective}</p>
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center gap-6">
              <div className="flex items-center gap-3">
                 <Clock className="h-4 w-4 text-[#c9a84c]" />
@@ -287,6 +304,37 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
             </div>
           </div>
 
+          {day.focus_points && day.focus_points.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest">Focus Points</h4>
+              <ul className="list-decimal list-inside space-y-1.5 pl-1">
+                {day.focus_points.map((pt, i) => (
+                  <li key={i} className="text-[11px] font-medium text-foreground leading-relaxed">{pt}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {day.avoid_mistakes && (
+            <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl shadow-sm">
+               <div className="flex items-center gap-2 mb-2">
+                 <AlertTriangle className="h-3 w-3 text-yellow-600" />
+                 <span className="text-[9px] font-black text-yellow-600 uppercase tracking-widest">Avoid Mistakes</span>
+               </div>
+               <p className="text-[11px] font-medium text-foreground leading-relaxed">{day.avoid_mistakes}</p>
+            </div>
+          )}
+
+          {day.exam_connection && (
+            <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl shadow-sm">
+               <div className="flex items-center gap-2 mb-2">
+                 <Target className="h-3 w-3 text-blue-600" />
+                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Previous Exam Pattern</span>
+               </div>
+               <p className="text-[11px] font-medium text-foreground leading-relaxed">{day.exam_connection}</p>
+            </div>
+          )}
+
           {day.study_tips && (
             <div className="bg-[#c9a84c]/5 rounded-xl p-4 border border-[#c9a84c]/20 shadow-sm">
                <div className="flex items-center gap-2 mb-2">
@@ -295,6 +343,10 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                </div>
                <p className="reading-area text-[12px] text-foreground font-medium italic opacity-90 leading-relaxed">{day.study_tips}</p>
             </div>
+          )}
+
+          {day.resources_hint && (
+            <p className="text-[10px] font-medium text-subtle italic text-center pt-2">{day.resources_hint}</p>
           )}
 
           {!progress?.is_completed && (
@@ -751,10 +803,10 @@ export default function StudyPlanPage() {
   const totalStudyDays = planData?.daily_plans.filter((d: DailyPlan) => d.day_type !== 'rest').length || 1;
   const completionPct = Math.round((completedDays / totalStudyDays) * 100);
   const daysRem = exams.find((e: Exam) => e.id === activeExamId) ? Math.max(0, Math.ceil((new Date(exams.find((e: Exam) => e.id === activeExamId)!.exam_date).getTime() - Date.now()) / 86400000)) : 0;
-  const currentWeekNum = todayPlan ? Math.ceil(todayPlan.day_number / 7) : 1;
+  const currentWeekNum = todayPlan ? (todayPlan.week_number || Math.ceil(todayPlan.day_number / 7)) : 1;
   const currentWeekTarget = planData?.weekly_targets.find((w: WeeklyTarget) => w.week_number === currentWeekNum);
   const weeklyGroups: Record<number, DailyPlan[]> = {};
-  planData?.daily_plans.forEach((d: DailyPlan) => { const wk = Math.ceil(d.day_number / 7); if (!weeklyGroups[wk]) weeklyGroups[wk] = []; weeklyGroups[wk].push(d); });
+  planData?.daily_plans.forEach((d: DailyPlan) => { const wk = d.week_number || Math.ceil(d.day_number / 7); if (!weeklyGroups[wk]) weeklyGroups[wk] = []; weeklyGroups[wk].push(d); });
 
   if (loading) return (
     <div className="max-w-6xl mx-auto space-y-8 animate-pulse">

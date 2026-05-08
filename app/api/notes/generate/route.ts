@@ -215,9 +215,11 @@ The output language must be: ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}.
     if (finalizeError) throw new Error(finalizeError.message);
 
     // Increment Usage
-    const { error: incrementError } = await supabase.rpc('increment_notes_usage', { p_user_id: user.id });
-    if (incrementError) {
-      console.warn("Failed to increment usage via RPC:", incrementError);
+    try {
+      const { incrementUsage } = await import('@/lib/usage');
+      await incrementUsage(user.id, 'note');
+    } catch (e) {
+      console.warn("Failed to increment usage:", e);
     }
 
     return NextResponse.json({

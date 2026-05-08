@@ -3,13 +3,18 @@ import { createClient } from '@/lib/supabase/server';
 import { generateJSON } from '@/lib/ai';
 
 function getSystemInstruction(lang: string) {
-  const base = `You are an expert PSC Nepal (Loksewa Ayog) exam analyst. Analyze the provided syllabus and return structured JSON analysis.
+  const base = `You are an expert PSC Nepal Loksewa Ayog exam analyst with deep knowledge of all examination categories including Kharidar, Nayab Subba, Section Officer, and Gazetted Officer levels. Analyze the provided syllabus in exhaustive detail. For every single topic in the syllabus you must provide complete analysis covering what the topic is about, why it is important for this specific PSC exam category, what types of questions are typically asked from this topic in actual Loksewa Ayog exams, how many marks this topic typically carries, what subtopics must be studied within it, and how a student should approach studying it.
+
 Return ONLY valid JSON matching this exact schema:
 {
   "exam_overview": {
     "total_topics": number,
     "papers": [{ "paper_number": number, "paper_name": "string", "total_marks": number }],
-    "estimated_total_hours_needed": number
+    "estimated_total_hours_needed": number,
+    "total_marks": number,
+    "examination_pattern": "string",
+    "passing_marks": number,
+    "recommended_study_sequence": ["string"]
   },
   "topics": [
     {
@@ -18,7 +23,14 @@ Return ONLY valid JSON matching this exact schema:
       "subtopics": ["string"],
       "estimated_hours": number,
       "priority": "critical" | "high" | "medium" | "low",
+      "priority_score": number,
       "priority_reason": "string",
+      "marks_weightage": number,
+      "question_types": ["string"],
+      "learning_approach": "string",
+      "key_facts_to_memorize": ["string"],
+      "common_mistakes": "string",
+      "study_sequence_order": number,
       "typical_question_types": ["string"],
       "pyq_likelihood": "very_high" | "high" | "medium" | "low"
     }
@@ -28,13 +40,14 @@ Return ONLY valid JSON matching this exact schema:
 }
 
 CRITICAL PERFORMANCE RULES:
-1. Keep 'priority_reason' under 10 words.
-2. Keep 'study_strategy' under 40 words.
-3. Keep 'critical_topics_summary' under 30 words.
-4. If there are more than 30 minor subtopics, aggregate them into broader themes to keep the array size small.`;
+1. Provide exhaustive detail for priority_reason, study_strategy, and critical_topics_summary.
+2. If there are more than 30 minor subtopics, aggregate them into broader themes to keep the array size manageable but do not lose critical detail.
+3. Priority score must be a number from 1 to 10.
+4. Marks weightage must be an estimated percentage of total marks.
+5. Learning approach must be a detailed string of 2 to 3 sentences explaining exactly HOW the student should study this topic.`;
 
   if (lang === 'np') {
-    return `${base}\n\nIMPORTANT: Write all descriptive strings (paper_name, topic_name, priority_reason, study_strategy, critical_topics_summary) in Pure Nepali. Always include relevant English technical terms in brackets [English Term] immediately after their Nepali counterparts.`;
+    return `${base}\n\nIMPORTANT: Write all descriptive strings (paper_name, topic_name, priority_reason, study_strategy, critical_topics_summary, learning_approach, common_mistakes) in Pure Nepali. Always include relevant English technical terms in brackets [English Term] immediately after their Nepali counterparts.`;
   }
   return base;
 }
@@ -124,6 +137,8 @@ ${combinedSyllabusText}`;
 
     // 5. Call Gemini API with structured output using centralized utility
     const analysisData = await generateJSON(getSystemInstruction(userLang), userMessage);
+
+    console.log(`[DEBUG] Analysis complete. Found ${analysisData.exam_overview?.total_topics || 0} total topics.`);
 
     // 7. Insert into syllabus_analysis table
     const { data: insertedRow, error: insertError } = await supabase

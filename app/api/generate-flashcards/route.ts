@@ -139,8 +139,12 @@ export async function POST(request: Request) {
     }
 
     // Increment Usage (counts toward quiz quota)
-    const { error: rpcError } = await supabase.rpc('increment_quiz_usage', { p_user_id: userId });
-    if (rpcError) console.error('Failed to increment flashcard usage:', rpcError);
+    try {
+      const { incrementUsage } = await import('@/lib/usage');
+      await incrementUsage(userId, 'quiz');
+    } catch (e) {
+      console.error('Failed to increment flashcard usage:', e);
+    }
 
     return NextResponse.json({
       success: true,

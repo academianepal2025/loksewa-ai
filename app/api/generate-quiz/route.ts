@@ -124,8 +124,12 @@ ${contextContent}`;
     }
 
     // 3. Increment Usage in Background
-    const { error: rpcError } = await supabase.rpc('increment_quiz_usage', { p_user_id: userId });
-    if (rpcError) console.error('Failed to increment quiz usage:', rpcError);
+    try {
+      const { incrementUsage } = await import('@/lib/usage');
+      await incrementUsage(userId, 'quiz');
+    } catch (e) {
+      console.error('Failed to increment quiz usage:', e);
+    }
 
     // 4. Return the generated quiz
     return NextResponse.json({

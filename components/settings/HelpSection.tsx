@@ -41,7 +41,7 @@ export function HelpSection() {
       {/* Contact */}
       <div className="bg-background border border-border-subtle rounded-xl p-5 mb-4 shadow-sm">
         <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-3 flex items-center gap-2"><MessageSquare className="h-4 w-4 text-[#c9a84c]" /> Contact Support</h3>
-        <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4">Email: support@loksewai.com</p>
+        <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4">Email: loksewagkdose@gmail.com</p>
         <a href="https://wa.me/9779808493504" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e3a5f] text-[#c9a84c] border border-[#c9a84c]/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10">
           <MessageSquare className="h-3.5 w-3.5" /> WhatsApp Dispatch <ExternalLink className="h-3 w-3" />
         </a>

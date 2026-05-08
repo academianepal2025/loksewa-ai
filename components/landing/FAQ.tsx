@@ -96,7 +96,7 @@ export function FAQ() {
           <p className="text-gray-500 mb-8 font-medium">We are here to help you ace your exams.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="mailto:support@loksewai.com?subject=Loksewa AI Question"
+              href="mailto:loksewagkdose@gmail.com?subject=Loksewa AI Question"
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-[#1e3a5f] text-white font-bold rounded-2xl hover:bg-[#1e3a5f]/90 transition-all shadow-lg shadow-[#1e3a5f]/20"
             >
               <Mail className="h-5 w-5" />

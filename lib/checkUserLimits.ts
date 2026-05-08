@@ -83,7 +83,7 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
     documents: { used: docCount || 0, max: 3, exceeded: (docCount || 0) >= 3 },
     chat: { used: usage?.chat_messages_sent || 0, max: 10, exceeded: (usage?.chat_messages_sent || 0) >= 10 },
     quizzes: { used: usage?.quizzes_generated || 0, max: 3, exceeded: (usage?.quizzes_generated || 0) >= 3 },
-    notes: { used: usage?.notes_generated || 0, max: 5, exceeded: (usage?.notes_generated || 0) >= 5 },
+    notes: { used: usage?.notes_generated || 0, max: 3, exceeded: (usage?.notes_generated || 0) >= 3 },
     exams: { used: examCount || 0, max: 1, exceeded: (examCount || 0) >= 1 },
     mock_tests: { used: 0, max: 0, exceeded: true }, // Free users have 0 allowance
   };
