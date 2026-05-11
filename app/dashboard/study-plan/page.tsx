@@ -1014,6 +1014,7 @@ export default function StudyPlanPage() {
                                 isGeneratingLocal={generatingNotesForTopic === todayPlan.primary_topic}
                                 onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.primary_topic, todayPlan.subtopics_to_cover, force)}
                                 onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.primary_topic)}`)}
+                                isNotesLimitReached={isNotesLimitReached}
                              />
                            </div>
                            {todayPlan.secondary_topic && (
@@ -1025,6 +1026,7 @@ export default function StudyPlanPage() {
                                   isGeneratingLocal={generatingNotesForTopic === todayPlan.secondary_topic}
                                   onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.secondary_topic!, [], force)}
                                   onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.secondary_topic!)}`)}
+                                  isNotesLimitReached={isNotesLimitReached}
                                />
                              </div>
                            )}
@@ -1038,6 +1040,7 @@ export default function StudyPlanPage() {
                                   isGeneratingLocal={generatingNotesForTopic === revTopic}
                                   onGenerate={(force) => handleGenerateNote(todayPlan, revTopic, [], force)}
                                   onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(revTopic)}`)}
+                                  isNotesLimitReached={isNotesLimitReached}
                                />
                              </div>
                            ))}
