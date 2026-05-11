@@ -173,8 +173,12 @@ function GenerateNotesButton({
   status, 
   isGeneratingLocal, 
   onGenerate, 
-  onView 
+  onView,
+  isNotesLimitReached
 }: { 
+  dayNumber: number,
+  status?: string,
+  isGeneratingLocal: boolean,
   onGenerate: (force: boolean) => void,
   onView: () => void,
   isNotesLimitReached: boolean
