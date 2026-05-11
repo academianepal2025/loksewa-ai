@@ -244,7 +244,7 @@ export default function DashboardPage() {
           title="No Active Exam Selected"
           description="You haven't selected an exam yet. Choosing an exam allows our AI to generate a personalized study plan."
           action={
-            <Link href="/dashboard/settings" className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px] shadow-lg shadow-[#1e3a5f]/20">
+            <Link href="/dashboard/exams" className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px] shadow-lg shadow-[#1e3a5f]/20">
               Choose Your Exam <Target className="h-4 w-4" />
             </Link>
           }
