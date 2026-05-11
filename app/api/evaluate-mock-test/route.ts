@@ -65,23 +65,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // 1. Download file from Supabase Storage to send to Gemini
-    // Extract bucket and path from URL
-    const urlParts = fileUrl.split('/storage/v1/object/public/');
-    if (urlParts.length < 2) throw new Error('Invalid file URL');
+    // 1. Download file from the secure signed URL
+    const response = await fetch(fileUrl);
+    if (!response.ok) throw new Error('Failed to download answer sheet');
     
-    const fullPath = urlParts[1];
-    const bucket = fullPath.split('/')[0];
-    const path = fullPath.split('/').slice(1).join('/');
-
-    const { data: fileData, error: downloadError } = await supabase.storage.from(bucket).download(path);
-    if (downloadError || !fileData) {
-      throw new Error(`Failed to download file: ${downloadError?.message}`);
-    }
-
-    const buffer = Buffer.from(await fileData.arrayBuffer());
+    const blob = await response.blob();
+    const buffer = Buffer.from(await blob.arrayBuffer());
     const base64Image = buffer.toString('base64');
-    const mimeType = fileData.type || 'image/jpeg';
+    const mimeType = blob.type || 'image/jpeg';
 
     // 2. Prepare multimodal content
     const testContent = typeof testJson === 'string' ? testJson : JSON.stringify(testJson);

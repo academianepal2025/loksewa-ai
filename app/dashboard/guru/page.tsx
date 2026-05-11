@@ -29,6 +29,7 @@ import {
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
 import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
+import { TacticalPrompt } from '@/components/dashboard/TacticalPrompt';
 
 // ── Types ─────────────────────────────────────────────────────────────
 interface ChatMessage {
@@ -306,42 +307,32 @@ function GuruContent() {
 
   // ── Real-time Chat Sync ─────────────────────────────────────────
   useEffect(() => {
-    let channel: any;
-    let mounted = true;
+    if (!userId || !activeExamId) return;
+    let currentChannel: any = null;
 
-    async function setupRealtime() {
-      if (!userId || !activeExamId) return;
-
+    const setup = async () => {
       const channelName = `realtime_chats_${activeExamId}`;
       
+      // Remove any existing channel with same name
       const existing = supabase.getChannels().find((c: any) => c.name === channelName);
       if (existing) await supabase.removeChannel(existing);
 
-      if (!mounted) return;
-
-      channel = supabase
+      currentChannel = supabase
         .channel(channelName)
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'chat_messages',
-            filter: `user_id=eq.${userId}`,
-          },
-          () => {
-            if (mounted) loadHistory(false);
-          }
-        )
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+          filter: `user_id=eq.${userId}`,
+        }, () => { loadHistory(false); })
         .subscribe();
-    }
+    };
 
-    setupRealtime();
+    setup();
 
     return () => {
-      mounted = false;
-      if (channel) {
-        supabase.removeChannel(channel);
+      if (currentChannel) {
+        supabase.removeChannel(currentChannel);
       }
     };
   }, [userId, activeExamId, supabase, loadHistory]);
@@ -656,6 +647,14 @@ function GuruContent() {
           </p>
         </div>
       </div>
+      {/* Contextual Guidance */}
+      <TacticalPrompt 
+        id="guru_chat_tip"
+        title="Tactical Guru Engagement"
+        message="Stuck on a specific section of your plan? Ask the Guru to explain any topic from your uploaded syllabus in simple terms."
+        type="intel"
+        delay={5000}
+      />
     </div>
   );
 }

@@ -26,6 +26,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid plan selection' }, { status: 400 });
     }
 
+    // Check for existing pending request to prevent duplicates
+    const { data: existingRequest } = await supabase
+      .from('payment_requests')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('plan', plan)
+      .eq('status', 'pending')
+      .maybeSingle();
+
+    if (existingRequest) {
+      return NextResponse.json({ 
+        error: 'You already have a pending payment request for this plan. Please wait for admin review or contact support.',
+        existingId: existingRequest.id
+      }, { status: 409 });
+    }
+
     // Insert payment request
     const { data, error } = await supabase
       .from('payment_requests')

@@ -84,7 +84,7 @@ export default function PerformancePage() {
         // Fetch Study Plan to get progress for this specific exam
         const { data: plan } = await supabase
           .from('study_plans')
-          .select('id')
+          .select('id, plan_data')
           .eq('exam_id', currentExamId)
           .maybeSingle();
 

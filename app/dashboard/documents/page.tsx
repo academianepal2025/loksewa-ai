@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
+import { TacticalPrompt } from '@/components/dashboard/TacticalPrompt';
 
 interface Exam {
   id: string;
@@ -472,6 +473,14 @@ export default function DocumentsPage() {
           />
         </div>
       )}
+      {/* Contextual Guidance */}
+      <TacticalPrompt 
+        id="documents_syllabus_tip"
+        title="Intelligence Intake Protocol"
+        message="Upload your 'Syllabus' first. Our AI will automatically extract chapters and topics to build your Strategic Study Plan."
+        type="tactical"
+        delay={3000}
+      />
     </div>
   );
 }

@@ -37,19 +37,20 @@ import { UpgradeModalProvider, useUpgradeModal } from '@/lib/UpgradeModalContext
 import { UpgradeModal } from '@/components/UpgradeModal';
 import { PaymentFlowModal } from '@/components/PaymentFlowModal';
 import { PlanBanner } from '@/components/dashboard/PlanBanner';
+import { Tooltip } from '@/components/ui/tooltip';
 import { ShieldAlert } from 'lucide-react';
 
 const navItems = [
-  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { key: 'exams', href: '/dashboard/exams', icon: BookOpen },
-  { key: 'study_plan', href: '/dashboard/study-plan', icon: Calendar },
-  { key: 'documents', href: '/dashboard/documents', icon: FileText },
-  { key: 'guru', href: '/dashboard/guru', icon: Lightbulb },
-  { key: 'practice', href: '/dashboard/practice', icon: PenTool },
-  { key: 'study_notes', href: '/dashboard/study-notes', icon: BookOpen },
-  { key: 'performance', href: '/dashboard/performance', icon: BarChart3 },
-  { key: 'intelligence', href: '/dashboard/intelligence', icon: Sparkles },
-  { key: 'settings', href: '/dashboard/settings', icon: Settings },
+  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard, tooltip: 'Command Center: Mission status and quick actions.' },
+  { key: 'exams', href: '/dashboard/exams', icon: BookOpen, tooltip: 'Mission Parameters: Set target exam and timeline.' },
+  { key: 'study_plan', href: '/dashboard/study-plan', icon: Calendar, tooltip: 'Tactical Roadmap: Deploy your daily study schedule.' },
+  { key: 'documents', href: '/dashboard/documents', icon: FileText, tooltip: 'Intelligence Intake: Upload syllabus and notes for AI analysis.' },
+  { key: 'guru', href: '/dashboard/guru', icon: Lightbulb, tooltip: 'Tactical Guru: Instant AI explanations for any topic.' },
+  { key: 'practice', href: '/dashboard/practice', icon: PenTool, tooltip: 'Battle Drill: Adaptive quizzes and active recall.' },
+  { key: 'study_notes', href: '/dashboard/study-notes', icon: BookOpen, tooltip: 'Knowledge Base: AI-generated summaries and notes.' },
+  { key: 'performance', href: '/dashboard/performance', icon: BarChart3, tooltip: 'Operational Review: Analyze strengths and weaknesses.' },
+  { key: 'intelligence', href: '/dashboard/intelligence', icon: Sparkles, tooltip: 'Strategy Suite: Advanced AI syllabus tools.' },
+  { key: 'settings', href: '/dashboard/settings', icon: Settings, tooltip: 'System Config: Manage account and preferences.' },
 ];
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
@@ -116,24 +117,25 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => {
             const isActive = currentPath === item.href || (item.href !== '/dashboard' && currentPath.startsWith(item.href));
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative ${
-                  isActive 
-                  ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/10 border border-[#c9a84c]/10' 
-                  : 'text-subtle hover:bg-background hover:text-foreground'
-                }`}
-              >
-                <item.icon className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-4 w-4 transition-all ${isActive ? 'opacity-100 scale-110' : 'opacity-70 group-hover:opacity-100 group-hover:scale-110'}`} />
-                {!isCollapsed && <span className="truncate">{t(item.key as any)}</span>}
-                
-                {isCollapsed && (
-                  <div className="absolute left-full ml-3 px-3 py-2 bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-[100] shadow-xl border border-[#c9a84c]/10">
-                    {t(item.key as any)}
-                  </div>
-                )}
-              </Link>
+              <Tooltip key={item.href} content={item.tooltip} side="right">
+                <Link
+                  href={item.href}
+                  className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-4'} py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative ${
+                    isActive 
+                    ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/10 border border-[#c9a84c]/10' 
+                    : 'text-subtle hover:bg-background hover:text-foreground'
+                  }`}
+                >
+                  <item.icon className={`${isCollapsed ? 'mr-0' : 'mr-3'} h-4 w-4 transition-all ${isActive ? 'opacity-100 scale-110' : 'opacity-70 group-hover:opacity-100 group-hover:scale-110'}`} />
+                  {!isCollapsed && <span className="truncate">{t(item.key as any)}</span>}
+                  
+                  {isCollapsed && (
+                    <div className="absolute left-full ml-3 px-3 py-2 bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-[100] shadow-xl border border-[#c9a84c]/10">
+                      {t(item.key as any)}
+                    </div>
+                  )}
+                </Link>
+              </Tooltip>
             );
           })}
 

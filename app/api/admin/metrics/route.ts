@@ -1,26 +1,21 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createClient as createServerClient } from '@/lib/supabase/server';
+import { verifyAdmin } from '@/lib/adminAuth';
 
-const ADMIN_EMAILS = ['shahrammy131@gmail.com'];
+
 
 export async function GET(req: Request) {
   try {
-    // 1. Verify User Session using the normal authenticated client
-    const supabaseUserClient = await createServerClient();
-    const { data: { user } } = await supabaseUserClient.auth.getUser();
-    
-    if (!user || !user.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    if (!ADMIN_EMAILS.includes(user.email)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-    }
+    // 1. Verify User Session & Admin Status
+    const { error } = await verifyAdmin();
+    if (error) return error;
 
     // 2. Initialize Supabase Admin Client to bypass RLS
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseServiceKey) {
+      return NextResponse.json({ error: 'Server misconfiguration: SUPABASE_SERVICE_ROLE_KEY is not set' }, { status: 500 });
+    }
     
     // WARNING: If SUPABASE_SERVICE_ROLE_KEY is not set, this will fall back to anon key
     // which will only return data for the authenticated user due to RLS.

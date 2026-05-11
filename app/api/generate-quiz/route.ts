@@ -63,9 +63,14 @@ export async function POST(request: Request) {
 
     // ── Step 0: Check Plan Limits ──────────────────────────────────
     const limits = await checkUserLimits(userId);
-    if (!limits.allowed && limits.exceeded_limit === 'quiz_limit') {
+    if (limits.limits.quizzes.exceeded) {
       return NextResponse.json(
-        { error: 'limit_reached', limit_type: 'quiz_limit' },
+        { 
+          error: 'limit_reached', 
+          limit_type: 'quiz_limit',
+          is_pro: limits.plan !== 'free',
+          message: limits.plan !== 'free' ? 'You are generating more than usual. Come back tomorrow for more.' : 'Daily limit reached.'
+        },
         { status: 403 }
       );
     }

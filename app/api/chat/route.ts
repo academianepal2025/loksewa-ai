@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     // ── Step 0: Check Plan Limits ──────────────────────────────────
     const limits = await checkUserLimits(userId);
-    if (!limits.allowed && limits.exceeded_limit === 'chat_limit') {
+    if (limits.limits.chat.exceeded) {
       return new Response(
         JSON.stringify({ 
            error: 'limit_reached', 
@@ -59,13 +59,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // ── Step 0.5: Increment Usage Immediately ──────────────────────
-    try {
-      const { incrementUsage } = await import('@/lib/usage');
-      await incrementUsage(userId, 'chat');
-    } catch (e) {
-      console.warn('Usage increment failed:', e);
-    }
+
 
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is not defined');
@@ -155,12 +149,15 @@ export async function POST(request: Request) {
           }
           controller.close();
 
-          // ── Step 7: Save messages ──────────────────────────────────
+          // ── Step 7: Save messages & Increment Usage ─────────────────
           try {
              await supabase.from('chat_messages').insert([
               { user_id: userId, exam_id: examId, role: 'user', content: message },
               { user_id: userId, exam_id: examId, role: 'assistant', content: fullResponse }
             ]);
+
+            const { incrementUsage } = await import('@/lib/usage');
+            await incrementUsage(userId, 'chat');
           } catch (saveError) {
             console.error('Background tasks failed:', saveError);
           }

@@ -21,11 +21,19 @@ function createChunks(text: string, maxWords = 400, overlap = 50) {
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+    const userId = user.id;
+
     const body = await request.json();
-    const { documentId, userId, examId, parsedText, docType } = body;
+    const { documentId, examId, parsedText, docType } = body;
 
     // 1. Validation
-    if (!documentId || !userId || !examId || !parsedText) {
+    if (!documentId || !examId || !parsedText) {
       return NextResponse.json({ success: false, message: 'Missing required parameters or empty parsedText' }, { status: 400 });
     }
 
@@ -33,7 +41,7 @@ export async function POST(request: Request) {
       throw new Error('GEMINI_API_KEY is not defined in environment variables');
     }
 
-    const supabase = await createClient();
+
 
     // 3. Split text into chunks
     const chunks = createChunks(parsedText, 400, 50);

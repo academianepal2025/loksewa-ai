@@ -895,8 +895,23 @@ export default function PracticePage() {
                         const fileName = `${authUser.id}/${Date.now()}.${fileExt}`;
                         const { data: uploadData, error: uploadError } = await supabase.storage.from('answer-sheets').upload(fileName, file);
                         if (uploadError) throw uploadError;
-                        const { data: { publicUrl } } = supabase.storage.from('answer-sheets').getPublicUrl(fileName);
-                        const res = await fetch('/api/evaluate-mock-test', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileUrl: publicUrl, testJson: mockTest, userId: authUser.id, examId: selectedExamId }) });
+                        const { data: signedData, error: signedError } = await supabase.storage
+                          .from('answer-sheets')
+                          .createSignedUrl(fileName, 600); // 10 minutes
+
+                        if (signedError || !signedData) throw new Error('Failed to generate secure file URL');
+                        const fileUrl = signedData.signedUrl;
+
+                        const res = await fetch('/api/evaluate-mock-test', { 
+                          method: 'POST', 
+                          headers: { 'Content-Type': 'application/json' }, 
+                          body: JSON.stringify({ 
+                            fileUrl: fileUrl, 
+                            testJson: mockTest, 
+                            userId: authUser.id, 
+                            examId: selectedExamId 
+                          }) 
+                        });
                         if (!res.ok) throw new Error('Evaluation failed. Please try again.');
                         const evalData = await res.json();
                         setEvaluationResult(evalData.submission);

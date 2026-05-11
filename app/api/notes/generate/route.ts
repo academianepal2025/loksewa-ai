@@ -105,7 +105,7 @@ export async function POST(request: Request) {
 
     // Check Plan Limits
     const limits = await checkUserLimits(user.id);
-    if (!limits.allowed && limits.exceeded_limit === 'notes_limit') {
+    if (limits.limits.notes.exceeded) {
       return NextResponse.json(
         { 
           error: 'limit_reached', 

@@ -48,20 +48,21 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
     const base64Data = buffer.toString('base64');
 
-    const fileName = document.file_name.toLowerCase();
+    // 4. Validate magic bytes (Content-based verification)
+    const magicBytes = buffer.subarray(0, 8);
+    const isPDF = magicBytes[0] === 0x25 && magicBytes[1] === 0x50 && magicBytes[2] === 0x44 && magicBytes[3] === 0x46;
+    const isJPEG = magicBytes[0] === 0xFF && magicBytes[1] === 0xD8;
+    const isPNG = magicBytes[0] === 0x89 && magicBytes[1] === 0x50 && magicBytes[2] === 0x4E && magicBytes[3] === 0x47;
 
-    // Determine MIME type
-    let mimeType = 'application/pdf';
-    let isImage = false;
-    if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
-      mimeType = 'image/jpeg';
-      isImage = true;
-    } else if (fileName.endsWith('.png')) {
-      mimeType = 'image/png';
-      isImage = true;
-    } else if (!fileName.endsWith('.pdf')) {
-      throw new Error('Unsupported file format. Please upload PDF, JPG, JPEG, or PNG.');
+    if (!isPDF && !isJPEG && !isPNG) {
+      await supabase.from('documents').update({ processing_status: 'failed' }).eq('id', documentId);
+      return NextResponse.json({ success: false, message: 'Invalid file format. Only PDF, JPG, and PNG files are accepted.' }, { status: 400 });
     }
+
+    // Determine MIME type based on actual magic bytes, not just filename extension
+    let mimeType = isPDF ? 'application/pdf' : isJPEG ? 'image/jpeg' : 'image/png';
+    let isImage = !isPDF;
+    const fileName = document.file_name.toLowerCase();
 
     let extractedText = '';
 
@@ -69,10 +70,16 @@ export async function POST(request: Request) {
     if (!isImage) {
       try {
         console.log('[DEBUG] Attempting native PDF extraction for:', fileName);
-        const data = await pdfParse(buffer);
+        const parseWithTimeout = Promise.race([
+          pdfParse(buffer),
+          new Promise<any>((_, reject) =>
+            setTimeout(() => reject(new Error('PDF parse timeout')), 15000)
+          )
+        ]);
+        const data = await parseWithTimeout;
         extractedText = data.text || '';
       } catch (err) {
-        console.warn('[DEBUG] Native PDF parsing failed. Falling back to Gemini API.');
+        console.warn('[DEBUG] Native PDF parsing failed or timed out. Falling back to Gemini API.');
       }
     }
 

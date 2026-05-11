@@ -8,6 +8,20 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const DEFAULT_MODEL = 'gemini-3.1-flash-lite-preview';
 const FALLBACK_MODEL = 'gemini-2.5-flash';
 
+function sanitizeAIError(error: any): Error {
+  const msg = error.message || String(error);
+  if (msg.includes('429') || msg.includes('RESOURCE_EXHAUSTED') || msg.includes('quota')) {
+    return new Error('AI service is at capacity. Please try again in a moment.');
+  }
+  if (msg.includes('503') || msg.includes('unavailable')) {
+    return new Error('AI service is temporarily unavailable. Please try again.');
+  }
+  if (msg.includes('API_KEY') || msg.includes('PERMISSION_DENIED')) {
+    return new Error('AI service configuration error. Please contact support.');
+  }
+  return new Error('AI generation failed. Please try again.');
+}
+
 // ── Request Queue Logic (Handles API Rate Limits) ──────────────────────
 class RequestQueue {
   private queue: (() => Promise<any>)[] = [];
@@ -75,7 +89,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
         error.status === 503;
 
       if (!isRateLimit || attempt === maxRetries) {
-        throw error;
+        throw sanitizeAIError(error);
       }
 
       // Calculate exponential backoff
@@ -94,7 +108,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
     }
   }
   
-  throw lastError;
+  throw sanitizeAIError(lastError);
 }
 
 // ── Public AI Functions ──────────────────────────────────────────────

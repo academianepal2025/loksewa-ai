@@ -14,6 +14,7 @@ import { StudyPlanRegenModal } from '@/components/dashboard/StudyPlanRegenModal'
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
+import { TacticalPrompt } from '@/components/dashboard/TacticalPrompt';
 
 import {
   Calendar,
@@ -1099,6 +1100,14 @@ export default function StudyPlanPage() {
             </div>
          </div>
       )}
+      {/* Contextual Guidance */}
+      <TacticalPrompt 
+        id="study_plan_analyze_tip"
+        title="Mission Roadmap Protocol"
+        message="Your Strategic Study Plan is empty. Tap 'Analyze Syllabus' to deploy a daily tactical schedule based on your uploaded intelligence."
+        type="tactical"
+        delay={4000}
+      />
     </div>
   );
 }

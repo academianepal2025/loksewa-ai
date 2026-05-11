@@ -24,6 +24,9 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { EmptyState } from '@/components/ui/empty-state';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
+import { MissionChecklist } from '@/components/dashboard/MissionChecklist';
+import { TacticalPrompt } from '@/components/dashboard/TacticalPrompt';
 
 // ── Types ─────────────────────────────────────────────────────────────
 interface Exam {
@@ -87,7 +90,7 @@ export default function DashboardPage() {
     feedback: 'Generate your first performance review in the Performance tab to see insights here.'
   });
 
-  const { t, language, activeExamId, setActiveExamId } = useDashboard();
+  const { t, language, activeExamId, setActiveExamId, isPro, isAdmin } = useDashboard();
 
   useEffect(() => {
     async function initDashboard() {
@@ -303,6 +306,18 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
+      {/* ── MISSION ACTIVATION CHECKLIST ─────────────────────────── */}
+      <MissionChecklist />
+
+      {/* ── CONTEXTUAL GUIDANCE ───────────────────────────────────── */}
+      <TacticalPrompt 
+        id="dashboard_welcome"
+        title="Command Center Initialized"
+        message="Welcome to your strategic hub. Complete the Mission Activation steps above to fully deploy your tactical assets."
+        type="intel"
+        delay={2000}
+      />
+
       {/* ── SECTION 2: INTEL GRID ────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MiniStat label={t('streak')} value={`${stats.streak} Days`} icon={Calendar} tooltip="Total consecutive days of study logs." />
@@ -310,6 +325,26 @@ export default function DashboardPage() {
         <MiniStat label={t('hours')} value={`${stats.hours}h`} icon={Clock} tooltip="Cumulative focus hours measured from session engagement." />
         <MiniStat label="AI Notes" value={`${stats.notes}`} icon={BookOpen} tooltip="Total AI-generated study notes added to your knowledge base." />
       </div>
+
+      {/* ── SECTION 2.5: MISSION RESOURCE CONTROL (For Free Users) ── */}
+      {!isPro && !isAdmin && (
+        <div className="grid grid-cols-1 gap-4 p-6 bg-surface border border-border-subtle rounded-2xl relative overflow-hidden group">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl -mr-16 -mt-16" />
+           <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Rocket className="h-4 w-4 text-[#c9a84c]" />
+                <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest">Mission Resource Control</h3>
+              </div>
+              <Link href="/dashboard/settings" className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest hover:underline">Manage Plan</Link>
+           </div>
+           <div className="flex flex-wrap gap-4">
+              <UsageIndicator type="documents" />
+              <UsageIndicator type="chat" />
+              <UsageIndicator type="quizzes" />
+              <UsageIndicator type="notes" />
+           </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* ── SECTION 3: STRATEGIC ASSETS ────────────────────────── */}

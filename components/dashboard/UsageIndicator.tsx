@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useDashboard } from './DashboardProvider';
 import { Zap, Info } from 'lucide-react';
+import { Tooltip } from '@/components/ui/tooltip';
 
 interface UsageIndicatorProps {
   type: 'documents' | 'chat' | 'quizzes' | 'notes' | 'exams' | 'flashcards' | 'mock_tests';
@@ -33,7 +34,7 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
       const { data } = await supabase.from('daily_usage').select('*').eq('user_id', user.id).eq('usage_date', today).maybeSingle();
       const map = { chat: 'chat_messages_sent', quizzes: 'quizzes_generated', notes: 'notes_generated', flashcards: 'quizzes_generated' };
       const maxMap = { chat: 5, quizzes: 3, notes: 1, flashcards: 3 };
-      setUsage({ used: data?.[map[type as keyof typeof map]] || 0, max: maxMap[type as keyof typeof maxMap] });
+      setUsage({ used: data?.[map[type as keyof typeof map]] || 0, max: maxMap[type as keyof typeof map] });
     }
     setLoading(false);
   }, [supabase, type]);
@@ -50,25 +51,48 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
   if (isPro || isAdmin || loading) return null;
 
   const pct = Math.min(100, (usage.used / usage.max) * 100);
-  const isNearLimit = usage.used >= usage.max;
+  const isNearLimit = usage.used >= (usage.max * 0.8);
+  const isExceeded = usage.used >= usage.max;
 
   return (
-    <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-xl border transition-all ${isNearLimit ? 'bg-red-500/5 border-red-500/20 text-red-600' : 'bg-[#c9a84c]/5 border-[#c9a84c]/20 text-[#c9a84c]'}`}>
+    <div className={`inline-flex items-center gap-3 px-4 py-2 rounded-xl border transition-all duration-300 group shadow-sm ${
+      isExceeded 
+        ? 'bg-red-500/10 border-red-500/30 text-red-600' 
+        : isNearLimit 
+          ? 'bg-amber-500/10 border-amber-500/30 text-amber-600' 
+          : 'bg-[#c9a84c]/5 border-[#c9a84c]/20 text-[#c9a84c]'
+    }`}>
       <div className="flex flex-col">
-         <div className="flex items-center gap-2 mb-1">
-            <Zap className={`h-3 w-3 ${isNearLimit ? 'animate-pulse' : ''}`} />
-            <span className="text-[10px] font-black uppercase tracking-widest">
-               {type === 'documents' ? 'Storage' : type === 'exams' ? 'Missions' : 'Daily Usage'}: {usage.used} / {usage.max}
-            </span>
+         <div className="flex items-center justify-between gap-4 mb-1.5">
+            <div className="flex items-center gap-2">
+               <Zap className={`h-3 w-3 ${isExceeded ? 'text-red-500' : isNearLimit ? 'text-amber-500 animate-pulse' : 'text-[#c9a84c]'}`} />
+               <span className="text-[9px] font-black uppercase tracking-widest leading-none">
+                  {type === 'documents' ? 'Storage' : type === 'exams' ? 'Missions' : type === 'chat' ? 'Daily Guru' : type === 'quizzes' ? 'Daily Quizzes' : type === 'notes' ? 'Daily Notes' : 'Daily Usage'}: {usage.used}/{usage.max}
+               </span>
+            </div>
+            {isExceeded && (
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent('open-upgrade-modal'))}
+                className="text-[8px] font-black uppercase tracking-[0.2em] bg-red-600 text-white px-1.5 py-0.5 rounded animate-pulse"
+              >
+                Upgrade
+              </button>
+            )}
          </div>
-         <div className="h-1 w-24 bg-background/50 rounded-full overflow-hidden">
+         <div className="h-1.5 w-full bg-background/50 rounded-full overflow-hidden border border-border-subtle/50">
             <div 
-              className={`h-full transition-all duration-500 ${isNearLimit ? 'bg-red-500' : 'bg-[#c9a84c]'}`} 
+              className={`h-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(0,0,0,0.1)] ${
+                isExceeded ? 'bg-red-500' : isNearLimit ? 'bg-amber-500' : 'bg-[#c9a84c]'
+              }`} 
               style={{ width: `${pct}%` }} 
             />
          </div>
       </div>
-      {isNearLimit && <Info className="h-4 w-4" />}
+      {(isNearLimit || isExceeded) && (
+        <Tooltip content={isExceeded ? "Daily limit exhausted. Upgrade to Pro for unlimited access." : "Approaching your daily limit."}>
+           <Info className={`h-3.5 w-3.5 ${isExceeded ? 'text-red-500' : 'text-amber-500'}`} />
+        </Tooltip>
+      )}
     </div>
   );
 }

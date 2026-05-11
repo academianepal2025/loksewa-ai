@@ -8,9 +8,10 @@ interface TooltipProps {
   content: string;
   children?: React.ReactNode;
   className?: string;
+  side?: 'top' | 'right' | 'bottom' | 'left';
 }
 
-export function Tooltip({ content, children, className }: TooltipProps) {
+export function Tooltip({ content, children, className, side = 'top' }: TooltipProps) {
   return (
     <TooltipPrimitive.Provider delayDuration={200}>
       <TooltipPrimitive.Root>
@@ -28,6 +29,7 @@ export function Tooltip({ content, children, className }: TooltipProps) {
         </TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content
+            side={side}
             sideOffset={5}
             className="z-[100] overflow-hidden rounded-lg bg-foreground px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-background animate-in fade-in zoom-in-95 duration-200"
           >
