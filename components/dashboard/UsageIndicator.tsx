@@ -28,12 +28,15 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
     } else if (type === 'exams') {
       const { count } = await supabase.from('user_exams').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
       setUsage({ used: count || 0, max: 1 });
+    } else if (type === 'notes') {
+      const { count } = await supabase.from('study_notes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('generation_status', 'ready');
+      setUsage({ used: count || 0, max: 3 });
     } else if (type === 'mock_tests') {
       setUsage({ used: 0, max: 0 }); // Hard limit for free users
     } else {
       const { data } = await supabase.from('daily_usage').select('*').eq('user_id', user.id).eq('usage_date', today).maybeSingle();
-      const map = { chat: 'chat_messages_sent', quizzes: 'quizzes_generated', notes: 'notes_generated', flashcards: 'quizzes_generated' };
-      const maxMap = { chat: 5, quizzes: 3, notes: 1, flashcards: 3 };
+      const map = { chat: 'chat_messages_sent', quizzes: 'quizzes_generated', flashcards: 'quizzes_generated' };
+      const maxMap = { chat: 5, quizzes: 3, flashcards: 3 };
       setUsage({ used: data?.[map[type as keyof typeof map]] || 0, max: maxMap[type as keyof typeof map] });
     }
     setLoading(false);

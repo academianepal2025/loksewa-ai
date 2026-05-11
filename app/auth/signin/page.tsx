@@ -57,20 +57,19 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-[#1e3a5f]/5 rounded-full blur-[100px] -ml-48 -mt-48" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#c9a84c]/10 rounded-full blur-[100px] -mr-48 -mb-48" />
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white border border-gray-100 p-6 sm:p-8 rounded-[2rem] shadow-2xl shadow-indigo-100/20 space-y-6">
+        <div className="bg-surface border border-border-subtle p-6 sm:p-10 rounded-[2.5rem] shadow-2xl shadow-primary/5 space-y-8">
           <div className="text-center space-y-2">
-            <div className="h-14 w-14 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-indigo-100 relative group transition-transform hover:scale-105">
+            <div className="h-14 w-14 bg-primary text-accent rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-primary/10 relative group transition-transform hover:scale-110">
               <ShieldCheck className="h-7 w-7 relative z-10" />
-              <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity" />
             </div>
-            <h1 className="text-2xl font-black text-[#1e3a5f] tracking-tighter uppercase">System Login</h1>
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Authorized Access Only • Encrypted Session</p>
+            <h1 className="text-3xl font-black text-primary tracking-tighter uppercase">Welcome Back</h1>
+            <p className="text-[10px] font-black text-subtle uppercase tracking-[0.2em]">Access your preparation mission</p>
           </div>
 
           <div className="space-y-4">
@@ -89,63 +88,61 @@ export default function SignIn() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-100"></span>
+                <span className="w-full border-t border-border-subtle"></span>
               </div>
-              <div className="relative flex justify-center text-[8px] uppercase tracking-[0.3em] font-black">
-                <span className="bg-white px-3 text-gray-300">Secure Entry</span>
+              <div className="relative flex justify-center text-[9px] uppercase tracking-[0.3em] font-black">
+                <span className="bg-surface px-4 text-subtle">Secure Login</span>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-3">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Identity Identifier</label>
+                  <label className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('email')}
                       type="email"
-                      className={`w-full bg-gray-50/50 border rounded-xl pl-10 pr-4 py-3.5 text-xs font-bold transition-all outline-none min-h-[40px] text-[#1e3a5f] ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-gray-100 focus:border-[#1e3a5f]'}`}
-                      placeholder="operative@loksewai.com"
+                      className={`w-full bg-background/30 border rounded-xl pl-11 pr-4 py-3.5 text-xs font-bold transition-all outline-none min-h-[48px] text-primary ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                      placeholder="you@example.com"
                     />
                   </div>
-                  {errors.email && <p className="text-[9px] font-bold text-red-500 ml-1 uppercase tracking-tight">{errors.email.message}</p>}
                 </div>
 
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center px-1">
-                    <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Access Key</label>
-                    <Link href="/auth/forgot" className="text-[8px] font-black text-[#1e3a5f] uppercase tracking-widest hover:underline underline-offset-4">Lost Key?</Link>
+                    <label className="text-[10px] font-black text-subtle uppercase tracking-widest">Password</label>
+                    <Link href="/auth/forgot" className="text-[9px] font-black text-primary uppercase tracking-widest hover:underline underline-offset-4">Forgot?</Link>
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('password')}
                       type="password"
-                      className={`w-full bg-gray-50/50 border rounded-xl pl-10 pr-4 py-3.5 text-xs font-bold transition-all outline-none min-h-[40px] text-[#1e3a5f] ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-gray-100 focus:border-[#1e3a5f]'}`}
+                      className={`w-full bg-background/30 border rounded-xl pl-11 pr-4 py-3.5 text-xs font-bold transition-all outline-none min-h-[48px] text-primary ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
                       placeholder="••••••••"
                     />
                   </div>
-                  {errors.password && <p className="text-[9px] font-bold text-red-500 ml-1 uppercase tracking-tight">{errors.password.message}</p>}
                 </div>
               </div>
 
               <button
                 disabled={isSubmitting}
-                className="w-full bg-[#c9a84c] text-[#1e3a5f] py-4 rounded-xl font-black text-xs hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-indigo-100 active:scale-[0.98] min-h-[52px] disabled:opacity-50 uppercase tracking-[0.2em]"
+                className="w-full bg-accent text-primary py-4 rounded-xl font-black text-xs hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/10 active:scale-[0.98] min-h-[56px] disabled:opacity-50 uppercase tracking-[0.2em]"
               >
                 {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <>Authorize Access <ArrowRight className="h-4 w-4" /></>
+                  <>Secure Login <ArrowRight className="h-4 w-4" /></>
                 )}
               </button>
             </form>
           </div>
 
-          <div className="text-center pt-4 border-t border-gray-50">
-            <Link href="/auth/signup" className="text-[9px] font-black text-gray-400 hover:text-[#1e3a5f] transition-colors uppercase tracking-[0.2em]">
-              New Operative? <span className="text-[#1e3a5f] underline underline-offset-8 ml-2">Register Identity</span>
+          <div className="text-center pt-6 border-t border-border-subtle">
+            <Link href="/auth/signup" className="text-[10px] font-black text-subtle hover:text-primary transition-colors uppercase tracking-[0.2em]">
+              Don't have an account? <span className="text-primary underline underline-offset-8 ml-2">Register Now</span>
             </Link>
           </div>
         </div>

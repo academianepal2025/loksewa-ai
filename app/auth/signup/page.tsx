@@ -65,20 +65,19 @@ export default function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-[#c9a84c]/10 rounded-full blur-[100px] -mr-48 -mt-48" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#1e3a5f]/5 rounded-full blur-[100px] -ml-48 -mb-48" />
 
       <div className="w-full max-w-md relative z-10">
-        <div className="bg-white border border-gray-100 p-6 sm:p-8 rounded-3xl shadow-2xl shadow-indigo-100/20 space-y-6">
-          <div className="text-center space-y-1">
-            <div className="h-12 w-12 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-xl shadow-indigo-100 relative group transition-transform hover:scale-105">
-              <Sparkles className="h-6 w-6 relative z-10" />
-              <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity" />
+        <div className="bg-surface border border-border-subtle p-6 sm:p-10 rounded-[2.5rem] shadow-2xl shadow-primary/5 space-y-8">
+          <div className="text-center space-y-2">
+            <div className="h-14 w-14 bg-primary text-accent rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-primary/10 relative group transition-transform hover:scale-110">
+              <Sparkles className="h-7 w-7 relative z-10" />
             </div>
-            <h1 className="text-2xl font-black text-[#1e3a5f] tracking-tighter uppercase">Create Workspace</h1>
-            <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Initialize your Loksewa AI parameters</p>
+            <h1 className="text-3xl font-black text-primary tracking-tighter uppercase">Join Loksewa AI</h1>
+            <p className="text-[10px] font-black text-subtle uppercase tracking-[0.2em]">Start your preparation mission today</p>
           </div>
 
           <div className="space-y-4">
@@ -97,62 +96,62 @@ export default function SignUp() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-100"></span>
+                <span className="w-full border-t border-border-subtle"></span>
               </div>
-              <div className="relative flex justify-center text-[8px] uppercase tracking-[0.3em] font-black">
-                <span className="bg-white px-3 text-gray-300">New Registration</span>
+              <div className="relative flex justify-center text-[9px] uppercase tracking-[0.3em] font-black">
+                <span className="bg-surface px-4 text-subtle">Registration</span>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-              <div className="space-y-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <div className="space-y-1">
-                    <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Identity</label>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Full Name</label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                       <input
                         {...register('fullName')}
-                        className={`w-full bg-gray-50/50 border rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold transition-all outline-none min-h-[36px] text-[#1e3a5f] ${errors.fullName ? 'border-red-500/50 focus:border-red-500' : 'border-gray-100 focus:border-[#1e3a5f]'}`}
-                        placeholder="Full name"
+                        className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.fullName ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                        placeholder="John Doe"
                       />
                     </div>
                   </div>
-                  <div className="space-y-1">
-                    <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest ml-1">Mobile Uplink</label>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Phone Number</label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
+                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                       <input
                         {...register('phone')}
-                        className={`w-full bg-gray-50/50 border rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold transition-all outline-none min-h-[36px] text-[#1e3a5f] ${errors.phone ? 'border-red-500/50 focus:border-red-500' : 'border-gray-100 focus:border-[#1e3a5f]'}`}
+                        className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.phone ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
                         placeholder="+977..."
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest ml-1">Secure Email</label>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Email Address</label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('email')}
                       type="email"
-                      className={`w-full bg-gray-50/50 border rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold transition-all outline-none min-h-[36px] text-[#1e3a5f] ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-gray-100 focus:border-[#1e3a5f]'}`}
-                      placeholder="operative@loksewai.com"
+                      className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                      placeholder="you@example.com"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-[8px] font-black text-gray-400 uppercase tracking-widest ml-1">Access Protocol</label>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Password</label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('password')}
                       type="password"
-                      className={`w-full bg-gray-50/50 border rounded-xl pl-9 pr-3 py-2.5 text-xs font-bold transition-all outline-none min-h-[36px] text-[#1e3a5f] ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-gray-100 focus:border-[#1e3a5f]'}`}
-                      placeholder="Min. 8 chars"
+                      className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                      placeholder="Min. 8 characters"
                     />
                   </div>
                 </div>
@@ -160,20 +159,20 @@ export default function SignUp() {
 
               <button
                 disabled={isSubmitting}
-                className="w-full bg-[#c9a84c] text-[#1e3a5f] py-3.5 rounded-xl font-black text-xs hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-indigo-100 active:scale-[0.98] min-h-[48px] disabled:opacity-50 uppercase tracking-[0.2em]"
+                className="w-full bg-accent text-primary py-4 rounded-xl font-black text-xs hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/10 active:scale-[0.98] min-h-[52px] disabled:opacity-50 uppercase tracking-[0.2em]"
               >
                 {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <>Deploy Workspace <ArrowRight className="h-4 w-4" /></>
+                  <>Create Account <ArrowRight className="h-4 w-4" /></>
                 )}
               </button>
             </form>
           </div>
 
-          <div className="text-center pt-4 border-t border-gray-50">
-            <Link href="/auth/signin" className="text-[9px] font-black text-gray-400 hover:text-[#1e3a5f] transition-colors uppercase tracking-[0.2em]">
-              Already Registered? <span className="text-[#1e3a5f] underline underline-offset-8 ml-2">Secure Login</span>
+          <div className="text-center pt-6 border-t border-border-subtle">
+            <Link href="/auth/signin" className="text-[10px] font-black text-subtle hover:text-primary transition-colors uppercase tracking-[0.2em]">
+              Already have an account? <span className="text-primary underline underline-offset-8 ml-2">Login Now</span>
             </Link>
           </div>
         </div>

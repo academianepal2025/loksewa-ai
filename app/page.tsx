@@ -24,9 +24,9 @@ export default function Home() {
   const getStartedHref = session ? "/dashboard" : "/auth/signup";
 
   return (
-    <div className="flex flex-col min-h-screen bg-white font-sans selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
+    <div className="flex flex-col min-h-screen bg-background font-sans selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-3">
@@ -54,7 +54,7 @@ export default function Home() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative pt-24 pb-28 overflow-hidden lg:pt-36 lg:pb-36 bg-gradient-to-b from-white to-gray-50/30">
+        <section className="relative pt-24 pb-28 overflow-hidden lg:pt-36 lg:pb-36 bg-gradient-to-b from-background to-gray-50/30">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center lg:text-left lg:grid lg:grid-cols-2 lg:gap-16 items-center">
               <div>
@@ -124,7 +124,7 @@ export default function Home() {
         </section>
 
         {/* Features Preview */}
-        <section id="features" className="py-28 bg-white border-y border-gray-50">
+        <section id="features" className="py-28 bg-background border-y border-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-20">
               <h2 className="text-4xl font-black text-[#1e3a5f] mb-6 sm:text-5xl tracking-tight">Everything You Need to Succeed</h2>
@@ -176,7 +176,7 @@ export default function Home() {
         <FAQ />
 
         {/* Call to Action */}
-        <section className="py-28 bg-white">
+        <section className="py-28 bg-background">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-[#1e3a5f] rounded-[4rem] p-16 lg:p-28 relative overflow-hidden text-center text-white shadow-[0_50px_100px_-20px_rgba(30,58,95,0.3)]">
               <div className="max-w-3xl mx-auto relative z-10">
@@ -200,7 +200,7 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-100 py-20">
+      <footer className="bg-background border-t border-gray-100 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
              <div className="col-span-2">

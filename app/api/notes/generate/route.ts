@@ -111,7 +111,7 @@ export async function POST(request: Request) {
           error: 'limit_reached', 
           limit_type: 'notes_limit', 
           is_pro: limits.plan !== 'free',
-          message: limits.plan !== 'free' ? 'You are generating more than usual. Study the generated notes first and come back tomorrow for more.' : 'Daily limit reached.' 
+          message: limits.plan !== 'free' ? 'You have reached your total note generation limit.' : 'Total limit of 3 notes reached for free account.' 
         },
         { status: 403 }
       );

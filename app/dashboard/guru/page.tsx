@@ -225,6 +225,7 @@ function GuruContent() {
   const [pastConversations, setPastConversations] = useState<ConversationGroup[]>([]);
   const [showScrollBtn, setShowScrollBtn] = useState(false);
   const [processedParam, setProcessedParam] = useState(false);
+  const [isLimitReached, setIsLimitReached] = useState(false);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -249,6 +250,24 @@ function GuruContent() {
     };
     init();
   }, [supabase]);
+
+  const checkLimits = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const res = await fetch('/api/check-limits');
+    const data = await res.json();
+    if (data.plan === 'free' && data.limits.chat.exceeded) {
+      setIsLimitReached(true);
+    } else {
+      setIsLimitReached(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    checkLimits();
+    window.addEventListener('usage-updated', checkLimits);
+    return () => window.removeEventListener('usage-updated', checkLimits);
+  }, [checkLimits]);
 
   // ── Load chat history when exam changes ─────────────────────────
   const loadHistory = useCallback(async (updateActive = false) => {
@@ -629,14 +648,14 @@ function GuruContent() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={t('guru_placeholder')}
-              disabled={isStreaming}
+              placeholder={isLimitReached ? "Daily limit reached. Upgrade to Pro for more." : t('guru_placeholder')}
+              disabled={isStreaming || isLimitReached}
               rows={1}
-              className="flex-1 bg-transparent px-3 py-2.5 text-[15px] font-medium text-foreground placeholder:text-subtle focus:outline-none disabled:opacity-50 resize-none leading-relaxed min-h-[44px] max-h-[160px]"
+              className="flex-1 bg-transparent px-3 py-2.5 text-[15px] font-medium text-foreground placeholder:text-subtle disabled:opacity-50 resize-none leading-relaxed min-h-[44px] max-h-[160px]"
             />
             <button
               onClick={() => sendMessage(input)}
-              disabled={isStreaming || !input.trim()}
+              disabled={isStreaming || !input.trim() || isLimitReached}
               className="p-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl hover:opacity-90 transition-all active:scale-90 flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10"
             >
               <Send className="h-5 w-5" />

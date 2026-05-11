@@ -56,13 +56,13 @@ export default function ForgotPassword() {
               <KeyRound className="h-7 w-7 relative z-10" />
               <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity" />
             </div>
-            <h1 className="text-3xl font-black text-[#1e3a5f] tracking-tighter uppercase">
-              {emailSent ? 'Check Inbox' : 'Reset Access'}
+            <h1 className="text-3xl font-black text-primary tracking-tighter uppercase">
+              {emailSent ? 'Check Email' : 'Reset Access'}
             </h1>
             <p className="text-xs font-black text-subtle uppercase tracking-widest">
               {emailSent
-                ? 'Mission link dispatched to your terminal.'
-                : 'Enter registered email for secure recovery link.'}
+                ? 'We have sent a reset link to your email.'
+                : 'Enter your email to receive a recovery link.'}
             </p>
           </div>
 
@@ -108,20 +108,20 @@ export default function ForgotPassword() {
             <div className="space-y-6">
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-subtle uppercase tracking-wider ml-1">
-                    Registered Email
+                  <label className="text-[10px] font-black text-subtle uppercase tracking-wider ml-1">
+                    Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('email')}
                       type="email"
-                      className={`w-full bg-background border rounded-2xl pl-12 pr-4 py-4 text-sm font-medium transition-all outline-none min-h-[44px] ${
+                      className={`w-full bg-background/30 border rounded-2xl pl-12 pr-4 py-4 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${
                         errors.email
                           ? 'border-red-500/50 focus:border-red-500'
-                          : 'border-border-subtle focus:border-accent'
+                          : 'border-border-subtle focus:border-primary'
                       }`}
-                      placeholder="name@example.com"
+                      placeholder="you@example.com"
                     />
                   </div>
                   {errors.email && (
@@ -133,12 +133,12 @@ export default function ForgotPassword() {
 
                 <button
                   disabled={isSubmitting}
-                  className="w-full bg-[#1e3a5f] text-[#c9a84c] py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-95 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-[#1e3a5f]/20 active:scale-[0.98] min-h-[56px] disabled:opacity-50 border border-[#c9a84c]/20"
+                  className="w-full bg-primary text-accent py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:opacity-95 transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary/10 active:scale-[0.98] min-h-[56px] disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
                   ) : (
-                    'Request Recovery Link'
+                    'Send Recovery Link'
                   )}
                 </button>
               </form>

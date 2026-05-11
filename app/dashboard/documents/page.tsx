@@ -135,6 +135,25 @@ function UploadZone({
   const supabase = createClient();
   const { showUpgradeModal } = useUpgradeModal();
   const { isPro, isAdmin, language } = useDashboard();
+  const [isLimitReached, setIsLimitReached] = useState(false);
+
+  const checkLimits = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const res = await fetch('/api/check-limits');
+    const data = await res.json();
+    if (data.plan === 'free' && data.limits.documents.exceeded) {
+      setIsLimitReached(true);
+    } else {
+      setIsLimitReached(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    checkLimits();
+    window.addEventListener('usage-updated', checkLimits);
+    return () => window.removeEventListener('usage-updated', checkLimits);
+  }, [checkLimits]);
 
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -251,22 +270,33 @@ function UploadZone({
       />
 
       <div
-        onDragOver={(e) => { e.preventDefault(); setIsOver(true); }}
+        onDragOver={(e) => { e.preventDefault(); if (!isLimitReached) setIsOver(true); }}
         onDragLeave={() => setIsOver(false)}
-        onDrop={(e) => { e.preventDefault(); setIsOver(false); handleUpload(e.dataTransfer.files); }}
-        onClick={() => fileInputRef.current?.click()}
-        className={`relative h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all cursor-pointer group shadow-sm ${
-          isOver 
-            ? 'border-[#c9a84c] bg-[#c9a84c]/5' 
-            : 'border-border-subtle hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/5'
+        onDrop={(e) => { e.preventDefault(); setIsOver(false); if (!isLimitReached) handleUpload(e.dataTransfer.files); }}
+        onClick={() => { if (!isLimitReached) fileInputRef.current?.click(); }}
+        className={`relative h-24 rounded-xl border-2 border-dashed flex flex-col items-center justify-center transition-all shadow-sm ${
+          isLimitReached 
+            ? 'border-border-subtle bg-background/50 opacity-60 cursor-not-allowed'
+            : isOver 
+              ? 'border-[#c9a84c] bg-[#c9a84c]/5' 
+              : 'border-border-subtle hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/5 group cursor-pointer'
         }`}
       >
-        <div className="relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-[#c9a84c] group-hover:scale-110 transition-transform shadow-sm">
-          <FileUp className="h-4 w-4" />
+        <div className={`relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center transition-transform shadow-sm ${isLimitReached ? 'text-red-500' : 'text-[#c9a84c] group-hover:scale-110'}`}>
+          {isLimitReached ? <AlertCircle className="h-4 w-4" /> : <FileUp className="h-4 w-4" />}
         </div>
         <div className="relative z-10 mt-2 text-center px-4">
-          <p className="text-[10px] font-black text-foreground uppercase tracking-widest">Transmit or Drop</p>
-          <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Limit 10MB</p>
+          <p className="text-[10px] font-black text-foreground uppercase tracking-widest">{isLimitReached ? 'Storage Limit Reached' : 'Transmit or Drop'}</p>
+          {isLimitReached ? (
+            <button 
+              onClick={(e) => { e.stopPropagation(); showUpgradeModal('document_limit'); }}
+              className="text-[9px] text-red-600 font-black uppercase tracking-widest mt-1 hover:underline underline-offset-2"
+            >
+              Upgrade for unlimited
+            </button>
+          ) : (
+            <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Limit 10MB</p>
+          )}
         </div>
       </div>
 

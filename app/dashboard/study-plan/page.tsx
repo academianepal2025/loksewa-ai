@@ -210,8 +210,16 @@ function GenerateNotesButton({
     );
   }
   return (
-    <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-background border border-[#c9a84c]/40 text-[#c9a84c] rounded-lg flex items-center justify-center gap-2 hover:bg-[#c9a84c]/5 transition-all shadow-sm">
-      <FileText className="h-4 w-4" /> Generate Intel
+    <button 
+      onClick={() => onGenerate(false)} 
+      disabled={isNotesLimitReached}
+      className={`w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest border rounded-lg flex items-center justify-center gap-2 transition-all shadow-sm ${
+        isNotesLimitReached 
+          ? 'bg-background border-border-subtle text-subtle cursor-not-allowed' 
+          : 'bg-background border-[#c9a84c]/40 text-[#c9a84c] hover:bg-[#c9a84c]/5'
+      }`}
+    >
+      <FileText className="h-4 w-4" /> {isNotesLimitReached ? 'Limit Reached' : 'Generate Intel'}
     </button>
   );
 }
@@ -511,6 +519,7 @@ export default function StudyPlanPage() {
   const [noteStatusMap, setNoteStatusMap] = useState<Map<string, string>>(new Map());
   const [generatingNotesForTopic, setGeneratingNotesForTopic] = useState<string | null>(null);
   const [missingContentPrompt, setMissingContentPrompt] = useState<{day: DailyPlan, topic: string, subtopics: string[]} | null>(null);
+  const [isNotesLimitReached, setIsNotesLimitReached] = useState(false);
   const fetchExams = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -629,6 +638,24 @@ export default function StudyPlanPage() {
       return () => { supabase.removeChannel(channel); };
     }
   }, [activeExamId, fetchPlan, fetchNoteStatuses, supabase]);
+
+  const checkLimits = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const res = await fetch('/api/check-limits');
+    const data = await res.json();
+    if (data.plan === 'free' && data.limits.notes.exceeded) {
+      setIsNotesLimitReached(true);
+    } else {
+      setIsNotesLimitReached(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    checkLimits();
+    window.addEventListener('usage-updated', checkLimits);
+    return () => window.removeEventListener('usage-updated', checkLimits);
+  }, [checkLimits]);
 
   const handleGenerateNote = async (day: DailyPlan, topicToGen: string, subtopicsToGen: string[], force = false) => {
     if (!activeExamId) return;

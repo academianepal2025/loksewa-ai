@@ -47,7 +47,7 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-20 bg-white">
+    <section id="faq" className="py-20 bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#1e3a5f]">Frequently Asked Questions</h2>
@@ -102,12 +102,15 @@ export function FAQ() {
               <Mail className="h-5 w-5" />
               Contact via Email
             </a>
-            <button
+            <a
+              href="https://wa.me/9779808493504"
+              target="_blank"
+              rel="noopener noreferrer"
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-[#1e3a5f] text-[#1e3a5f] font-bold rounded-2xl hover:bg-[#1e3a5f] hover:text-white transition-all shadow-sm"
             >
               <MessageCircle className="h-5 w-5" />
               Chat with Us
-            </button>
+            </a>
           </div>
         </div>
       </div>

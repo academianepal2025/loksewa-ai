@@ -148,6 +148,8 @@ export default function PracticePage() {
   const [quizStartTime, setQuizStartTime] = useState<number | null>(null);
   const [quizEndTime, setQuizEndTime] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [isQuizLimitReached, setIsQuizLimitReached] = useState(false);
+  const [isFlashcardLimitReached, setIsFlashcardLimitReached] = useState(false);
 
   // --- Mock Test State ---
   const [generatingMockTest, setGeneratingMockTest] = useState(false);
@@ -185,6 +187,26 @@ export default function PracticePage() {
     }
     init();
   }, [supabase, activeExamId, setActiveExamId]);
+
+  const checkLimits = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const res = await fetch('/api/check-limits');
+    const data = await res.json();
+    if (data.plan === 'free') {
+      setIsQuizLimitReached(data.limits.quizzes.exceeded);
+      setIsFlashcardLimitReached(data.limits.quizzes.exceeded); // Both share practice limits
+    } else {
+      setIsQuizLimitReached(false);
+      setIsFlashcardLimitReached(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    checkLimits();
+    window.addEventListener('usage-updated', checkLimits);
+    return () => window.removeEventListener('usage-updated', checkLimits);
+  }, [checkLimits]);
 
   // Sync local selectedExamId with global activeExamId if global changes
   useEffect(() => {
@@ -627,13 +649,13 @@ export default function PracticePage() {
 
               <button
                 onClick={activeTab === 'flashcards' ? handleGenerateFlashcards : activeTab === 'quiz' ? handleGenerateQuiz : handleGenerateMockTest}
-                disabled={(activeTab !== 'mock-test' && selectedTopic === 'custom' && !customTopic) || generatingFlashcards || generatingQuiz || generatingMockTest}
+                disabled={(activeTab !== 'mock-test' && selectedTopic === 'custom' && !customTopic) || generatingFlashcards || generatingQuiz || generatingMockTest || (activeTab === 'quiz' && isQuizLimitReached) || (activeTab === 'flashcards' && isFlashcardLimitReached)}
                 className="w-full mt-10 py-4 rounded-xl bg-[#1e3a5f] text-[#c9a84c] font-black text-xs uppercase tracking-widest hover:opacity-90 transition-all flex items-center justify-center gap-3 disabled:opacity-50 min-h-[56px] shadow-xl shadow-[#1e3a5f]/10"
               >
                 {(generatingFlashcards || generatingQuiz || generatingMockTest) ? (
                   <><RefreshCw className="h-4 w-4 animate-spin" /> Processing...</>
                 ) : (
-                  <><Zap className="h-4 w-4" /> Deploy Session</>
+                  <><Zap className="h-4 w-4" /> {((activeTab === 'quiz' && isQuizLimitReached) || (activeTab === 'flashcards' && isFlashcardLimitReached)) ? 'Daily Limit Reached' : 'Deploy Session'}</>
                 )}
               </button>
             </div>
