@@ -51,32 +51,32 @@ export function MissionChecklist() {
     const checklist: ChecklistItem[] = [
       {
         id: 'exam',
-        title: 'Configure Primary Mission',
-        desc: 'Set your target exam parameters and timeline.',
+        title: 'Choose Your Exam',
+        desc: 'Select the exam you are preparing for.',
         href: '/dashboard/exams',
         isCompleted: (examCount || 0) > 0,
         icon: Target
       },
       {
         id: 'syllabus',
-        title: 'Intelligence Intake',
-        desc: 'Upload your official syllabus PDF.',
+        title: 'Upload Syllabus',
+        desc: 'Add your official syllabus PDF.',
         href: '/dashboard/documents',
         isCompleted: !!hasSyllabus,
         icon: FileText
       },
       {
         id: 'plan',
-        title: 'Deploy Tactical Roadmap',
-        desc: 'Analyze syllabus to generate your study plan.',
+        title: 'Create Study Plan',
+        desc: 'Generate your personal study schedule.',
         href: '/dashboard/study-plan',
         isCompleted: (planCount || 0) > 0,
         icon: Map
       },
       {
         id: 'notes',
-        title: 'Knowledge Acquisition',
-        desc: 'Generate your first AI-powered study note.',
+        title: 'Generate Study Notes',
+        desc: 'Create your first AI study note.',
         href: '/dashboard/study-notes',
         isCompleted: (noteCount || 0) > 0,
         icon: BookOpen
@@ -115,13 +115,13 @@ export function MissionChecklist() {
             <Rocket className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-sm font-black text-foreground uppercase tracking-tighter">Mission Activation Status</h3>
-            <p className="text-[10px] text-subtle font-black uppercase tracking-widest">Execute these steps to initialize your tactical environment</p>
+            <h3 className="text-sm font-black text-foreground uppercase tracking-tighter">Getting Started Guide</h3>
+            <p className="text-[10px] text-subtle font-black uppercase tracking-widest">Complete these steps to set up your account</p>
           </div>
         </div>
         <div className="flex flex-col items-end">
           <span className="text-xl font-black text-[#c9a84c] tracking-tighter">{completedCount}/{steps.length}</span>
-          <span className="text-[9px] font-black text-subtle uppercase tracking-widest">Phases Ready</span>
+          <span className="text-[9px] font-black text-subtle uppercase tracking-widest">Steps Completed</span>
         </div>
       </div>
 

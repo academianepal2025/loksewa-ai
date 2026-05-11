@@ -476,8 +476,8 @@ export default function DocumentsPage() {
       {/* Contextual Guidance */}
       <TacticalPrompt 
         id="documents_syllabus_tip"
-        title="Intelligence Intake Protocol"
-        message="Upload your 'Syllabus' first. Our AI will automatically extract chapters and topics to build your Strategic Study Plan."
+        title="Upload Your Syllabus"
+        message="Add your official 'Syllabus' first. Our AI will automatically identify your topics and help you create a study plan."
         type="tactical"
         delay={3000}
       />

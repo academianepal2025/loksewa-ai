@@ -1103,8 +1103,8 @@ export default function StudyPlanPage() {
       {/* Contextual Guidance */}
       <TacticalPrompt 
         id="study_plan_analyze_tip"
-        title="Mission Roadmap Protocol"
-        message="Your Strategic Study Plan is empty. Tap 'Analyze Syllabus' to deploy a daily tactical schedule based on your uploaded intelligence."
+        title="Create Your Study Plan"
+        message="Your study plan is empty. Click 'Analyze Syllabus' to generate a daily study schedule based on your uploaded documents."
         type="tactical"
         delay={4000}
       />

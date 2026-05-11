@@ -141,7 +141,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
           {isAdmin && (
             <div className={`pt-6 mt-6 border-t border-border-subtle ${isCollapsed ? 'px-0' : ''}`}>
-               {!isCollapsed && <p className="px-4 text-[10px] font-black text-[#c9a84c] uppercase tracking-[0.2em] mb-2">Command Center</p>}
+               {!isCollapsed && <p className="px-4 text-[10px] font-black text-[#c9a84c] uppercase tracking-[0.2em] mb-2">Administration</p>}
                <Link
                 href="/admin"
                 className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'justify-between px-4'} py-2.5 text-sm font-black uppercase tracking-widest rounded-xl transition-all group min-h-[44px] relative ${
@@ -236,7 +236,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
             </Link>
             <div className="hidden md:block">
               <h2 className="text-[10px] font-black text-[#1e3a5f]/40 uppercase tracking-[0.2em]">
-                {t('dashboard')} WORKSPACE
+                {t('dashboard')} Home
               </h2>
             </div>
           </div>

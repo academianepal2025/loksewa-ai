@@ -67,7 +67,7 @@ function OperationalCard({ title, desc, icon: Icon, href, color = 'zinc' }: any)
         </h3>
         <p className="text-xs font-medium text-muted leading-relaxed mb-6">{desc}</p>
         <div className="mt-auto flex items-center text-[10px] font-black uppercase tracking-widest text-[#c9a84c] group-hover:gap-2 transition-all">
-          Launch Module <ChevronRight className="h-3 w-3" />
+          Open Module <ChevronRight className="h-3 w-3" />
         </div>
       </div>
     </Link>
@@ -241,11 +241,11 @@ export default function DashboardPage() {
       {!exam ? (
         <EmptyState 
           icon={Target}
-          title="Mission Parameters Not Set"
-          description="You haven't defined an active Loksewa mission yet. Setting an exam allows our AI to generate a tactical study plan."
+          title="No Active Exam Selected"
+          description="You haven't selected an exam yet. Choosing an exam allows our AI to generate a personalized study plan."
           action={
             <Link href="/dashboard/settings" className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px] shadow-lg shadow-[#1e3a5f]/20">
-              Initialize Mission <Target className="h-4 w-4" />
+              Choose Your Exam <Target className="h-4 w-4" />
             </Link>
           }
         />
@@ -306,14 +306,14 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
-      {/* ── MISSION ACTIVATION CHECKLIST ─────────────────────────── */}
+      {/* ── GETTING STARTED GUIDE ─────────────────────────────── */}
       <MissionChecklist />
 
-      {/* ── CONTEXTUAL GUIDANCE ───────────────────────────────────── */}
+      {/* ── USER GUIDANCE ────────────────────────────────────────── */}
       <TacticalPrompt 
         id="dashboard_welcome"
-        title="Command Center Initialized"
-        message="Welcome to your strategic hub. Complete the Mission Activation steps above to fully deploy your tactical assets."
+        title="Welcome to Your Dashboard"
+        message="This is your personalized study space. Complete the Getting Started steps above to unlock all your study tools."
         type="intel"
         delay={2000}
       />
@@ -326,14 +326,14 @@ export default function DashboardPage() {
         <MiniStat label="AI Notes" value={`${stats.notes}`} icon={BookOpen} tooltip="Total AI-generated study notes added to your knowledge base." />
       </div>
 
-      {/* ── SECTION 2.5: MISSION RESOURCE CONTROL (For Free Users) ── */}
+      {/* ── SECTION 2.5: USAGE LIMITS (For Free Users) ────────────── */}
       {!isPro && !isAdmin && (
         <div className="grid grid-cols-1 gap-4 p-6 bg-surface border border-border-subtle rounded-2xl relative overflow-hidden group">
            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl -mr-16 -mt-16" />
            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <Rocket className="h-4 w-4 text-[#c9a84c]" />
-                <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest">Mission Resource Control</h3>
+                <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest">Your Usage Limits</h3>
               </div>
               <Link href="/dashboard/settings" className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest hover:underline">Manage Plan</Link>
            </div>
@@ -347,20 +347,21 @@ export default function DashboardPage() {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* ── SECTION 3: STRATEGIC ASSETS ────────────────────────── */}
+        {/* ── SECTION 3: STUDY TOOLS ─────────────────────────────── */}
         <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <OperationalCard 
             title={t('practice')} 
-            desc="Battle-test your knowledge with adaptive quizzes and interactive flashcards generated from your documents." 
+            desc="Test your knowledge with adaptive quizzes and interactive flashcards generated from your documents." 
             icon={Rocket} 
             href="/dashboard/practice" 
             color="orange" 
           />
           <OperationalCard 
             title={t('documents')} 
-            desc="Centralize your syllabus, notes, and previous year questions. Our AI extracts core insights automatically." 
+            desc="Upload your syllabus, notes, and old questions. Our AI extracts key topics automatically." 
             icon={FileText} 
             href="/dashboard/documents" 
+            color="indigo" 
           />
           <OperationalCard 
             title={t('guru')} 

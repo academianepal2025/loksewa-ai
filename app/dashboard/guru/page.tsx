@@ -650,8 +650,8 @@ function GuruContent() {
       {/* Contextual Guidance */}
       <TacticalPrompt 
         id="guru_chat_tip"
-        title="Tactical Guru Engagement"
-        message="Stuck on a specific section of your plan? Ask the Guru to explain any topic from your uploaded syllabus in simple terms."
+        title="Chat with Your Guru"
+        message="Stuck on a topic? Ask the Guru to explain anything from your study materials in simple words."
         type="intel"
         delay={5000}
       />

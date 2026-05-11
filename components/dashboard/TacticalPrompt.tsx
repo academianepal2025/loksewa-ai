@@ -84,7 +84,7 @@ export function TacticalPrompt({ id, title, message, type = 'info', delay = 1000
                       className="h-full bg-white/40"
                     />
                  </div>
-                 <span className="text-[8px] font-black uppercase tracking-[0.2em] opacity-60">Operational Intel</span>
+                 <span className="text-[8px] font-black uppercase tracking-[0.2em] opacity-60">Quick Tip</span>
               </div>
             </div>
           </div>

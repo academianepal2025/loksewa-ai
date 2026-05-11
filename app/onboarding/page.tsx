@@ -79,21 +79,21 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
         Loksewa AI
       </h1>
       <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-2">
-        Integrated Tactical PSC Intelligence
+        Your Smart PSC Study Partner
       </p>
 
       <div className="mt-6 flex flex-col items-center gap-3 text-sm text-gray-400">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-accent" />
-          <span>AI-POWERED MISSION PARAMETERS</span>
+          <span>PERSONALIZED STUDY GOALS</span>
         </div>
         <div className="flex items-center gap-2">
           <BookOpen className="h-4 w-4 text-accent" />
-          <span>TAILORED TACTICAL SYLLABUS</span>
+          <span>CUSTOM STUDY PLAN</span>
         </div>
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4 text-accent" />
-          <span>OPTIMIZED DAILY SCHEDULE</span>
+          <span>DAILY STUDY TIMELINE</span>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
         onClick={onNext}
         className="mt-12 px-10 py-4 bg-[#1e3a5f] text-[#c9a84c] font-black text-xs uppercase tracking-widest rounded-2xl hover:opacity-90 transition-all shadow-xl shadow-[#1e3a5f]/20 flex items-center gap-2 group border border-[#c9a84c]/20"
       >
-        Initialize Session
+        Get Started
         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
       </button>
     </div>
@@ -144,10 +144,10 @@ function StepExamSetup({
     <div className="w-full animate-fade-in">
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 uppercase tracking-tighter">
-          Configure Mission
+          Set Your Goal
         </h2>
         <p className="text-[10px] text-subtle font-black uppercase tracking-widest">
-          Define your tactical exam parameters
+          Tell us about the exam you are preparing for
         </p>
       </div>
 
@@ -319,7 +319,7 @@ function StepExamSetup({
             </>
           ) : (
             <>
-              Commit Parameters
+              Save and Continue
               <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </>
           )}
@@ -359,10 +359,10 @@ function StepDocuments({
           <Upload className="h-7 w-7 text-[#1e3a5f]" />
         </div>
         <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 uppercase tracking-tighter">
-          Intelligence Feed
+          Upload Materials
         </h2>
         <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-md mx-auto">
-          Upload tactical documents for deeper AI integration
+          Add your study materials for AI-powered planning
         </p>
       </div>
 
@@ -385,7 +385,7 @@ function StepDocuments({
 
       <div className="bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 rounded-2xl p-4 mt-6">
         <p className="text-[10px] text-[#1e3a5f] text-center font-black uppercase tracking-widest">
-          💡 DISPATCH: Manual upload available in Command Center at any time.
+          💡 TIP: You can also upload documents later from your dashboard.
         </p>
       </div>
 
@@ -402,7 +402,7 @@ function StepDocuments({
           onClick={onNext}
           className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] font-black text-[11px] uppercase tracking-widest rounded-2xl hover:opacity-95 transition-all shadow-xl shadow-[#1e3a5f]/20 flex items-center gap-2 group border border-[#c9a84c]/20"
         >
-          Initialize Final Phase
+          Finish Setup
           <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
@@ -420,12 +420,12 @@ function StepSuccess() {
 
       <h2 className="text-3xl font-black text-foreground mb-3 uppercase tracking-tighter">System Ready</h2>
       <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-sm">
-        Tactical study plan optimized. Syncing with Command Center...
+        Your study plan is ready. Taking you to your dashboard...
       </p>
       
       <div className="mt-8 flex items-center gap-2 text-[10px] text-[#c9a84c] font-black uppercase tracking-widest">
         <span className="h-4 w-4 border-2 border-[#c9a84c]/20 border-t-[#c9a84c] rounded-full animate-spin" />
-        Establishing secure terminal link
+        Preparing your dashboard...
       </div>
     </div>
   );
