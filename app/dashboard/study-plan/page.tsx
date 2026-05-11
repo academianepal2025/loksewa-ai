@@ -175,11 +175,9 @@ function GenerateNotesButton({
   onGenerate, 
   onView 
 }: { 
-  dayNumber: number, 
-  status?: string, 
-  isGeneratingLocal: boolean, 
   onGenerate: (force: boolean) => void,
-  onView: () => void 
+  onView: () => void,
+  isNotesLimitReached: boolean
 }) {
   if (isGeneratingLocal || status === 'generating') {
     return (
@@ -225,7 +223,7 @@ function GenerateNotesButton({
 }
 
 // ── Day Detail Modal (Compact) ────────────────────────────────────────
-function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, noteStatusMap, generatingNotesForTopic, onGenerateNote, onViewNote }: { 
+function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, noteStatusMap, generatingNotesForTopic, onGenerateNote, onViewNote, isNotesLimitReached }: { 
   day: DailyPlan; 
   onClose: () => void; 
   progress: StudyProgress | null; 
@@ -235,6 +233,7 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
   generatingNotesForTopic: string | null;
   onGenerateNote: (day: DailyPlan, topic: string, subtopics: string[], force: boolean) => void;
   onViewNote: (day: number, topic: string) => void;
+  isNotesLimitReached: boolean;
 }) {
   const [feedbackStatus, setFeedbackStatus] = useState<'finished' | 'need_revisit'>(progress?.feedback_status || 'finished');
   const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(progress?.difficulty || 'medium');
@@ -457,13 +456,14 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-[9px] font-black text-subtle uppercase tracking-widest">Primary Topic</span>
-                <GenerateNotesButton 
-                  dayNumber={day.day_number}
-                  status={noteStatusMap.get(`${day.day_number}-${day.primary_topic}`)}
-                  isGeneratingLocal={generatingNotesForTopic === day.primary_topic}
-                  onGenerate={(force) => onGenerateNote(day, day.primary_topic, [], force)}
-                  onView={() => onViewNote(day.day_number, day.primary_topic)}
-                />
+                  <GenerateNotesButton 
+                    dayNumber={day.day_number}
+                    status={noteStatusMap.get(`${day.day_number}-${day.primary_topic}`)}
+                    isGeneratingLocal={generatingNotesForTopic === day.primary_topic}
+                    onGenerate={(force) => onGenerateNote(day, day.primary_topic, [], force)}
+                    onView={() => onViewNote(day.day_number, day.primary_topic)}
+                    isNotesLimitReached={isNotesLimitReached}
+                  />
               </div>
               
               {day.secondary_topic && (
@@ -475,6 +475,7 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                     isGeneratingLocal={generatingNotesForTopic === day.secondary_topic}
                     onGenerate={(force) => onGenerateNote(day, day.secondary_topic!, [], force)}
                     onView={() => onViewNote(day.day_number, day.secondary_topic!)}
+                    isNotesLimitReached={isNotesLimitReached}
                   />
                 </div>
               )}
@@ -488,6 +489,7 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
                     isGeneratingLocal={generatingNotesForTopic === revTopic}
                     onGenerate={(force) => onGenerateNote(day, revTopic, [], force)}
                     onView={() => onViewNote(day.day_number, revTopic)}
+                    isNotesLimitReached={isNotesLimitReached}
                   />
                 </div>
               ))}
@@ -874,6 +876,7 @@ export default function StudyPlanPage() {
         generatingNotesForTopic={generatingNotesForTopic}
         onGenerateNote={(d, topic, subtopics, force) => handleGenerateNote(d, topic, subtopics, force)}
         onViewNote={(day, topic) => router.push(`/dashboard/study-notes?day=${day}&topic=${encodeURIComponent(topic)}`)}
+        isNotesLimitReached={isNotesLimitReached}
       />}
 
       <StudyPlanRegenModal
