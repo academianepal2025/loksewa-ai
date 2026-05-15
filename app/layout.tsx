@@ -10,8 +10,38 @@ const inter = Inter({
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "Loksewa AI | Smart Study Workspace",
-  description: "Advanced AI-powered preparation platform for Loksewa candidates.",
+  title: "Loksewa AI | Nepal's First AI Tutor for PSC Preparation",
+  description: "Ace your Loksewa Ayog (PSC Nepal) exams with your personal AI tutor. Generate smart study notes, take custom mock tests, and get real-time syllabus guidance.",
+  keywords: ["Loksewa", "PSC Nepal", "Loksewa Ayog", "AI Tutor", "Nepal Public Service Commission", "Study Notes", "Mock Tests", "Loksewa Preparation", "Loksewa Syllabus"],
+  authors: [{ name: "Loksewa AI Team" }],
+  creator: "Loksewa AI",
+  publisher: "Loksewa AI",
+  metadataBase: new URL('https://loksewai.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "Loksewa AI | Smart Study Workspace",
+    description: "Advanced AI-powered preparation platform for Loksewa candidates. Personalized study plans, smart notes, and unlimited practice.",
+    url: 'https://loksewai.com',
+    siteName: 'Loksewa AI',
+    images: [
+      {
+        url: '/og-image.jpg', // You should create a 1200x630 image and put it in /public
+        width: 1200,
+        height: 630,
+        alt: 'Loksewa AI Platform Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Loksewa AI | Nepal's First AI Tutor for PSC",
+    description: "Ace your Loksewa exams with AI. Custom mock tests, study plans, and smart notes.",
+    images: ['/og-image.jpg'],
+  },
   manifest: "/manifest.json",
   icons: {
     icon: "/favicon.ico",
