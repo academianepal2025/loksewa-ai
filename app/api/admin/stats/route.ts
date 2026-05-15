@@ -225,6 +225,8 @@ async function getPlatformStats(supabaseAdmin: any) {
     supabaseAdmin.from('documents')
       .select('id', { count: 'exact', head: true })
       .eq('processing_status', 'ready'),
+    supabaseAdmin.from('documents')
+      .select('id', { count: 'exact', head: true })
       .eq('processing_status', 'failed'),
     // AI Cost & Usage
     supabaseAdmin.from('ai_usage_logs').select('cost_estimate, feature'),
