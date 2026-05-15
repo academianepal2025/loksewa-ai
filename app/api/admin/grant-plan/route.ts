@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { sendPaymentApprovedEmail } from '@/lib/email';
 
 const PLAN_DURATIONS: Record<string, number> = {
   pro_monthly: 30,
@@ -28,12 +29,26 @@ export async function POST(req: Request) {
       .upsert({ user_id: userId, plan, status: 'active', expires_at: expiry.toISOString() }, { onConflict: 'user_id' });
     if (subError) throw subError;
 
-    // No email in profiles table, so we use user_id or empty
+    // Fetch user details for email
+    const { data: userProfile } = await supabaseAdmin
+      .from('profiles')
+      .select('email, full_name')
+      .eq('id', userId)
+      .single();
+
+    const userEmail = userProfile?.email || '';
+    const userName = userProfile?.full_name || 'Loksewa Student';
+
+    // No email in profiles table initially, but we might have it now
     await supabaseAdmin.from('payment_requests').insert({
-      user_id: userId, user_email: '', payer_name: 'Admin Grant', payer_phone: '0000000000',
+      user_id: userId, user_email: userEmail, payer_name: 'Admin Grant', payer_phone: '0000000000',
       plan, plan_amount: 0, status: 'manually_granted', admin_notes: `Granted by Admin`,
       reviewed_at: now, created_at: now
     });
+
+    if (userEmail) {
+      sendPaymentApprovedEmail(userEmail, userName, plan, 0).catch(e => console.error('Grant Email Error:', e));
+    }
 
     return NextResponse.json({ success: true, expiresAt: expiry.toISOString() });
   } catch (error: any) {

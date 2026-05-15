@@ -238,6 +238,14 @@ ${JSON.stringify(analysis.analysis_data, null, 2)}`;
       throw new Error(`Failed to save study plan: ${insertError.message}`);
     }
 
+    // Log AI Usage
+    try {
+      const { logAiUsage } = await import('@/lib/ai-logger');
+      await logAiUsage({ userId, feature: 'study_plan' });
+    } catch (e) {
+      console.warn("Failed to log AI usage for study plan:", e);
+    }
+
     // 6. Return plan JSON
     return NextResponse.json({
       success: true,

@@ -158,6 +158,9 @@ export async function POST(request: Request) {
 
             const { incrementUsage } = await import('@/lib/usage');
             await incrementUsage(userId, 'chat');
+            
+            const { logAiUsage } = await import('@/lib/ai-logger');
+            await logAiUsage({ userId, feature: 'chat' });
           } catch (saveError) {
             console.error('Background tasks failed:', saveError);
           }

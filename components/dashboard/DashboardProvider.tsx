@@ -93,6 +93,9 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         setUserId(user.id);
         fetchPrefs(user.id);
 
+        // Track Daily Active User (DAU)
+        fetch('/api/user/heartbeat', { method: 'POST' }).catch(() => {});
+
         // Fetch Profile & Subscription
         const [{ data: prof }, { data: sub }] = await Promise.all([
           supabase.from('profiles').select('is_admin').eq('id', user.id).single(),

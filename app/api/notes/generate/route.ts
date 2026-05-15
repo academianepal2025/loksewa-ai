@@ -247,12 +247,15 @@ The output language must be: ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}.
 
     if (finalizeError) throw new Error(finalizeError.message);
 
-    // Increment Usage
+    // Increment Usage & Log AI Cost
     try {
       const { incrementUsage } = await import('@/lib/usage');
       await incrementUsage(user.id, 'note');
+
+      const { logAiUsage } = await import('@/lib/ai-logger');
+      await logAiUsage({ userId: user.id, feature: 'notes' });
     } catch (e) {
-      console.warn("Failed to increment usage:", e);
+      console.warn("Failed to increment/log notes usage:", e);
     }
 
     return NextResponse.json({

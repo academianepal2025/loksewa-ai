@@ -128,12 +128,15 @@ ${contextContent}`;
       throw new Error('AI failed to generate a valid list of questions.');
     }
 
-    // 3. Increment Usage in Background
+    // 3. Increment Usage & Log AI Cost in Background
     try {
       const { incrementUsage } = await import('@/lib/usage');
       await incrementUsage(userId, 'quiz');
+      
+      const { logAiUsage } = await import('@/lib/ai-logger');
+      await logAiUsage({ userId, feature: 'quiz' });
     } catch (e) {
-      console.error('Failed to increment quiz usage:', e);
+      console.error('Failed to increment/log quiz usage:', e);
     }
 
     // 4. Return the generated quiz

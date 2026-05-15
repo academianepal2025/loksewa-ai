@@ -194,7 +194,10 @@ async function getPlatformStats(supabaseAdmin: any) {
     notesCountRes,
     plansCountRes,
     docsSuccessRes,
-    docsFailedRes
+    docsFailedRes,
+    aiCostRes,
+    dauRes,
+    mauRes
   ] = await Promise.all([
     // Free = profiles not in active subscriptions
     supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }),
@@ -222,14 +225,32 @@ async function getPlatformStats(supabaseAdmin: any) {
     supabaseAdmin.from('documents')
       .select('id', { count: 'exact', head: true })
       .eq('processing_status', 'ready'),
-    supabaseAdmin.from('documents')
-      .select('id', { count: 'exact', head: true })
-      .eq('processing_status', 'failed')
+      .eq('processing_status', 'failed'),
+    // AI Cost & Usage
+    supabaseAdmin.from('ai_usage_logs').select('cost_estimate, feature'),
+    // DAU (Today)
+    supabaseAdmin.from('activity_logs').select('user_id', { head: false }).eq('activity_date', new Date().toISOString().split('T')[0]),
+    // MAU (Last 30 Days)
+    supabaseAdmin.from('activity_logs').select('user_id', { head: false }).gte('activity_date', new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0])
   ]);
 
   const totalPaid = (proMonthlyRes.count || 0) + (proQuarterlyRes.count || 0) + (cyclePackRes.count || 0);
   const totalProfiles = freeUsersRes.count || 0;
   const freeCount = Math.max(0, totalProfiles - totalPaid);
+
+  // Calculate AI Cost and Feature breakdown from logs
+  let totalAiCost = 0;
+  const aiFeatureUsage: Record<string, number> = { chat: 0, quiz: 0, notes: 0, study_plan: 0 };
+  if (aiCostRes?.data) {
+     aiCostRes.data.forEach((log: any) => {
+        totalAiCost += (log.cost_estimate || 0);
+        aiFeatureUsage[log.feature] = (aiFeatureUsage[log.feature] || 0) + 1;
+     });
+  }
+
+  // Calculate unique DAU and MAU
+  const uniqueDAU = new Set(dauRes?.data?.map((l: any) => l.user_id) || []).size;
+  const uniqueMAU = new Set(mauRes?.data?.map((l: any) => l.user_id) || []).size;
 
   // Top active users: sum documents, chats, quizzes, notes per user
   const { data: topUsers } = await supabaseAdmin
@@ -296,6 +317,10 @@ async function getPlatformStats(supabaseAdmin: any) {
         notes: notesCountRes.count || 0,
         studyPlans: plansCountRes.count || 0
       },
+      aiUsage: aiFeatureUsage,
+      aiCost: totalAiCost,
+      dau: uniqueDAU,
+      mau: uniqueMAU,
       topActiveUsers: topActive,
       documentStats: {
         success: docsSuccess,

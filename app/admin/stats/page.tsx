@@ -50,6 +50,27 @@ export default function AdminStatsPage() {
         <p className="text-[10px] text-subtle mt-1 uppercase tracking-widest font-black">Comprehensive Mission Statistics</p>
       </div>
 
+      {/* KPI Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: 'Daily Active Users (DAU)', value: platformData?.dau || 0, icon: Users, color: 'text-emerald-500', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+          { label: 'Monthly Active Users (MAU)', value: platformData?.mau || 0, icon: Users, color: 'text-blue-500', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+          { label: 'DAU/MAU Stickiness', value: platformData?.mau ? Math.round(((platformData?.dau || 0) / platformData.mau) * 100) + '%' : '0%', icon: TrendingUp, color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
+          { label: 'Est. AI Cost (Last 30d)', value: `$${(platformData?.aiCost || 0).toFixed(2)}`, icon: DollarSign, color: 'text-red-500', bg: 'bg-red-500/10', border: 'border-red-500/20' },
+        ].map((kpi, idx) => (
+          <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
+            className="bg-surface border border-border-subtle rounded-2xl p-5">
+            <div className="flex justify-between items-start mb-4">
+              <div className={`h-8 w-8 rounded-lg ${kpi.bg} ${kpi.color} flex items-center justify-center border ${kpi.border} shadow-sm`}>
+                <kpi.icon className="h-4 w-4" />
+              </div>
+            </div>
+            <p className="text-[10px] text-subtle font-black uppercase tracking-widest">{kpi.label}</p>
+            <p className="text-2xl font-black text-foreground mt-1">{kpi.value}</p>
+          </motion.div>
+        ))}
+      </div>
+
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* User Growth */}

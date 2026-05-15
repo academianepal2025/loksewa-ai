@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
+import { sendPaymentAlertEmail } from '@/lib/email';
 
 const PLAN_AMOUNTS: Record<string, number> = {
   pro_monthly: 499,
@@ -60,6 +61,15 @@ export async function POST(request: Request) {
       .single();
 
     if (error) throw error;
+
+    // Send email alert to admin asynchronously
+    sendPaymentAlertEmail({
+      userName: payerName,
+      userEmail: user.email || 'N/A',
+      plan: plan,
+      amount: PLAN_AMOUNTS[plan],
+      paymentMethod: receiptUrl ? 'Screenshot Upload' : 'Unknown',
+    }).catch(console.error);
 
     return NextResponse.json({ success: true, id: data.id });
 

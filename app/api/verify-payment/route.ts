@@ -1,6 +1,7 @@
 import { verifyAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { sendPaymentApprovedEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -105,6 +106,15 @@ export async function POST(request: Request) {
         console.error('[verify-payment] Request Status Update Error:', reqError);
         return NextResponse.json({ error: `Final status update failed: ${reqError.message}` }, { status: 500 });
       }
+
+      // 6. Send Approval Email
+      console.log('[verify-payment] Sending approval email...');
+      sendPaymentApprovedEmail(
+        paymentRequest.user_email,
+        paymentRequest.payer_name || 'Loksewa Student',
+        paymentRequest.plan,
+        paymentRequest.plan_amount
+      ).catch(e => console.error('[verify-payment] Email error:', e));
 
     } else if (action === 'rejected') {
       console.log('[verify-payment] Rejecting payment request...');
