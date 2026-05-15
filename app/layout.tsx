@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     siteName: 'Loksewa AI',
     images: [
       {
-        url: '/og-image.jpg', // You should create a 1200x630 image and put it in /public
-        width: 1200,
-        height: 630,
+        url: '/icon-512.png',
+        width: 512,
+        height: 512,
         alt: 'Loksewa AI Platform Preview',
       },
     ],
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Loksewa AI | Nepal's First AI Tutor for PSC",
     description: "Ace your Loksewa exams with AI. Custom mock tests, study plans, and smart notes.",
-    images: ['/og-image.jpg'],
+    images: ['/icon-512.png'],
   },
   manifest: "/manifest.json",
   icons: {
