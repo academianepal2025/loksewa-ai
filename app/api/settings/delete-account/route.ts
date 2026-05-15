@@ -33,7 +33,7 @@ export async function DELETE(request: Request) {
     const { error: rpcError } = await supabase.rpc('delete_user_all_data', { p_user_id: user.id });
     if (rpcError) {
       console.error('Data wipe RPC failed:', rpcError);
-      return NextResponse.json({ error: 'Failed to wipe account data' }, { status: 500 });
+      return NextResponse.json({ error: `Failed to wipe account data: ${rpcError.message || rpcError.details || 'Unknown DB error'}` }, { status: 500 });
     }
 
     // 4. Delete files from Storage (user-documents)
@@ -60,7 +60,7 @@ export async function DELETE(request: Request) {
 
     if (deleteUserError) {
       console.error('Auth user deletion failed:', deleteUserError);
-      return NextResponse.json({ error: 'Failed to delete authentication account' }, { status: 500 });
+      return NextResponse.json({ error: `Failed to delete authentication account: ${deleteUserError.message}` }, { status: 500 });
     }
 
     return NextResponse.json({ 
