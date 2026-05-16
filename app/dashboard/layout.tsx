@@ -232,7 +232,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border-subtle h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
             <Link href="/dashboard" className="font-black text-[#1e3a5f] md:hidden">
-              Loksewa <span className="text-[#c9a84c]">AI</span>
+              L<span className="text-[#c9a84c]">A</span>
             </Link>
             <div className="hidden md:block">
               <h2 className="text-[10px] font-black text-[#1e3a5f]/40 uppercase tracking-[0.2em]">
@@ -306,7 +306,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-4 sm:p-8 lg:p-10 pb-32 md:pb-12 max-w-7xl mx-auto w-full">
+        <main className="flex-1 fluid-container pb-32 md:pb-12 px-safe">
           {children}
         </main>
       </div>

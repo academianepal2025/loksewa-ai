@@ -24,6 +24,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog/how-to-use-loksewa-ai`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/blog/how-to-prepare-loksewa-with-ai`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/blog/common-loksewa-mistakes-ai-fix`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
     // Dashboard and Admin routes are generally omitted from sitemaps as they are protected
   ];
 }

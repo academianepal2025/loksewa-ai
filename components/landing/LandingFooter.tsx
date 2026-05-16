@@ -31,6 +31,7 @@ export function LandingFooter() {
                    <li><Link href="#features" className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">Features</Link></li>
                    <li><Link href="#pricing" className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">Pricing</Link></li>
                    <li><Link href="#faq" className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">FAQ</Link></li>
+                   <li><Link href="/blog" className="text-sm font-bold text-indigo-400 hover:text-[#1e3a5f] transition-all">Blog</Link></li>
                 </ul>
              </div>
               <div>
@@ -38,7 +39,7 @@ export function LandingFooter() {
                  <ul className="space-y-4">
                     <li><button onClick={() => setShowPrivacy(true)} className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">Privacy Policy</button></li>
                     <li><button onClick={() => setShowTerms(true)} className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">Terms of Use</button></li>
-                    <li><Link href="mailto:support@loksewai.com" className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">Contact Us</Link></li>
+                    <li><Link href="mailto:loksewagkdose@gmail.com" className="text-sm font-bold text-gray-400 hover:text-[#1e3a5f] transition-all">Contact Us</Link></li>
                  </ul>
               </div>
           </div>

@@ -30,6 +30,7 @@ export default async function Home() {
               <Link href="#testimonials" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Testimonials</Link>
               <Link href="#pricing" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Pricing</Link>
               <Link href="#faq" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">FAQ</Link>
+              <Link href="/blog" className="text-sm font-bold text-indigo-600 hover:text-[#1e3a5f] transition-all">Blog</Link>
               <Link href="/auth/signin" className="text-sm font-bold text-[#1e3a5f] hover:opacity-70 transition-all">Sign In</Link>
               <Link href={getStartedHref} className="px-7 py-3 text-sm font-black text-[#1e3a5f] bg-[#c9a84c] rounded-2xl hover:scale-105 transition-all shadow-xl shadow-[#c9a84c]/20 uppercase tracking-widest">
                 {session ? "Go to Dashboard" : "Get Started"}

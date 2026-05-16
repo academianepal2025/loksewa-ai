@@ -42,7 +42,7 @@ export function BottomNav() {
   if (!isVisible) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[60] bg-surface/80 backdrop-blur-lg border-t border-border-subtle md:hidden h-20 px-2 sm:px-4 flex items-center justify-around pb-safe animate-in slide-in-from-bottom duration-300">
+    <nav className="fixed bottom-0 left-0 right-0 z-[60] bg-surface/80 backdrop-blur-lg border-t border-border-subtle md:hidden h-20 px-2 sm:px-4 px-safe flex items-center justify-around pb-safe animate-in slide-in-from-bottom duration-300">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         return (

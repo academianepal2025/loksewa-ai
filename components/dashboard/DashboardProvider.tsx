@@ -162,6 +162,10 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     // Save to LocalStorage immediately
     localStorage.setItem('loksewa_prefs', JSON.stringify(newPrefs));
 
+    // Save to Cookies for SSR (Expires in 1 year)
+    const cookieValue = JSON.stringify({ language: newPrefs.language, theme: newPrefs.brand_theme, fontScale: newPrefs.reading_font_scale });
+    document.cookie = `loksewa_prefs=${encodeURIComponent(cookieValue)}; path=/; max-age=31536000; SameSite=Lax`;
+
     // Upsert to DB
     try {
       await supabase.from('user_preferences').upsert(newPrefs, { onConflict: 'user_id' });

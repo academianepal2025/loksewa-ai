@@ -55,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#6366f1",
+  themeColor: "#1e3a5f",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -63,19 +63,50 @@ export const viewport: Viewport = {
 };
 
 import { ThemeProvider } from "@/components/theme-provider";
+import { CookieConsent } from "@/components/landing/CookieConsent";
+import { cookies } from "next/headers";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const prefsCookie = cookieStore.get("loksewa_prefs")?.value;
+  let prefs = { language: 'en', theme: 'orange', fontScale: 'md' };
+  
+  if (prefsCookie) {
+    try {
+      prefs = JSON.parse(decodeURIComponent(prefsCookie));
+    } catch (e) {}
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Loksewa AI",
+    "url": "https://loksewaai.com",
+    "logo": "https://loksewaai.com/icon-512.png",
+    "description": "Nepal's first AI-powered PSC preparation platform. Personalized study plans, smart notes, and adaptive practice.",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+977-9808493504",
+      "contactType": "customer service",
+      "email": "loksewagkdose@gmail.com"
+    }
+  };
+
   return (
     <html
-      lang="en"
-      className={`${inter.variable} h-full antialiased`}
+      lang={prefs.language}
+      className={`${inter.variable} h-full antialiased theme-${prefs.theme} font-scale-${prefs.fontScale}`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -84,6 +115,7 @@ export default function RootLayout({
         >
           {children}
           <Toaster richColors position="top-right" />
+          <CookieConsent />
         </ThemeProvider>
         <script
           dangerouslySetInnerHTML={{
