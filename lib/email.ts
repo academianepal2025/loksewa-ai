@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { getPaymentApprovedTemplate } from './email-templates';
+import { getPaymentApprovedTemplate, getAdminPaymentAlertTemplate, getPaymentRejectedTemplate } from './email-templates';
 
 // Initialize Resend if key exists, otherwise provide a mock for development
 const resendApiKey = process.env.RESEND_API_KEY;
@@ -24,23 +24,12 @@ export async function sendPaymentAlertEmail(paymentDetails: {
   }
 
   try {
+    const htmlContent = getAdminPaymentAlertTemplate(paymentDetails);
     await resend.emails.send({
       from: `Loksewa AI <${FROM_EMAIL}>`,
       to: ADMIN_EMAIL,
       subject: `🚨 New Payment Request: ${paymentDetails.plan.toUpperCase()}`,
-      html: `
-        <h2>New Payment Request</h2>
-        <p>A user has submitted a new payment screenshot and is waiting for approval.</p>
-        <ul>
-          <li><strong>Name:</strong> ${paymentDetails.userName}</li>
-          <li><strong>Email:</strong> ${paymentDetails.userEmail}</li>
-          <li><strong>Plan:</strong> ${paymentDetails.plan}</li>
-          <li><strong>Amount:</strong> ${paymentDetails.amount} Rs</li>
-          <li><strong>Method:</strong> ${paymentDetails.paymentMethod}</li>
-        </ul>
-        <p>Please log in to the Admin Dashboard to review and approve the request.</p>
-        <a href="https://loksewai.com/admin/stats" style="display:inline-block;padding:10px 20px;background-color:#1e3a5f;color:white;text-decoration:none;border-radius:5px;">Go to Admin Dashboard</a>
-      `,
+      html: htmlContent,
     });
     console.log('Payment alert email sent successfully.');
   } catch (error) {
@@ -100,5 +89,25 @@ export async function sendPaymentApprovedEmail(userEmail: string, userName: stri
     console.log('Payment approved email sent successfully to', userEmail);
   } catch (error) {
     console.error('Failed to send payment approved email:', error);
+  }
+}
+
+export async function sendPaymentRejectedEmail(userEmail: string, userName: string, plan: string, reason: string) {
+  if (!resend) {
+    console.warn('RESEND_API_KEY is missing. Payment rejected email not sent to', userEmail);
+    return;
+  }
+
+  try {
+    const htmlContent = getPaymentRejectedTemplate(userName, plan, reason);
+    await resend.emails.send({
+      from: `Loksewa AI <${FROM_EMAIL}>`,
+      to: userEmail,
+      subject: `Update regarding your Loksewa AI Payment`,
+      html: htmlContent,
+    });
+    console.log('Payment rejected email sent successfully to', userEmail);
+  } catch (error) {
+    console.error('Failed to send payment rejected email:', error);
   }
 }

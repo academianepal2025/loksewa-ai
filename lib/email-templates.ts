@@ -77,6 +77,73 @@ export const getPaymentApprovedTemplate = (userName: string, planName: string, a
   return baseTemplate('Payment Approved - Loksewa AI', content);
 };
 
+export const getPaymentRejectedTemplate = (userName: string, planName: string, reason: string) => {
+  const content = `
+    <h2 style="color: ${BRAND.primary}; margin: 0 0 20px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Payment Update</h2>
+    <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.6;">Hi ${userName},</p>
+    <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6;">We've reviewed your recent payment request for the <strong>${planName.replace('_', ' ').toUpperCase()}</strong> plan, and unfortunately, we couldn't verify it at this time.</p>
+    
+    <div style="background-color: #fff1f2; border-left: 4px solid #e11d48; padding: 20px; border-radius: 4px; margin-bottom: 32px;">
+      <p style="margin: 0 0 8px 0; font-size: 14px; color: #991b1b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Reason for Rejection</p>
+      <p style="margin: 0; font-size: 16px; color: #991b1b;">${reason}</p>
+    </div>
+    
+    <p style="margin: 0 0 32px 0; font-size: 16px; line-height: 1.6;">If you believe this was an error, please try submitting a new request with a clear screenshot of the payment receipt, or contact our support team.</p>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+        <td align="center">
+          <a href="${BRAND.website}/upgrade" style="display: inline-block; padding: 16px 32px; background-color: ${BRAND.primary}; color: ${BRAND.accent}; text-decoration: none; border-radius: 8px; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Submit New Request</a>
+        </td>
+      </tr>
+    </table>
+  `;
+  return baseTemplate('Payment Update - Loksewa AI', content);
+};
+
+export const getAdminPaymentAlertTemplate = (details: {
+  userName: string;
+  userEmail: string;
+  plan: string;
+  amount: number;
+  paymentMethod: string;
+}) => {
+  const content = `
+    <h2 style="color: ${BRAND.primary}; margin: 0 0 20px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">🚨 New Payment Request</h2>
+    <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6;">A user has submitted a new payment screenshot and is waiting for approval.</p>
+    
+    <div style="background-color: #f1f5f9; padding: 24px; border-radius: 8px; margin-bottom: 32px;">
+      <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+        <tr>
+          <td style="padding-bottom: 12px; font-size: 14px; color: #64748b;">User:</td>
+          <td style="padding-bottom: 12px; font-size: 14px; font-weight: 700;">${details.userName} (${details.userEmail})</td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 12px; font-size: 14px; color: #64748b;">Plan:</td>
+          <td style="padding-bottom: 12px; font-size: 14px; font-weight: 700;">${details.plan.toUpperCase()}</td>
+        </tr>
+        <tr>
+          <td style="padding-bottom: 12px; font-size: 14px; color: #64748b;">Amount:</td>
+          <td style="padding-bottom: 12px; font-size: 14px; font-weight: 700;">${details.amount} Rs</td>
+        </tr>
+        <tr>
+          <td style="font-size: 14px; color: #64748b;">Method:</td>
+          <td style="font-size: 14px; font-weight: 700;">${details.paymentMethod}</td>
+        </tr>
+      </table>
+    </div>
+    
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+      <tr>
+        <td align="center">
+          <a href="${BRAND.website}/admin/payments" style="display: inline-block; padding: 16px 32px; background-color: ${BRAND.primary}; color: ${BRAND.accent}; text-decoration: none; border-radius: 8px; font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Review Payment</a>
+        </td>
+      </tr>
+    </table>
+  `;
+  return baseTemplate('New Payment Request - Loksewa AI', content);
+};
+
 export const getEmailVerificationTemplate = () => {
   const content = `
     <h2 style="color: ${BRAND.primary}; margin: 0 0 20px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Verify your email</h2>
