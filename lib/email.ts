@@ -6,7 +6,7 @@ const resendApiKey = process.env.RESEND_API_KEY;
 export const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 // The "from" email address (must be a verified domain in Resend)
-const FROM_EMAIL = 'notifications@loksewai.com'; // Adjust this to your verified domain
+const FROM_EMAIL = 'notifications@loksewaai.com'; // Must match the verified domain in Resend
 
 // The admin email address
 export const ADMIN_EMAIL = 'loksewagkdose@gmail.com'; // Adjust if different
