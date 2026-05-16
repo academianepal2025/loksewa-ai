@@ -9,7 +9,7 @@ export const resend = resendApiKey ? new Resend(resendApiKey) : null;
 const FROM_EMAIL = 'notifications@loksewaai.com'; // Must match the verified domain in Resend
 
 // The admin email address
-export const ADMIN_EMAIL = 'loksewagkdose@gmail.com'; // Adjust if different
+export const ADMIN_EMAIL = 'shahrammy131@gmail.com';
 
 export async function sendPaymentAlertEmail(paymentDetails: {
   userName: string;
@@ -63,7 +63,7 @@ export async function sendWeeklyReportEmail(metrics: any) {
           <li>Quizzes: ${metrics.featureUsage.quiz || 0}</li>
           <li>Notes: ${metrics.featureUsage.notes || 0}</li>
         </ul>
-        <p><a href="https://loksewai.com/admin/stats">View Full Admin Dashboard</a></p>
+        <p><a href="https://loksewaai.com/admin/stats">View Full Admin Dashboard</a></p>
       `,
     });
     console.log('Weekly report email sent successfully.');

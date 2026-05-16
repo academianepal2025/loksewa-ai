@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://loksewai.com';
+  const baseUrl = 'https://loksewaai.com';
 
   // In a full production app, you might fetch dynamic routes (e.g. blog posts) from a database here
   

@@ -3,7 +3,7 @@ export const PRIVACY_POLICY = {
   sections: [
     {
       title: '1. Introduction',
-      content: 'Loksewa AI is a PSC Nepal exam preparation platform operated in Nepal. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our web application at loksewai.com. By using Loksewa AI you agree to the collection and use of information in accordance with this policy. We are committed to ensuring that your privacy is protected and that we handle your data responsibly and transparently.'
+      content: 'Loksewa AI is a PSC Nepal exam preparation platform operated in Nepal. This Privacy Policy explains how we collect, use, store, and protect your personal information when you use our web application at loksewaai.com. By using Loksewa AI you agree to the collection and use of information in accordance with this policy. We are committed to ensuring that your privacy is protected and that we handle your data responsibly and transparently.'
     },
     {
       title: '2. Information We Collect',
@@ -27,7 +27,7 @@ export const PRIVACY_POLICY = {
     },
     {
       title: '7. Your Rights',
-      content: 'You have the following rights regarding your personal data. The right to access all the data we hold about you by using the Export My Data feature in your settings. The right to correct inaccurate information by updating your profile in settings. The right to delete your account and all associated data using the Delete Account option in settings. The right to withdraw consent by stopping use of the platform and requesting account deletion. To exercise any of these rights you can use the self-service options in your settings page or contact us at support@loksewai.com.'
+      content: 'You have the following rights regarding your personal data. The right to access all the data we hold about you by using the Export My Data feature in your settings. The right to correct inaccurate information by updating your profile in settings. The right to delete your account and all associated data using the Delete Account option in settings. The right to withdraw consent by stopping use of the platform and requesting account deletion. To exercise any of these rights you can use the self-service options in your settings page or contact us at loksewagkdose@gmail.com.'
     },
     {
       title: '8. Cookies and Local Storage',
@@ -43,7 +43,7 @@ export const PRIVACY_POLICY = {
     },
     {
       title: '11. Contact Us',
-      content: 'If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data please contact us at support@loksewai.com. We aim to respond to all privacy related inquiries within 5 business days. You can also reach us through the feedback widget in the application.'
+      content: 'If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your data please contact us at loksewagkdose@gmail.com. We aim to respond to all privacy related inquiries within 5 business days. You can also reach us through the feedback widget in the application.'
     }
   ]
 };

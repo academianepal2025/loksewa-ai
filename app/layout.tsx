@@ -16,14 +16,14 @@ export const metadata: Metadata = {
   authors: [{ name: "Loksewa AI Team" }],
   creator: "Loksewa AI",
   publisher: "Loksewa AI",
-  metadataBase: new URL('https://loksewai.com'),
+  metadataBase: new URL('https://loksewaai.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: "Loksewa AI | Smart Study Workspace",
     description: "Advanced AI-powered preparation platform for Loksewa candidates. Personalized study plans, smart notes, and unlimited practice.",
-    url: 'https://loksewai.com',
+    url: 'https://loksewaai.com',
     siteName: 'Loksewa AI',
     images: [
       {

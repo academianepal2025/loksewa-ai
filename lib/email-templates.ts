@@ -4,7 +4,7 @@ export const BRAND = {
   background: '#f8fafc',
   surface: '#ffffff',
   text: '#334155',
-  website: 'https://loksewai.com',
+  website: 'https://loksewaai.com',
 };
 
 const baseTemplate = (title: string, content: string) => `
@@ -41,7 +41,7 @@ const baseTemplate = (title: string, content: string) => `
                 &copy; ${new Date().getFullYear()} Loksewa AI. All rights reserved.
               </p>
               <p style="margin: 8px 0 0 0; font-size: 12px; color: #94a3b8;">
-                Need help? Contact <a href="mailto:support@loksewai.com" style="color: ${BRAND.primary}; text-decoration: none; font-weight: 600;">support@loksewai.com</a>
+                Need help? Contact <a href="mailto:loksewagkdose@gmail.com" style="color: ${BRAND.primary}; text-decoration: none; font-weight: 600;">loksewagkdose@gmail.com</a>
               </p>
             </td>
           </tr>
