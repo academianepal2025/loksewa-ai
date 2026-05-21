@@ -6,7 +6,9 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { CompanionAppScreenshots } from "@/components/landing/CompanionAppScreenshots";
 import { Metadata } from "next";
+
 
 export const metadata: Metadata = {
   title: "Loksewa AI | Nepal's First AI Tutor for PSC Exam Preparation",
@@ -195,12 +197,12 @@ export default async function Home() {
         </section>
 
         {/* Mobile App Section */}
-        <section id="mobile-app" className="py-24 bg-gray-50/50 border-t border-gray-100">
+        <section id="mobile-app" className="py-28 bg-gray-50/50 border-t border-gray-100 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
               
               {/* Left Column: Text Content */}
-              <div className="lg:col-span-7 space-y-8">
+              <div className="lg:col-span-6 space-y-8">
                 <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] border border-[#1e3a5f]/10 shadow-sm">
                   <span className="flex h-2 w-2 rounded-full bg-[#c9a84c] mr-3"></span>
                   Companion Mobile App
@@ -258,7 +260,7 @@ export default async function Home() {
 
                 <div className="pt-6">
                   <a 
-                    href="https://play.google.com/store" 
+                    href="https://play.google.com/store/apps/details?id=app.lovable.fc6eeb197a144f488639eefd563fc26f&pcampaignid=web_share" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="inline-flex items-center gap-3 px-8 py-4 bg-[#1e3a5f] hover:bg-[#152a46] text-[#c9a84c] font-black rounded-2xl transition-all shadow-xl hover:scale-105 uppercase tracking-widest text-xs"
@@ -271,33 +273,39 @@ export default async function Home() {
                 </div>
               </div>
 
-              {/* Right Column: QR Code & Visual App Card */}
-              <div className="lg:col-span-5 mt-16 lg:mt-0 flex justify-center">
-                <div className="bg-white p-8 sm:p-10 rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(30,58,95,0.08)] text-center relative max-w-sm w-full group hover:border-[#c9a84c]/20 transition-all duration-300">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+              {/* Right Column: Sliding Screenshots & QR Code Card */}
+              <div className="lg:col-span-6 mt-16 lg:mt-0 flex flex-col sm:flex-row items-center justify-center gap-8 lg:gap-12 overflow-visible">
+                {/* Sliding Screenshots Deck */}
+                <div className="shrink-0">
+                  <CompanionAppScreenshots />
+                </div>
+
+                {/* QR Code Container */}
+                <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-[0_30px_60px_-15px_rgba(30,58,95,0.06)] text-center relative max-w-[220px] w-full group hover:border-[#c9a84c]/20 transition-all duration-300 shrink-0">
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-[#c9a84c]/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
                   
-                  <div className="relative z-10 space-y-6">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Scan to Download</p>
+                  <div className="relative z-10 space-y-4">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Scan to Download</p>
                     
-                    <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100/50 inline-block relative overflow-hidden group-hover:bg-gray-50/50 transition-colors">
+                    <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100/50 inline-block relative overflow-hidden group-hover:bg-gray-50/50 transition-colors">
                       <Image 
                         src="/loksewa-flashcards-qr.png" 
                         alt="Scan QR code to download Loksewa Flashcards" 
-                        width={200} 
-                        height={200}
-                        className="mx-auto rounded-xl relative z-10 transition-transform group-hover:scale-105 duration-300"
+                        width={130} 
+                        height={130}
+                        className="mx-auto rounded-lg relative z-10 transition-transform group-hover:scale-105 duration-300"
                       />
                     </div>
                     
                     <div>
-                      <h3 className="font-black text-[#1e3a5f] text-lg uppercase tracking-tight">Loksewa Flashcards</h3>
-                      <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-1.5">For iOS & Android GK Exam Prep</p>
+                      <h3 className="font-black text-[#1e3a5f] text-sm uppercase tracking-tight">Loksewa Flashcards</h3>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-1">Google Play Store</p>
                     </div>
                     
-                    <div className="h-px bg-gray-100 my-4"></div>
+                    <div className="h-px bg-gray-100 my-2"></div>
                     
-                    <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
-                      Point your phone's camera at the QR code to instantly download the app and begin practicing.
+                    <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
+                      Point your phone's camera here to download the Android app.
                     </p>
                   </div>
                 </div>
