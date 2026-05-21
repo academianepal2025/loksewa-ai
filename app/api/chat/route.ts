@@ -2,16 +2,31 @@ import { createClient } from '@/lib/supabase/server';
 import { generateQueryEmbedding, streamText } from '@/lib/ai';
 import { checkUserLimits } from '@/lib/checkUserLimits';
 
+interface SearchDocumentResult {
+  doc_type?: string;
+  chunk_text: string;
+}
+
+interface ChatMessageHistory {
+  role: string;
+  content: string;
+}
+
 const SYSTEM_INSTRUCTION = `You are Loksewa Guru, an expert assistant for Nepal PSC (Public Service Commission) exam preparation. 
 
 STRICT RESPONSE RULES:
-1. Answer ONLY from the provided context.
-2. If answer is not in context, respond: 'यो जानकारी तपाईंको अपलोड गरिएका नोट्समा भेटिएन। थप सामग्री थप्नुहोस्।'
-3. Match the language of the student's question (Nepali or English).
-4. For constitutional articles, acts, procedures — be precise and structured.
-5. Mention if a topic appeared in PYQs: "**[PYQ ALERT]** This topic appeared in previous year questions."
-6. End important answers with the topic's exam priority if available.
-7. NEVER make up facts. NEVER answer outside provided context.
+1. Try to answer using the provided context from the student's uploaded materials.
+2. If the answer is not present in the provided context, or if no context is provided, you MUST fallback to your general AI knowledge to generate a complete, helpful, and accurate response.
+3. If you are falling back to general AI knowledge (because the answer was not found in the uploaded materials, or no materials were uploaded/found), you MUST prepend the following warning message at the very top of your response (in a new line, styled as italic):
+   - Match the language of your response.
+   - If responding in English:
+     "*⚠️ Note: This response is AI-generated based on general knowledge, not from your uploaded study materials. Please upload relevant materials for personalized context.*"
+   - If responding in Nepali:
+     "*⚠️ नोट: यो जवाफ सामान्य ज्ञानमा आधारित AI-द्वारा तयार गरिएको हो, तपाईंको अपलोड गरिएका सामग्रीहरूबाट होइन। व्यक्तिगत र सान्दर्भिक उत्तरका लागि कृपया सम्बन्धित सामग्रीहरू अपलोड गर्नुहोस्।*"
+4. Match the language of the student's question (Nepali or English).
+5. For constitutional articles, acts, procedures — be precise and structured.
+6. Mention if a topic appeared in PYQs: "**[PYQ ALERT]** This topic appeared in previous year questions."
+7. End important answers with the topic's exam priority if available.
 8. If the user explicitly asks for a brief explanation or a single paragraph, adhere strictly to that length.
 
 FORMATTING RULES (ESSENTIAL):
@@ -108,8 +123,8 @@ export async function POST(request: Request) {
     // ── Step 3: Build context from retrieved chunks ───────────────
     let contextString = syllabusIntel;
     if (relevantChunks && relevantChunks.length > 0) {
-      const chunksString = relevantChunks
-        .map((chunk: any, i: number) => {
+      const chunksString = (relevantChunks as SearchDocumentResult[])
+        .map((chunk, i: number) => {
           const sourceLabel = (chunk.doc_type || 'NOTES').toUpperCase();
           return `[Source ${i + 1} — ${sourceLabel}]\n${chunk.chunk_text}`;
         })
@@ -117,14 +132,16 @@ export async function POST(request: Request) {
       contextString = contextString ? `${contextString}\n\n---\n\n${chunksString}` : chunksString;
     }
 
-    const fullSystemPrompt = contextString
+    const contextEmpty = !relevantChunks || relevantChunks.length === 0;
+
+    const fullSystemPrompt = !contextEmpty
       ? `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nContext from student's documents and syllabus intelligence:\n${contextString}`
-      : `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nNo relevant context was found in the student's documents for this query.`;
+      : `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nNo relevant context was found in the student's documents for this query. You MUST fallback to your general knowledge to answer the query, and you MUST prepend the warning notice at the very top of your response.`;
 
     // ── Step 4: Convert conversation history to Gemini format ─────
-    const geminiHistory = conversationHistory
-      .filter((msg: any) => msg.role && msg.content)
-      .map((msg: any) => ({
+    const geminiHistory = (conversationHistory as ChatMessageHistory[])
+      .filter((msg) => msg.role && msg.content)
+      .map((msg) => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }],
       }));
@@ -178,11 +195,12 @@ export async function POST(request: Request) {
         'Transfer-Encoding': 'chunked',
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Chat API Error:', error);
-    const status = error.status || 500;
+    const err = error as { status?: number; message?: string };
+    const status = err.status || 500;
     return new Response(
-      JSON.stringify({ error: error.message || 'Internal Server Error' }),
+      JSON.stringify({ error: err.message || 'Internal Server Error' }),
       { status, headers: { 'Content-Type': 'application/json' } }
     );
   }
