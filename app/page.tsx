@@ -7,7 +7,9 @@ import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { CompanionAppScreenshots } from "@/components/landing/CompanionAppScreenshots";
+import { HeroFeatureCards } from "@/components/landing/HeroFeatureCards";
 import { Metadata } from "next";
+
 
 
 export const metadata: Metadata = {
@@ -121,33 +123,8 @@ export default async function Home() {
                 </div>
               </div>
 
-              <div className="mt-20 lg:mt-0 relative">
-                <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(30,58,95,0.25)] border border-indigo-50 aspect-square">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a5f]/40 to-transparent mix-blend-overlay"></div>
-                  <div className="absolute inset-0 flex items-center justify-center p-12 bg-[#1e3a5f]">
-                     <div className="w-full space-y-6">
-                        <div className="h-6 w-3/4 bg-white/20 rounded-full animate-pulse"></div>
-                        <div className="h-6 w-1/2 bg-white/10 rounded-full animate-pulse delay-75"></div>
-                        <div className="h-6 w-5/6 bg-white/20 rounded-full animate-pulse delay-150"></div>
-                        <div className="h-28 w-full bg-[#c9a84c] rounded-3xl flex items-center justify-center shadow-lg">
-                          <span className="text-[#1e3a5f] font-black uppercase tracking-widest text-sm">Generating Your Study Plan...</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-6">
-                           <div className="h-40 bg-white/5 rounded-3xl border border-white/10 p-6 flex flex-col justify-end">
-                              <div className="h-4 w-1/2 bg-[#c9a84c] rounded-full mb-3"></div>
-                              <div className="h-4 w-3/4 bg-[#c9a84c]/50 rounded-full"></div>
-                           </div>
-                           <div className="h-40 bg-white/5 rounded-3xl border border-white/10 p-6 flex flex-col justify-end">
-                              <div className="h-4 w-1/2 bg-[#c9a84c] rounded-full mb-3"></div>
-                              <div className="h-4 w-3/4 bg-[#c9a84c]/50 rounded-full"></div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                </div>
-                {/* Decorative Elements */}
-                <div className="absolute -top-12 -right-12 h-40 w-40 bg-[#c9a84c]/20 rounded-full blur-[100px]"></div>
-                <div className="absolute -bottom-16 -left-16 h-60 w-60 bg-[#1e3a5f]/10 rounded-full blur-[100px]"></div>
+              <div className="mt-20 lg:mt-0 relative w-full flex justify-center overflow-visible">
+                <HeroFeatureCards />
               </div>
             </div>
           </div>
