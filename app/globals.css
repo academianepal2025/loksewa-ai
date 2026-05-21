@@ -52,6 +52,17 @@
   --subtle: #71717a;
 }
 
+.light {
+  --background: #f0f2f5; 
+  --foreground: #09090b;
+  --primary: #1e3a5f;
+  --accent: #c9a84c;
+  --surface: #ffffff;
+  --border-subtle: #e4e4e7;
+  --muted: #71717a;
+  --subtle: #a1a1aa;
+}
+
 /* ── Brand Themes ─────────────────────────────────────────────── */
 html.theme-orange {
   --primary-brand: #1e3a5f;
