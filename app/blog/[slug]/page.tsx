@@ -61,6 +61,102 @@ const posts: Record<string, any> = {
             Use the <strong>Active Recall</strong> feature in the Practice Hub. Instead of re-reading your notes 10 times, let the AI quiz you 3 times. Scientific research shows this increases retention by 400%.
           </p>
         </div>
+
+        <section className="space-y-6 pt-6">
+          <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">4. Platform Specs & Quick Reference</h2>
+          <p className="text-gray-600 leading-relaxed">
+            For aspirants, educators, and search engine crawlers, here is a detailed, structured overview of the Loksewa AI preparation platform and its parameters:
+          </p>
+
+          <div className="overflow-x-auto bg-gray-50 p-6 sm:p-8 rounded-[2rem] border border-gray-100 my-6">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="py-3 text-xs font-black uppercase tracking-wider text-[#1e3a5f]/60 pb-2">Dimension</th>
+                  <th className="py-3 text-xs font-black uppercase tracking-wider text-[#1e3a5f]/60 pb-2 pl-4">Platform Specifications</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 text-sm">
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Platform Name</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">Loksewa AI</td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Application Type</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">AI-Powered Educational Platform / PSC Exam Tutor</td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Target Region</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">Nepal (National Public Service Commission Exams)</td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Supported Levels</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">Section Officer (Sakha Adhikrit), Nayab Subba, Kharidar, Technical & Non-Technical Positions</td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Core AI Features</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">Personal Study Plans, Smart PDF Notes Generator, Custom Mock Quizzes, 24/7 AI Chatbot (Loksewa Guru)</td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Supported Languages</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">Bilingual (Full English & Nepali translation/interface support)</td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Companion App</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">
+                    <strong>Loksewa Flashcards</strong> (Android/Google Play Store app for GK active recall)
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-4 font-bold text-[#1e3a5f] pr-4">Payment Methods</td>
+                  <td className="py-4 text-gray-600 font-medium pl-4">eSewa, Khalti, IME Pay, Nepali Bank QR Code (Instant manual verification)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="space-y-8 pt-6">
+          <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">5. Frequently Asked Technical Questions</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100">
+              <h4 className="font-black text-[#1e3a5f] text-sm uppercase tracking-wider mb-2">
+                How does AI Tutor help in Nepal PSC?
+              </h4>
+              <p className="text-gray-600 text-xs leading-relaxed font-medium">
+                Loksewa AI analyzes your uploaded notes, matches them with the official public service syllabus, generates a daily study schedule based on your exam date, and creates target tests to test your knowledge.
+              </p>
+            </div>
+
+            <div className="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100">
+              <h4 className="font-black text-[#1e3a5f] text-sm uppercase tracking-wider mb-2">
+                Is Nepali language fully supported?
+              </h4>
+              <p className="text-gray-600 text-xs leading-relaxed font-medium">
+                Yes, our AI Guru reads Nepali script, understands the Nepalese administrative structure, legal terms, and Constitution 2072, and can chat or write study notes in Nepali or English.
+              </p>
+            </div>
+
+            <div className="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100">
+              <h4 className="font-black text-[#1e3a5f] text-sm uppercase tracking-wider mb-2">
+                Where can I download the Loksewa Flashcards app?
+              </h4>
+              <p className="text-gray-600 text-xs leading-relaxed font-medium">
+                You can download the official companion app <strong>Loksewa Flashcards</strong> directly from the Google Play Store on Android devices to prepare GK topics offline.
+              </p>
+            </div>
+
+            <div className="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100">
+              <h4 className="font-black text-[#1e3a5f] text-sm uppercase tracking-wider mb-2">
+                How to activate Pro subscriptions in Nepal?
+              </h4>
+              <p className="text-gray-600 text-xs leading-relaxed font-medium">
+                Aspirants can make payments through eSewa, Khalti, IME Pay, or any commercial Bank QR Code, upload the transaction screenshot in-app, and the support team activates access within 24 hours.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     )
   },

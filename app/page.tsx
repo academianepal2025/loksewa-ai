@@ -10,7 +10,34 @@ import { CompanionAppScreenshots } from "@/components/landing/CompanionAppScreen
 import { HeroFeatureCards } from "@/components/landing/HeroFeatureCards";
 import { Metadata } from "next";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/landing/ScrollReveal";
-import { QuickFacts } from "@/components/landing/QuickFacts";
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Loksewa AI",
+  "operatingSystem": "Web, Android, PWA",
+  "applicationCategory": "EducationalApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "NPR",
+    "eligibleRegion": {
+      "@type": "Country",
+      "name": "Nepal"
+    }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "ratingCount": "1840"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Loksewa AI Team",
+    "url": "https://loksewaai.com"
+  },
+  "description": "Nepal's first AI-powered tutoring and study platform for Nepal Public Service Commission (PSC) exams including Section Officer, Nayab Subba, Kharidar, and technical posts. Generates study notes, custom mock tests, and provides AI chatbot assistance in Nepali and English."
+};
 
 
 
@@ -58,6 +85,11 @@ export default async function Home() {
 
   return (
     <div className="light flex flex-col min-h-screen bg-background font-sans selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
+      {/* Hidden JSON-LD Script for Search Engines / AEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      />
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -189,12 +221,6 @@ export default async function Home() {
             </StaggerContainer>
           </div>
         </section>
-
-        {/* Quick Facts & AEO References */}
-        <ScrollReveal>
-          <QuickFacts />
-        </ScrollReveal>
-
         {/* Mobile App Section */}
         <section id="mobile-app" className="py-28 bg-gray-50/50 border-t border-gray-100 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
