@@ -518,7 +518,7 @@ function GuruContent() {
 
   return (
     /* Break out of the dashboard layout padding with negative margins */
-    <div className="-mx-4 sm:-mx-8 lg:-mx-10 -mt-4 sm:-mt-8 lg:-mt-10 -mb-32 md:-mb-12 flex flex-col relative" style={{ height: 'calc(100vh - 4rem)' }}>
+    <div className="-mx-4 sm:-mx-8 lg:-mx-10 -mb-32 md:-mb-12 flex flex-col relative h-[calc(100vh-9rem)] md:h-[calc(100vh-4rem)]">
       
       {/* ── Slim Top Bar ──────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border-subtle bg-background/80 backdrop-blur-md flex-shrink-0 z-20">
