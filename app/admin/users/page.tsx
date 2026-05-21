@@ -59,7 +59,7 @@ export default function AdminUsersPage() {
         page: page.toString(), limit: limit.toString(),
         search, filter, sort
       });
-      const res = await fetch(`/api/admin/users?${params}`);
+      const res = await fetch(`/api/admin/users?${params}`, { cache: 'no-store' });
       if (!res.ok) {
         const errText = await res.text();
         console.error(`[admin/users] API Error ${res.status}:`, errText);

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   try {
     console.log('[admin/users] GET request started');
@@ -26,7 +28,7 @@ export async function GET(req: Request) {
     // Build profiles query
     let query = supabaseAdmin
       .from('profiles')
-      .select('id, full_name, email, phone, photo_url, created_at', { count: 'exact' });
+      .select('id, full_name, email, phone, photo_url, created_at');
 
     // Search
     if (search) {
@@ -42,18 +44,15 @@ export async function GET(req: Request) {
       query = query.order('full_name', { ascending: true });
     }
 
-    // Pagination
-    query = query.range(offset, offset + limit - 1);
-
     console.log('[admin/users] Fetching profiles...');
-    const { data: profiles, count, error: profilesError } = await query;
+    const { data: profiles, error: profilesError } = await query;
     
     if (profilesError) {
       console.error('[admin/users] Profiles Fetch Error:', profilesError);
       return NextResponse.json({ error: `Profiles: ${profilesError.message}` }, { status: 500 });
     }
 
-    console.log(`[admin/users] Found ${profiles?.length || 0} profiles.`);
+    console.log(`[admin/users] Found ${profiles?.length || 0} profiles matching search.`);
 
     if (!profiles || profiles.length === 0) {
       return NextResponse.json({
@@ -62,56 +61,27 @@ export async function GET(req: Request) {
       });
     }
 
-    const userIds = profiles.map((p: any) => p.id);
+    const allUserIds = profiles.map((p: any) => p.id);
 
-    // Fetch related data with individual error handling
-    console.log('[admin/users] Fetching related data for IDs:', userIds.length);
-    
-    const fetchTable = async (table: string, select: string) => {
-      try {
-        const { data, error } = await supabaseAdmin.from(table).select(select).in('user_id', userIds);
-        if (error) {
-          console.error(`[admin/users] Error fetching ${table}:`, error.message);
-          return [];
-        }
-        return data || [];
-      } catch (err: any) {
-        console.error(`[admin/users] Exception fetching ${table}:`, err.message);
-        return [];
-      }
-    };
+    // Fetch subscriptions only for these matching profiles
+    const { data: subs, error: subsError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('user_id, plan, status, expires_at')
+      .in('user_id', allUserIds);
 
-    const [subs, docs, chats, quizzes, notes] = await Promise.all([
-      fetchTable('subscriptions', 'user_id, plan, status, expires_at'),
-      fetchTable('documents', 'user_id'),
-      fetchTable('chat_messages', 'user_id'),
-      fetchTable('quiz_attempts', 'user_id'),
-      fetchTable('study_notes', 'user_id')
-    ]);
+    if (subsError) {
+      console.error('[admin/users] Subscriptions Fetch Error:', subsError);
+      return NextResponse.json({ error: `Subscriptions: ${subsError.message}` }, { status: 500 });
+    }
 
-    console.log(`[admin/users] Data fetched - Subs: ${subs.length}, Docs: ${docs.length}, Chats: ${chats.length}`);
-
-    // Build maps
+    // Build subscriptions map
     const subMap = new Map();
-    subs.forEach((s: any) => {
+    subs?.forEach((s: any) => {
       const existing = subMap.get(s.user_id);
       if (!existing || s.status === 'active') subMap.set(s.user_id, s);
     });
 
-    const countMap = (data: any[]) => {
-      const map: Record<string, number> = {};
-      data.forEach((row: any) => {
-        if (row.user_id) map[row.user_id] = (map[row.user_id] || 0) + 1;
-      });
-      return map;
-    };
-
-    const docCounts = countMap(docs);
-    const chatCounts = countMap(chats);
-    const quizCounts = countMap(quizzes);
-    const noteCounts = countMap(notes);
-
-    // Assemble users
+    // Assemble full user objects for filtering
     const now = new Date();
     let users = profiles.map((p: any) => {
       const sub = subMap.get(p.id);
@@ -137,26 +107,83 @@ export async function GET(req: Request) {
         plan: sub?.plan || null,
         plan_status: planStatus,
         expires_at: sub?.expires_at || null,
-        days_remaining: daysRemaining,
-        documents: docCounts[p.id] || 0,
-        chats: chatCounts[p.id] || 0,
-        quizzes: quizCounts[p.id] || 0,
-        notes: noteCounts[p.id] || 0
+        days_remaining: daysRemaining
       };
     });
 
-    // Filter
+    // Filter in memory
     if (filter !== 'all') {
-      if (filter === 'free') users = users.filter((u: any) => u.plan_status === 'free');
-      else if (filter === 'expired') users = users.filter((u: any) => u.plan_status === 'expired');
-      else users = users.filter((u: any) => u.plan === filter && u.plan_status === 'active');
+      if (filter === 'free') {
+        users = users.filter((u: any) => u.plan_status === 'free');
+      } else if (filter === 'expired') {
+        users = users.filter((u: any) => u.plan_status === 'expired');
+      } else {
+        users = users.filter((u: any) => u.plan === filter && u.plan_status === 'active');
+      }
     }
 
-    console.log(`[admin/users] Returning ${users.length} users.`);
+    const totalFiltered = users.length;
+
+    // Paginate in memory
+    const paginatedUsers = users.slice(offset, offset + limit);
+
+    console.log(`[admin/users] Paginated to ${paginatedUsers.length} users out of ${totalFiltered} total filtered.`);
+
+    // Fetch related usage statistics only for the paginated users (max 20)
+    let finalUsers = [];
+    if (paginatedUsers.length > 0) {
+      const paginatedUserIds = paginatedUsers.map((u: any) => u.id);
+
+      const fetchTableCounts = async (table: string) => {
+        try {
+          const { data, error } = await supabaseAdmin.from(table).select('user_id').in('user_id', paginatedUserIds);
+          if (error) {
+            console.error(`[admin/users] Error fetching counts from ${table}:`, error.message);
+            return [];
+          }
+          return data || [];
+        } catch (err: any) {
+          console.error(`[admin/users] Exception fetching counts from ${table}:`, err.message);
+          return [];
+        }
+      };
+
+      const [docs, chats, quizzes, notes] = await Promise.all([
+        fetchTableCounts('documents'),
+        fetchTableCounts('chat_messages'),
+        fetchTableCounts('quiz_attempts'),
+        fetchTableCounts('study_notes')
+      ]);
+
+      const countMap = (data: any[]) => {
+        const map: Record<string, number> = {};
+        data.forEach((row: any) => {
+          if (row.user_id) map[row.user_id] = (map[row.user_id] || 0) + 1;
+        });
+        return map;
+      };
+
+      const docCounts = countMap(docs);
+      const chatCounts = countMap(chats);
+      const quizCounts = countMap(quizzes);
+      const noteCounts = countMap(notes);
+
+      finalUsers = paginatedUsers.map((u: any) => ({
+        ...u,
+        documents: docCounts[u.id] || 0,
+        chats: chatCounts[u.id] || 0,
+        quizzes: quizCounts[u.id] || 0,
+        notes: noteCounts[u.id] || 0
+      }));
+    }
 
     return NextResponse.json({
       success: true,
-      data: { users, total: count || 0, page, limit }
+      data: { users: finalUsers, total: totalFiltered, page, limit }
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      }
     });
   } catch (error: any) {
     console.error('[admin/users] FATAL ERROR:', error);
