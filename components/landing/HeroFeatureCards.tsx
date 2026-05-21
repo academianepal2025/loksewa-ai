@@ -144,6 +144,23 @@ export function HeroFeatureCards() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [exitingIndex, setExitingIndex] = useState<number | null>(null);
 
+  const handleCardClick = (idx: number) => {
+    if (exitingIndex !== null) return;
+    if (idx === activeIndex) {
+      setExitingIndex(activeIndex);
+      setTimeout(() => {
+        setActiveIndex((prev) => (prev + 1) % features.length);
+        setExitingIndex(null);
+      }, 600);
+    } else {
+      setExitingIndex(activeIndex);
+      setTimeout(() => {
+        setActiveIndex(idx);
+        setExitingIndex(null);
+      }, 600);
+    }
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setExitingIndex(activeIndex);
@@ -206,8 +223,9 @@ export function HeroFeatureCards() {
           return (
             <div
               key={feature.id}
-              className="absolute inset-0 transition-all duration-700 ease-out"
+              className="absolute inset-0 transition-all duration-700 ease-out cursor-pointer"
               style={inlineStyle}
+              onClick={() => handleCardClick(idx)}
             >
               <div className={`w-full h-full bg-white p-6 rounded-[2.5rem] shadow-[0_30px_70px_-15px_rgba(30,58,95,0.12)] border ${feature.colorClass} flex flex-col justify-between group`}>
                 

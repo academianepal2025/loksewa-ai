@@ -83,6 +83,20 @@ export function Testimonials() {
     }, 600);
   };
 
+  const handleCardClick = (idx: number) => {
+    if (exitingIndex !== null) return;
+    if (idx === activeIndex) {
+      handleNext();
+    } else {
+      setDirection(idx > activeIndex ? "next" : "prev");
+      setExitingIndex(activeIndex);
+      setTimeout(() => {
+        setActiveIndex(idx);
+        setExitingIndex(null);
+      }, 600);
+    }
+  };
+
   // Keep auto-play function reference updated
   useEffect(() => {
     autoPlayRef.current = handleNext;
@@ -163,8 +177,9 @@ export function Testimonials() {
               return (
                 <div
                   key={t.name}
-                  className="absolute inset-0 transition-all duration-700 ease-out"
+                  className="absolute inset-0 transition-all duration-700 ease-out cursor-pointer"
                   style={inlineStyle}
+                  onClick={() => handleCardClick(idx)}
                 >
                   <div className="w-full h-full bg-white p-6 md:p-8 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(30,58,95,0.08)] border border-gray-100 hover:border-[#c9a84c]/20 transition-colors duration-300 flex flex-col justify-between relative group">
                     {/* Giant background quote icon */}

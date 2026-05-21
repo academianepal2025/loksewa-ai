@@ -9,6 +9,8 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { CompanionAppScreenshots } from "@/components/landing/CompanionAppScreenshots";
 import { HeroFeatureCards } from "@/components/landing/HeroFeatureCards";
 import { Metadata } from "next";
+import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/landing/ScrollReveal";
+import { QuickFacts } from "@/components/landing/QuickFacts";
 
 
 
@@ -90,42 +92,55 @@ export default async function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center lg:text-left lg:grid lg:grid-cols-2 lg:gap-16 items-center">
               <div>
-                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-50 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] mb-8 border border-indigo-100 shadow-sm">
-                  <span className="flex h-2 w-2 rounded-full bg-[#c9a84c] mr-3 animate-pulse"></span>
-                  Nepal's First AI Tutor for PSC
-                </div>
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-[#1e3a5f] leading-[0.95] mb-8 tracking-tighter">
-                  Ace Loksewa with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1e3a5f] to-[#c9a84c]">AI Power</span>
-                </h1>
-                <p className="text-xl md:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                  Your personal AI tutor specialized in the Nepal PSC syllabus. Personalized study plans, smart notes, and unlimited practice.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
-                  <Link href={getStartedHref} className="w-full sm:w-auto px-10 py-5 text-lg font-black text-[#1e3a5f] bg-[#c9a84c] rounded-[2rem] hover:scale-105 transition-all shadow-2xl shadow-[#c9a84c]/20 flex items-center justify-center group uppercase tracking-widest">
-                    Start Preparing Free
-                    <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                  <Link href="/auth/signin" className="w-full sm:w-auto px-10 py-5 text-lg font-bold text-[#1e3a5f] bg-white border-2 border-gray-100 rounded-[2rem] hover:border-[#c9a84c] transition-all flex items-center justify-center">
-                    Sign in to Account
-                  </Link>
-                </div>
+                <ScrollReveal delay={0.1}>
+                  <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-50 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] mb-8 border border-indigo-100 shadow-sm">
+                    <span className="flex h-2 w-2 rounded-full bg-[#c9a84c] mr-3 animate-pulse"></span>
+                    Nepal's First AI Tutor for PSC
+                  </div>
+                </ScrollReveal>
                 
-                <div className="mt-16 flex items-center justify-center lg:justify-start space-x-12">
-                  <div className="flex flex-col items-center lg:items-start">
-                    <span className="font-black text-[#1e3a5f] text-3xl">10,000+</span>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Aspirants</span>
+                <ScrollReveal delay={0.25}>
+                  <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-[#1e3a5f] leading-[0.95] mb-8 tracking-tighter">
+                    Ace Loksewa with <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1e3a5f] to-[#c9a84c]">AI Power</span>
+                  </h1>
+                </ScrollReveal>
+
+                <ScrollReveal delay={0.4}>
+                  <p className="text-xl md:text-2xl text-gray-500 mb-12 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                    Your personal AI tutor specialized in the Nepal PSC syllabus. Personalized study plans, smart notes, and unlimited practice.
+                  </p>
+                </ScrollReveal>
+
+                <ScrollReveal delay={0.55}>
+                  <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
+                    <Link href={getStartedHref} className="w-full sm:w-auto px-10 py-5 text-lg font-black text-[#1e3a5f] bg-[#c9a84c] rounded-[2rem] hover:scale-105 transition-all shadow-2xl shadow-[#c9a84c]/20 flex items-center justify-center group uppercase tracking-widest">
+                      Start Preparing Free
+                      <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                    <Link href="/auth/signin" className="w-full sm:w-auto px-10 py-5 text-lg font-bold text-[#1e3a5f] bg-white border-2 border-gray-100 rounded-[2rem] hover:border-[#c9a84c] transition-all flex items-center justify-center">
+                      Sign in to Account
+                    </Link>
                   </div>
-                  <div className="h-10 w-px bg-gray-200"></div>
-                  <div className="flex flex-col items-center lg:items-start">
-                    <span className="font-black text-[#1e3a5f] text-3xl">95%</span>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Success Rate</span>
+                </ScrollReveal>
+                
+                <ScrollReveal delay={0.7}>
+                  <div className="mt-16 flex items-center justify-center lg:justify-start space-x-12">
+                    <div className="flex flex-col items-center lg:items-start">
+                      <span className="font-black text-[#1e3a5f] text-3xl">10,000+</span>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Aspirants</span>
+                    </div>
+                    <div className="h-10 w-px bg-gray-200"></div>
+                    <div className="flex flex-col items-center lg:items-start">
+                      <span className="font-black text-[#1e3a5f] text-3xl">95%</span>
+                      <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Success Rate</span>
+                    </div>
                   </div>
-                </div>
+                </ScrollReveal>
               </div>
 
-              <div className="mt-20 lg:mt-0 relative w-full flex justify-center overflow-visible">
+              <ScrollReveal delay={0.3} xOffset={50} className="mt-20 lg:mt-0 relative w-full flex justify-center overflow-visible">
                 <HeroFeatureCards />
-              </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>
@@ -133,14 +148,14 @@ export default async function Home() {
         {/* Features Preview */}
         <section id="features" className="py-28 bg-background border-y border-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-20">
+            <ScrollReveal className="text-center mb-20">
               <h2 className="text-4xl font-black text-[#1e3a5f] mb-6 sm:text-5xl tracking-tight">Everything You Need to Succeed</h2>
               <p className="text-gray-500 max-w-2xl mx-auto font-medium text-lg leading-relaxed">
                 We combine artificial intelligence with academic expertise to provide the best Loksewa preparation platform.
               </p>
-            </div>
+            </ScrollReveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[
                 {
                   title: "Smart Practice",
@@ -161,17 +176,24 @@ export default async function Home() {
                   color: "bg-emerald-50 text-emerald-600"
                 }
               ].map((feature, i) => (
-                <div key={i} className="bg-white p-10 rounded-[2.5rem] border border-gray-100 hover:border-[#c9a84c]/30 transition-all hover:-translate-y-2 shadow-sm group">
-                  <div className={`h-16 w-16 rounded-2xl ${feature.color} flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform`}>
-                    <feature.icon className="h-8 w-8" />
+                <StaggerItem key={i} className="h-full">
+                  <div className="bg-white p-10 rounded-[2.5rem] border border-gray-100 hover:border-[#c9a84c]/30 transition-all hover:-translate-y-2 shadow-sm group h-full">
+                    <div className={`h-16 w-16 rounded-2xl ${feature.color} flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 transition-transform`}>
+                      <feature.icon className="h-8 w-8" />
+                    </div>
+                    <h3 className="text-2xl font-black text-[#1e3a5f] mb-4 tracking-tight">{feature.title}</h3>
+                    <p className="text-gray-500 font-medium text-sm leading-relaxed">{feature.desc}</p>
                   </div>
-                  <h3 className="text-2xl font-black text-[#1e3a5f] mb-4 tracking-tight">{feature.title}</h3>
-                  <p className="text-gray-500 font-medium text-sm leading-relaxed">{feature.desc}</p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           </div>
         </section>
+
+        {/* Quick Facts & AEO References */}
+        <ScrollReveal>
+          <QuickFacts />
+        </ScrollReveal>
 
         {/* Mobile App Section */}
         <section id="mobile-app" className="py-28 bg-gray-50/50 border-t border-gray-100 overflow-hidden">
@@ -179,7 +201,7 @@ export default async function Home() {
             <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
               
               {/* Left Column: Text Content */}
-              <div className="lg:col-span-6 space-y-8">
+              <ScrollReveal xOffset={-50} className="lg:col-span-6 space-y-8">
                 <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] border border-[#1e3a5f]/10 shadow-sm">
                   <span className="flex h-2 w-2 rounded-full bg-[#c9a84c] mr-3"></span>
                   Companion Mobile App
@@ -248,10 +270,10 @@ export default async function Home() {
                     Download on Google Play
                   </a>
                 </div>
-              </div>
+              </ScrollReveal>
 
               {/* Right Column: Sliding Screenshots & QR Code Card */}
-              <div className="lg:col-span-6 mt-16 lg:mt-0 flex flex-col sm:flex-row items-center justify-center gap-8 lg:gap-12 overflow-visible">
+              <ScrollReveal xOffset={50} className="lg:col-span-6 mt-16 lg:mt-0 flex flex-col sm:flex-row items-center justify-center gap-8 lg:gap-12 overflow-visible">
                 {/* Sliding Screenshots Deck */}
                 <div className="shrink-0">
                   <CompanionAppScreenshots />
@@ -286,23 +308,29 @@ export default async function Home() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </ScrollReveal>
               
             </div>
           </div>
         </section>
 
         {/* Testimonials */}
-        <Testimonials />
+        <ScrollReveal>
+          <Testimonials />
+        </ScrollReveal>
 
         {/* Pricing */}
-        <Pricing />
+        <ScrollReveal>
+          <Pricing />
+        </ScrollReveal>
 
         {/* FAQ */}
-        <FAQ />
+        <ScrollReveal>
+          <FAQ />
+        </ScrollReveal>
 
         {/* Call to Action */}
-        <section className="py-28 bg-background">
+        <ScrollReveal className="py-28 bg-background" scaleOffset={0.95}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-[#1e3a5f] rounded-[4rem] p-16 lg:p-28 relative overflow-hidden text-center text-white shadow-[0_50px_100px_-20px_rgba(30,58,95,0.3)]">
               <div className="max-w-3xl mx-auto relative z-10">
@@ -322,7 +350,7 @@ export default async function Home() {
               <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 h-[500px] w-[500px] bg-white rounded-full blur-[150px] opacity-5"></div>
             </div>
           </div>
-        </section>
+        </ScrollReveal>
       </main>
 
       <LandingFooter />
