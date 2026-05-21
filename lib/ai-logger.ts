@@ -1,8 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
 
-// Current pricing for Gemini 1.5 Flash (per 1M tokens)
-const GEMINI_FLASH_INPUT_PRICE = 0.075;
-const GEMINI_FLASH_OUTPUT_PRICE = 0.30;
+// Model pricing per 1 Million tokens
+const MODEL_PRICING: Record<string, { input: number; output: number }> = {
+  'gemini-3.1-flash-lite-preview': { input: 0.25, output: 1.50 },
+  'gemini-2.5-flash': { input: 0.30, output: 2.50 },
+  'gemini-1.5-flash': { input: 0.075, output: 0.30 },
+};
+
+const DEFAULT_LOGGER_MODEL = 'gemini-3.1-flash-lite-preview';
 
 export async function logAiUsage(params: {
   userId: string;
@@ -29,16 +34,19 @@ export async function logAiUsage(params: {
       }
     }
 
+    const modelUsed = params.model || DEFAULT_LOGGER_MODEL;
+    const pricing = MODEL_PRICING[modelUsed] || MODEL_PRICING[DEFAULT_LOGGER_MODEL];
+
     const costEstimate = 
-      ((estimatedInput / 1000000) * GEMINI_FLASH_INPUT_PRICE) +
-      ((estimatedOutput / 1000000) * GEMINI_FLASH_OUTPUT_PRICE);
+      ((estimatedInput / 1000000) * pricing.input) +
+      ((estimatedOutput / 1000000) * pricing.output);
 
     await supabase.from('ai_usage_logs').insert({
       user_id: params.userId,
       feature: params.feature,
       input_tokens: estimatedInput,
       output_tokens: estimatedOutput,
-      model: params.model || 'gemini-1.5-flash',
+      model: modelUsed,
       cost_estimate: costEstimate
     });
 
