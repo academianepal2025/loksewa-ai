@@ -194,6 +194,119 @@ export default async function Home() {
           </div>
         </section>
 
+        {/* Mobile App Section */}
+        <section id="mobile-app" className="py-24 bg-gray-50/50 border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
+              
+              {/* Left Column: Text Content */}
+              <div className="lg:col-span-7 space-y-8">
+                <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] border border-[#1e3a5f]/10 shadow-sm">
+                  <span className="flex h-2 w-2 rounded-full bg-[#c9a84c] mr-3"></span>
+                  Companion Mobile App
+                </div>
+                
+                <h2 className="text-4xl md:text-5xl font-black text-[#1e3a5f] tracking-tight leading-tight animate-fade-in">
+                  Master GK Anywhere with <span className="text-[#c9a84c]">Loksewa Flashcards</span>
+                </h2>
+                
+                <p className="text-lg text-gray-600 leading-relaxed font-medium">
+                  Boost your General Knowledge (GK) preparation with our official companion app. Built specifically for offline active recall and spaced repetition practice for all levels of Nepal Public Service Commission (Loksewa) exams.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                  <div className="flex items-start gap-4">
+                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 flex items-center justify-center text-[#1e3a5f] shrink-0">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#1e3a5f] text-sm uppercase tracking-wider mb-1">Spaced Repetition</h4>
+                      <p className="text-xs text-gray-500 font-medium">Systematic review intervals to lock facts in your long-term memory.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 flex items-center justify-center text-[#1e3a5f] shrink-0">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#1e3a5f] text-sm uppercase tracking-wider mb-1">10,000+ GK Questions</h4>
+                      <p className="text-xs text-gray-500 font-medium">Comprehensive coverage of history, geography, constitution, and current affairs.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 flex items-center justify-center text-[#1e3a5f] shrink-0">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#1e3a5f] text-sm uppercase tracking-wider mb-1">Offline Mode</h4>
+                      <p className="text-xs text-gray-500 font-medium">Practice and review flashcards even without an active internet connection.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="h-8 w-8 rounded-lg bg-[#1e3a5f]/5 border border-[#1e3a5f]/10 flex items-center justify-center text-[#1e3a5f] shrink-0">
+                      <CheckCircle2 className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-[#1e3a5f] text-sm uppercase tracking-wider mb-1">Progress Tracking</h4>
+                      <p className="text-xs text-gray-500 font-medium">Visual metrics to identify weak spots and track daily streaks.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6">
+                  <a 
+                    href="https://play.google.com/store" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-[#1e3a5f] hover:bg-[#152a46] text-[#c9a84c] font-black rounded-2xl transition-all shadow-xl hover:scale-105 uppercase tracking-widest text-xs"
+                  >
+                    <svg className="h-5 w-5 fill-[#c9a84c]" viewBox="0 0 24 24">
+                      <path d="M5.244 3.07a1.996 1.996 0 0 0-.25 1.026v15.808c.002.39.09.77.258 1.11L14.73 12 5.244 3.07zM15.71 11.08l2.67-1.54-3.66-2.12-2.11 3.66 3.1 1.8-1.57-1.8zm-7.61-6.19l9.31 5.37-2.6 1.5-6.71-6.87zM8.1 18.25L14.81 11.4l2.6 1.5-9.31 5.35z"/>
+                    </svg>
+                    Download on Google Play
+                  </a>
+                </div>
+              </div>
+
+              {/* Right Column: QR Code & Visual App Card */}
+              <div className="lg:col-span-5 mt-16 lg:mt-0 flex justify-center">
+                <div className="bg-white p-8 sm:p-10 rounded-[3rem] border border-gray-100 shadow-[0_50px_100px_-20px_rgba(30,58,95,0.08)] text-center relative max-w-sm w-full group hover:border-[#c9a84c]/20 transition-all duration-300">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+                  
+                  <div className="relative z-10 space-y-6">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Scan to Download</p>
+                    
+                    <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100/50 inline-block relative overflow-hidden group-hover:bg-gray-50/50 transition-colors">
+                      <Image 
+                        src="/loksewa-flashcards-qr.png" 
+                        alt="Scan QR code to download Loksewa Flashcards" 
+                        width={200} 
+                        height={200}
+                        className="mx-auto rounded-xl relative z-10 transition-transform group-hover:scale-105 duration-300"
+                      />
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-black text-[#1e3a5f] text-lg uppercase tracking-tight">Loksewa Flashcards</h3>
+                      <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-1.5">For iOS & Android GK Exam Prep</p>
+                    </div>
+                    
+                    <div className="h-px bg-gray-100 my-4"></div>
+                    
+                    <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
+                      Point your phone's camera at the QR code to instantly download the app and begin practicing.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </section>
+
         {/* Testimonials */}
         <Testimonials />
 
