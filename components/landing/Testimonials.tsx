@@ -1,7 +1,7 @@
 'use client';
 
-import { Star } from 'lucide-react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { Star, ArrowLeft, ArrowRight, Quote } from 'lucide-react';
 
 const testimonials = [
   {
@@ -58,59 +58,206 @@ const stats = [
 ];
 
 export function Testimonials() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [exitingIndex, setExitingIndex] = useState<number | null>(null);
+  const [direction, setDirection] = useState<"next" | "prev">("next");
+  const autoPlayRef = useRef<(() => void) | null>(null);
+
+  const handleNext = () => {
+    if (exitingIndex !== null) return;
+    setDirection("next");
+    setExitingIndex(activeIndex);
+    setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % testimonials.length);
+      setExitingIndex(null);
+    }, 600);
+  };
+
+  const handlePrev = () => {
+    if (exitingIndex !== null) return;
+    setDirection("prev");
+    setExitingIndex(activeIndex);
+    setTimeout(() => {
+      setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+      setExitingIndex(null);
+    }, 600);
+  };
+
+  // Keep auto-play function reference updated
+  useEffect(() => {
+    autoPlayRef.current = handleNext;
+  });
+
+  // Autoplay effect
+  useEffect(() => {
+    const play = () => {
+      if (autoPlayRef.current) autoPlayRef.current();
+    };
+    const interval = setInterval(play, 6000); // 6 seconds auto-rotate
+    return () => clearInterval(interval);
+  }, [activeIndex]);
+
   return (
-    <section id="testimonials" className="py-20 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1e3a5f] relative inline-block">
+    <section id="testimonials" className="py-24 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-black text-[#1e3a5f] relative inline-block tracking-tight">
             What Our Students Say
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-[#c9a84c] rounded-full"></span>
+            <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-28 h-1.5 bg-[#c9a84c] rounded-full"></span>
           </h2>
-          <p className="mt-6 text-gray-600 max-w-2xl mx-auto">
+          <p className="mt-8 text-gray-500 max-w-2xl mx-auto font-medium text-lg">
             Join thousands of Loksewa aspirants who are preparing smarter with AI.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
-              className="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-[#c9a84c] border-t border-r border-b border-gray-100 transition-all duration-300"
-            >
-              <div className="flex mb-4">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className="h-4 w-4 text-[#c9a84c] fill-[#c9a84c]" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-6 italic leading-relaxed">
-                "{t.quote}"
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-[#1e3a5f]/10 border border-[#1e3a5f]/20 flex items-center justify-center text-[#1e3a5f] font-bold">
-                  {t.initials}
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#1e3a5f]">{t.name}</h4>
-                  <div className="flex flex-wrap items-center gap-2 mt-1">
-                    <span className="px-2 py-0.5 bg-[#1e3a5f]/5 text-[#1e3a5f] text-[10px] font-bold uppercase tracking-wider rounded-full border border-[#1e3a5f]/10">
-                      {t.category}
-                    </span>
-                    <span className="text-[10px] text-gray-400 font-medium">{t.location}</span>
+        {/* Stack Carousel Container */}
+        <div className="relative w-full max-w-2xl h-[420px] md:h-[360px] mx-auto flex items-center justify-center select-none overflow-visible px-4">
+          
+          {/* Dynamic Background Glow */}
+          <div className="absolute w-80 h-80 bg-[#1e3a5f]/5 rounded-full blur-[100px] -z-10 animate-pulse"></div>
+
+          <div className="relative w-full h-[320px] md:h-[280px]">
+            {testimonials.map((t, idx) => {
+              let offset = (idx - activeIndex + testimonials.length) % testimonials.length;
+              const isExiting = idx === exitingIndex;
+
+              let inlineStyle: React.CSSProperties = {};
+
+              if (isExiting) {
+                // Card slides out depending on direction
+                const translateX = direction === "next" ? "-150%" : "150%";
+                const rotate = direction === "next" ? "-15deg" : "15deg";
+                inlineStyle = {
+                  transform: `translateX(${translateX}) rotate(${rotate}) scale(0.85)`,
+                  opacity: 0,
+                  zIndex: 50,
+                };
+              } else if (idx === activeIndex && exitingIndex === null) {
+                // Front Card
+                inlineStyle = {
+                  transform: "translateX(0px) translateY(0px) rotate(0deg) scale(1)",
+                  opacity: 1,
+                  zIndex: 40,
+                };
+              } else {
+                // Adjust offsets for items behind the exiting item
+                if (exitingIndex !== null) {
+                  offset = (idx - ((activeIndex + 1) % testimonials.length) + testimonials.length) % testimonials.length;
+                }
+
+                // Stacking calculations
+                const zIndex = 30 - offset * 10;
+                const translateY = -offset * 14; 
+                const translateX = offset * 14;
+                const scale = 1 - offset * 0.05;
+                const rotate = offset * 1.5;
+                const opacity = 1 - offset * 0.25;
+
+                inlineStyle = {
+                  transform: `translateX(${translateX}px) translateY(${translateY}px) rotate(${rotate}deg) scale(${scale})`,
+                  opacity: Math.max(0, opacity),
+                  zIndex: zIndex,
+                };
+              }
+
+              return (
+                <div
+                  key={t.name}
+                  className="absolute inset-0 transition-all duration-700 ease-out"
+                  style={inlineStyle}
+                >
+                  <div className="w-full h-full bg-white p-6 md:p-8 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(30,58,95,0.08)] border border-gray-100 hover:border-[#c9a84c]/20 transition-colors duration-300 flex flex-col justify-between relative group">
+                    {/* Giant background quote icon */}
+                    <Quote className="absolute top-6 right-8 h-20 w-20 text-gray-50/70 group-hover:text-gray-100/80 transition-colors pointer-events-none -z-0" />
+
+                    <div className="relative z-10 flex-1 flex flex-col justify-between">
+                      <div>
+                        {/* Rating Stars */}
+                        <div className="flex mb-4 gap-1">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} className="h-4 w-4 text-[#c9a84c] fill-[#c9a84c]" />
+                          ))}
+                        </div>
+                        {/* Quote Text */}
+                        <p className="text-gray-600 mb-6 italic leading-relaxed text-sm md:text-base font-medium">
+                          "{t.quote}"
+                        </p>
+                      </div>
+
+                      {/* Author Info */}
+                      <div className="flex items-center gap-4 pt-4 border-t border-gray-50 mt-auto">
+                        <div className="h-12 w-12 rounded-full bg-[#1e3a5f]/10 border border-[#1e3a5f]/20 flex items-center justify-center text-[#1e3a5f] font-black shrink-0">
+                          {t.initials}
+                        </div>
+                        <div className="overflow-hidden">
+                          <h4 className="font-black text-[#1e3a5f] text-sm md:text-base truncate">{t.name}</h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="px-2.5 py-0.5 bg-[#1e3a5f]/5 text-[#1e3a5f] text-[9px] font-black uppercase tracking-wider rounded-full border border-[#1e3a5f]/10 truncate max-w-[150px] md:max-w-none">
+                              {t.category}
+                            </span>
+                            <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider shrink-0">{t.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              );
+            })}
+          </div>
         </div>
+
+        {/* Navigation and Indicators */}
+        <div className="flex flex-col items-center gap-6 mt-10 relative z-20">
+          {/* Arrow Buttons */}
+          <div className="flex gap-4">
+            <button
+              onClick={handlePrev}
+              disabled={exitingIndex !== null}
+              className="h-12 w-12 rounded-full bg-[#1e3a5f]/5 hover:bg-[#1e3a5f] text-[#1e3a5f] hover:text-white border border-[#1e3a5f]/10 transition-all flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-md shadow-slate-100"
+              aria-label="Previous testimonial"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={exitingIndex !== null}
+              className="h-12 w-12 rounded-full bg-[#1e3a5f]/5 hover:bg-[#1e3a5f] text-[#1e3a5f] hover:text-white border border-[#1e3a5f]/10 transition-all flex items-center justify-center hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-md shadow-slate-100"
+              aria-label="Next testimonial"
+            >
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex gap-2">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  if (exitingIndex !== null || i === activeIndex) return;
+                  setDirection(i > activeIndex ? "next" : "prev");
+                  setExitingIndex(activeIndex);
+                  setTimeout(() => {
+                    setActiveIndex(i);
+                    setExitingIndex(null);
+                  }, 600);
+                }}
+                className={`h-2 transition-all duration-300 rounded-full ${
+                  i === activeIndex 
+                    ? "w-8 bg-[#c9a84c]" 
+                    : "w-2 bg-[#1e3a5f]/10 hover:bg-[#1e3a5f]/30"
+                }`}
+                aria-label={`Go to testimonial ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
       </div>
 
       {/* Animated Ticker */}
-      <div className="bg-[#1e3a5f] py-6 relative overflow-hidden">
+      <div className="bg-[#1e3a5f] py-6 relative overflow-hidden mt-16">
         <div className="flex animate-ticker whitespace-nowrap hover:[animation-play-state:paused]">
           {[1, 2].map((loop) => (
             <div key={loop} className="flex items-center gap-12 px-6">
