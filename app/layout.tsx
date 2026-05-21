@@ -12,7 +12,23 @@ import type { Metadata, Viewport } from "next";
 export const metadata: Metadata = {
   title: "Loksewa AI | Nepal's First AI Tutor for PSC Preparation",
   description: "Ace your Loksewa Ayog (PSC Nepal) exams with your personal AI tutor. Generate smart study notes, take custom mock tests, and get real-time syllabus guidance.",
-  keywords: ["Loksewa", "PSC Nepal", "Loksewa Ayog", "AI Tutor", "Nepal Public Service Commission", "Study Notes", "Mock Tests", "Loksewa Preparation", "Loksewa Syllabus"],
+  keywords: [
+    "Loksewa", 
+    "Loksewa AI", 
+    "Loksewa Tayari", 
+    "PSC Nepal", 
+    "Loksewa Ayog", 
+    "AI Tutor", 
+    "Nepal Public Service Commission", 
+    "Study Notes", 
+    "Mock Tests", 
+    "Loksewa Preparation", 
+    "Loksewa Syllabus", 
+    "Kharidar Tayari", 
+    "Nayab Subba", 
+    "Section Officer", 
+    "लोकसेवा तयारी"
+  ],
   authors: [{ name: "Loksewa AI Team" }],
   creator: "Loksewa AI",
   publisher: "Loksewa AI",
@@ -81,20 +97,40 @@ export default async function RootLayout({
     } catch (e) {}
   }
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Loksewa AI",
-    "url": "https://loksewaai.com",
-    "logo": "https://loksewaai.com/icon-512.png",
-    "description": "Nepal's first AI-powered PSC preparation platform. Personalized study plans, smart notes, and adaptive practice.",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+977-9808493504",
-      "contactType": "customer service",
-      "email": "loksewagkdose@gmail.com"
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://loksewaai.com/#organization",
+      "name": "Loksewa AI",
+      "url": "https://loksewaai.com",
+      "logo": "https://loksewaai.com/icon-512.png",
+      "description": "Nepal's first AI-powered PSC preparation platform. Personalized study plans, smart notes, and adaptive practice.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+977-9808493504",
+        "contactType": "customer service",
+        "email": "loksewagkdose@gmail.com"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://loksewaai.com/#website",
+      "url": "https://loksewaai.com",
+      "name": "Loksewa AI",
+      "alternateName": ["लोकसेवा एआई", "LoksewaAI"],
+      "description": "Nepal's First AI Tutor for PSC Exam Preparation. Practice MCQs, generate notes, and query Loksewa Guru in Nepali & English.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://loksewaai.com/blog?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
     }
-  };
+  ];
 
   return (
     <html

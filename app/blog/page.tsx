@@ -1,6 +1,40 @@
 import Link from 'next/link';
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { ArrowRight, BookOpen, Clock, Calendar, Sparkles, GraduationCap } from "lucide-react";
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "Loksewa AI Blog | PSC Exam Preparation Tips & AI Study Strategies",
+  description: "Read the latest guides, tips, and strategies for passing the Nepal PSC exams. Learn how to use AI for study plans, active recall quizzes, and custom notes.",
+  keywords: [
+    "Loksewa Blog",
+    "Loksewa Tayari Tips",
+    "Nepal PSC Strategy",
+    "Loksewa AI Tutorial",
+    "Kharidar Study Plan",
+    "Nayab Subba preparation online",
+    "Section Officer subjective papers"
+  ],
+  alternates: {
+    canonical: 'https://loksewaai.com/blog',
+  },
+  openGraph: {
+    title: "Loksewa AI Blog | PSC Exam Preparation Tips & AI Study Strategies",
+    description: "Read the latest guides, tips, and strategies for passing the Nepal PSC exams. Learn how to use AI for study plans, active recall quizzes, and custom notes.",
+    url: 'https://loksewaai.com/blog',
+    siteName: 'Loksewa AI',
+    images: [
+      {
+        url: 'https://loksewaai.com/icon-512.png',
+        width: 512,
+        height: 512,
+        alt: 'Loksewa AI Blog',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
 
 const blogPosts = [
   {

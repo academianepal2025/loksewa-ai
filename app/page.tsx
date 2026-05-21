@@ -6,6 +6,43 @@ import { Testimonials } from "@/components/landing/Testimonials";
 import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Loksewa AI | Nepal's First AI Tutor for PSC Exam Preparation",
+  description: "Prepare for Loksewa Ayog (Nepal PSC) exams with Loksewa AI. Generate smart study notes, take custom mock tests, and get real-time syllabus guidance from Loksewa Guru.",
+  keywords: [
+    "Loksewa", 
+    "Loksewa AI", 
+    "Loksewa Tayari", 
+    "PSC Nepal", 
+    "Loksewa Ayog", 
+    "Kharidar Tayari", 
+    "Nayab Subba Tayari", 
+    "Section Officer", 
+    "लोकसेवा तयारी", 
+    "Nepal Public Service Commission"
+  ],
+  alternates: {
+    canonical: 'https://loksewaai.com',
+  },
+  openGraph: {
+    title: "Loksewa AI | Nepal's First AI Tutor for PSC Exam Preparation",
+    description: "Prepare for Loksewa Ayog (Nepal PSC) exams with Loksewa AI. Generate smart study notes, take custom mock tests, and get real-time syllabus guidance from Loksewa Guru.",
+    url: 'https://loksewaai.com',
+    siteName: 'Loksewa AI',
+    images: [
+      {
+        url: 'https://loksewaai.com/icon-512.png',
+        width: 512,
+        height: 512,
+        alt: 'Loksewa AI Platform Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
 
 export default async function Home() {
   const supabase = await createClient();

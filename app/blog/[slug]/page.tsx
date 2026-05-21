@@ -2,11 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { ArrowLeft, Clock, Calendar, User, Share2, GraduationCap, Sparkles, CheckCircle2 } from "lucide-react";
+import { Metadata } from 'next';
 
 const posts: Record<string, any> = {
   "how-to-use-loksewa-ai": {
     title: "The Ultimate Guide to Loksewa AI: Mastering Every Feature",
     date: "May 16, 2026",
+    datePublishedISO: "2026-05-16T00:00:00Z",
+    excerpt: "Learn how to leverage our AI-powered study plans, smart notes, and the Loksewa Guru to maximize your preparation efficiency.",
     author: "Loksewa AI Team",
     readTime: "8 min read",
     category: "Tutorial",
@@ -14,20 +17,20 @@ const posts: Record<string, any> = {
     content: (
       <div className="space-y-12">
         <p className="text-xl leading-relaxed text-gray-600 font-medium italic border-l-4 border-[#c9a84c] pl-6">
-          Welcome to the future of PSC preparation. Loksewa AI isn't just a study tool; it's a personalized intelligence platform designed to handle the heavy lifting of syllabus analysis and recall.
+          Welcome to the future of PSC preparation. <Link href="/" className="text-indigo-600 hover:underline">Loksewa AI</Link> isn't just a study tool; it's a personalized intelligence platform designed to handle the heavy lifting of syllabus analysis and recall.
         </p>
 
         <section className="space-y-6">
           <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">1. Setting Your Mission Parameters</h2>
           <p className="text-gray-600 leading-relaxed">
-            The first step is selecting your target exam. Whether you are aiming for <strong>Kharidar, Nayab Subba, or Section Officer</strong>, Loksewa AI adapts its logic to the specific pattern of that exam. Go to the <strong>Exams</strong> tab to initialize your mission.
+            The first step is selecting your target exam. Whether you are aiming for <strong>Kharidar, Nayab Subba, or Section Officer</strong>, Loksewa AI adapts its logic to the specific pattern of that exam. Go to the <strong>Exams</strong> tab or <Link href="/auth/signup" className="text-indigo-600 hover:underline">create your free account</Link> to initialize your mission.
           </p>
         </section>
 
         <section className="space-y-6">
           <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">2. Intelligence Intake (Document Upload)</h2>
           <p className="text-gray-600 leading-relaxed">
-            This is where the magic happens. Don't just read PDFs—make them interactive. Upload your syllabus, textbooks, or even handwritten notes (as photos). Our AI will:
+            This is where the magic happens. Don't just read PDFs—make them interactive. Upload your syllabus, textbooks, or even handwritten notes (as photos). Our AI will automatically extract topics, generate notes, and build custom quizzes. To optimize this workflow, see our guide on <Link href="/blog/how-to-prepare-loksewa-with-ai" className="text-indigo-600 hover:underline">preparing for Loksewa with AI</Link>.
           </p>
           <ul className="space-y-4">
             <li className="flex items-start gap-4">
@@ -48,7 +51,7 @@ const posts: Record<string, any> = {
         <section className="space-y-6">
           <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">3. The Tactical Guru</h2>
           <p className="text-gray-600 leading-relaxed">
-            Stuck on a complex legal provision in the Nepal Constitution? Ask the <strong>Loksewa Guru</strong>. It's an AI tutor specialized in Nepali governance and law. It doesn't give generic answers; it references your syllabus and provides PSC-style explanations.
+            Stuck on a complex legal provision in the Nepal Constitution? Ask the <strong>Loksewa Guru</strong>. It's an AI tutor specialized in Nepali governance and law. It doesn't give generic answers; it references your syllabus and provides PSC-style explanations aligned with official <a href="https://loksewa.gov.np" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">Public Service Commission (Loksewa Ayog)</a> guidelines.
           </p>
         </section>
 
@@ -64,6 +67,8 @@ const posts: Record<string, any> = {
   "how-to-prepare-loksewa-with-ai": {
     title: "How to Prepare for Loksewa Ayog Exams Using Artificial Intelligence",
     date: "May 15, 2026",
+    datePublishedISO: "2026-05-15T00:00:00Z",
+    excerpt: "Strategic insights into integrating AI into your PSC preparation workflow. From syllabus analysis to active recall strategies.",
     author: "Education Specialist",
     readTime: "12 min read",
     category: "Strategy",
@@ -71,27 +76,27 @@ const posts: Record<string, any> = {
     content: (
       <div className="space-y-12">
         <p className="text-xl leading-relaxed text-gray-600 font-medium">
-          The traditional method of Loksewa preparation involves thousands of pages of rote memorization. In 2026, the winners are those who use <strong>Augmented Intelligence</strong> to study smarter, not harder.
+          The traditional method of Loksewa preparation involves thousands of pages of rote memorization. In 2026, the winners are those who use <Link href="/" className="text-indigo-600 hover:underline">Augmented Intelligence</Link> to study smarter, not harder.
         </p>
 
         <section className="space-y-6">
           <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">Strategy A: Automated Syllabus Mapping</h2>
           <p className="text-gray-600 leading-relaxed">
-            Stop guessing what is important. Use AI to analyze past year questions and map them against the current syllabus. Loksewa AI does this automatically when you upload your syllabus, highlighting "Hot Topics" that appear frequently.
+            Stop guessing what is important. Use AI to analyze past year questions and map them against the current syllabus. <Link href="/" className="text-indigo-600 hover:underline">Loksewa AI</Link> does this automatically when you upload your syllabus, highlighting "Hot Topics" that appear frequently.
           </p>
         </section>
 
         <section className="space-y-6">
           <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">Strategy B: The 90-Day Tactical Plan</h2>
           <p className="text-gray-600 leading-relaxed">
-            Consistency is the only "secret" to Loksewa success. Use our <strong>Dynamic Study Plan</strong>. If you miss a day, the AI doesn't judge—it recalibrates your remaining days so you still cover everything before the exam.
+            Consistency is the only "secret" to Loksewa success. Use our <strong>Dynamic Study Plan</strong>. If you miss a day, the AI doesn't judge—it recalibrates your remaining days so you still cover everything before the exam. You can configure this directly on the <Link href="/auth/signup" className="text-indigo-600 hover:underline">Loksewa AI workspace</Link> and read our <Link href="/blog/how-to-use-loksewa-ai" className="text-indigo-600 hover:underline">mastery guide</Link> for detailed instructions.
           </p>
         </section>
 
         <section className="space-y-6">
           <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">Strategy C: Mastering the Language</h2>
           <p className="text-gray-600 leading-relaxed">
-            For many, writing descriptive answers in Nepali is the hardest part. Practice by asking the Guru to review your answer structure. It can provide feedback on your "Point-wise" presentation, which is critical for scoring high in PSC subjective papers.
+            For many, writing descriptive answers in Nepali is the hardest part. Practice by asking the Guru to review your answer structure. It can provide feedback on your "Point-wise" presentation, which is critical for scoring high in <a href="https://loksewa.gov.np" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">PSC subjective papers</a>.
           </p>
         </section>
 
@@ -104,6 +109,8 @@ const posts: Record<string, any> = {
   "common-loksewa-mistakes-ai-fix": {
     title: "5 Common Mistakes Loksewa Aspirants Make (And How AI Fixes Them)",
     date: "May 14, 2026",
+    datePublishedISO: "2026-05-14T00:00:00Z",
+    excerpt: "Avoid the traps of passive reading and syllabus overwhelm. Discover how technology can bridge the gap between hard work and success.",
     author: "Career Coach",
     readTime: "6 min read",
     category: "Insights",
@@ -117,7 +124,7 @@ const posts: Record<string, any> = {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
               <h3 className="text-lg font-black text-[#1e3a5f] uppercase mb-4 tracking-tight">1. Passive Reading</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Reading a book multiple times feels like progress, but it's the weakest way to learn. AI fixes this by forcing <strong>Active Recall</strong> through instant quizzes.</p>
+              <p className="text-gray-600 text-sm leading-relaxed">Reading a book multiple times feels like progress, but it's the weakest way to learn. AI fixes this by forcing <strong>Active Recall</strong> through instant quizzes. Learn more in our <Link href="/blog/how-to-use-loksewa-ai" className="text-indigo-600 hover:underline">Mastery Guide</Link>.</p>
            </div>
            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
               <h3 className="text-lg font-black text-[#1e3a5f] uppercase mb-4 tracking-tight">2. Syllabus Overwhelm</h3>
@@ -125,18 +132,18 @@ const posts: Record<string, any> = {
            </div>
            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
               <h3 className="text-lg font-black text-[#1e3a5f] uppercase mb-4 tracking-tight">3. Ignoring Weaknesses</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Students naturally study what they already know. AI analyzes your quiz scores to identify <strong>Knowledge Gaps</strong> and tells you exactly where to focus.</p>
+              <p className="text-gray-600 text-sm leading-relaxed">Students naturally study what they already know. AI analyzes your quiz scores to identify <strong>Knowledge Gaps</strong> on the <Link href="/" className="text-indigo-600 hover:underline">Loksewa AI platform</Link> and tells you exactly where to focus.</p>
            </div>
            <div className="p-8 bg-white border border-gray-100 rounded-3xl shadow-sm">
               <h3 className="text-lg font-black text-[#1e3a5f] uppercase mb-4 tracking-tight">4. Outdated Materials</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Laws and regulations in Nepal change frequently. Loksewa Guru is updated with the latest constitutional amendments and legal changes.</p>
+              <p className="text-gray-600 text-sm leading-relaxed">Laws and regulations in Nepal change frequently. Loksewa Guru is updated with the latest constitutional amendments following official guidelines from the <a href="https://loksewa.gov.np" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">Public Service Commission of Nepal</a>.</p>
            </div>
         </div>
 
         <section className="space-y-6">
-          <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">5. The "No-Plan" Trap</h2>
+          <h2 className="text-3xl font-black text-[#1e3a5f] tracking-tight uppercase">5. The \"No-Plan\" Trap</h2>
           <p className="text-gray-600 leading-relaxed">
-            Many start with high energy but lose track by week 3. A static paper schedule can't adapt to your life. Our <strong>Dynamic Scheduler</strong> moves your tasks if you get sick or busy, ensuring you finish the course.
+            Many start with high energy but lose track by week 3. A static paper schedule can't adapt to your life. Our <strong>Dynamic Scheduler</strong> moves your tasks if you get sick or busy. Try creating one now by <Link href="/auth/signup" className="text-indigo-600 hover:underline">signing up for free</Link>.
           </p>
         </section>
 
@@ -151,6 +158,52 @@ const posts: Record<string, any> = {
   }
 };
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = posts[slug];
+
+  if (!post) {
+    return {
+      title: "Post Not Found | Loksewa AI Blog",
+    };
+  }
+
+  const title = `${post.title} | Loksewa AI Blog`;
+  const description = post.excerpt;
+
+  return {
+    title,
+    description,
+    keywords: ["Loksewa AI", "PSC Nepal", "Loksewa Preparation", post.category, "Tayari tips", slug.replace(/-/g, " ")],
+    alternates: {
+      canonical: `https://loksewaai.com/blog/${slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://loksewaai.com/blog/${slug}`,
+      siteName: "Loksewa AI",
+      images: [
+        {
+          url: "https://loksewaai.com/icon-512.png",
+          width: 512,
+          height: 512,
+          alt: post.title,
+        },
+      ],
+      type: "article",
+      publishedTime: post.datePublishedISO,
+      authors: [post.author],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["https://loksewaai.com/icon-512.png"],
+    },
+  };
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = posts[slug];
@@ -159,8 +212,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "description": post.excerpt,
+    "datePublished": post.datePublishedISO,
+    "author": {
+      "@type": "Organization",
+      "name": post.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Loksewa AI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://loksewaai.com/icon-512.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://loksewaai.com/blog/${slug}`
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background font-sans selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
