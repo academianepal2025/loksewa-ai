@@ -207,11 +207,11 @@ export default async function Home() {
                 </div>
                 
                 <h2 className="text-4xl md:text-5xl font-black text-[#1e3a5f] tracking-tight leading-tight animate-fade-in">
-                  Master GK Anywhere with <span className="text-[#c9a84c]">Loksewa Flashcards</span>
+                  Master GK for Loksewa with <span className="text-[#c9a84c]">Loksewa Flashcards</span>
                 </h2>
                 
                 <p className="text-lg text-gray-600 leading-relaxed font-medium">
-                  Boost your General Knowledge (GK) preparation with our official companion app. Built specifically for offline active recall and spaced repetition practice for all levels of Nepal Public Service Commission (Loksewa) exams.
+                  Download the Loksewa Flashcards companion app from the Google Play Store to ace the General Knowledge (GK) exams of Loksewa. Specifically built for active recall and spaced repetition practice for all levels of Nepal Public Service Commission (Loksewa) preparation.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
