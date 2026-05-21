@@ -59,12 +59,17 @@ const getSuggestedQuestions = (t: any) => [
 ];
 
 // ── Guru Avatar ───────────────────────────────────────────────────────
-function GuruAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const dims = size === 'lg' ? 'h-16 w-16' : size === 'md' ? 'h-8 w-8' : 'h-7 w-7';
-  const iconDims = size === 'lg' ? 'h-8 w-8' : size === 'md' ? 'h-4 w-4' : 'h-3.5 w-3.5';
+function GuruAvatar({ size = 'md', type = 'icon' }: { size?: 'sm' | 'md' | 'lg'; type?: 'icon' | 'letter' }) {
+  const dims = size === 'lg' ? 'h-16 w-16' : size === 'md' ? 'h-10 w-10' : 'h-9 w-9';
+  const textDims = size === 'lg' ? 'text-xl' : size === 'md' ? 'text-base' : 'text-sm';
+  const iconDims = size === 'lg' ? 'h-6 w-6' : size === 'md' ? 'h-5 w-5' : 'h-4 w-4';
   return (
-    <div className={`${dims} rounded-xl bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center flex-shrink-0 shadow-lg shadow-[#1e3a5f]/10`}>
-      <Sparkles className={iconDims} />
+    <div className={`${dims} rounded-xl bg-[#f5ebd5]/50 dark:bg-[#f5ebd5]/10 border border-[#c9a84c]/20 text-[#c9a84c] flex items-center justify-center flex-shrink-0 shadow-sm`}>
+      {type === 'letter' ? (
+        <span className={`${textDims} font-black uppercase tracking-normal`}>G</span>
+      ) : (
+        <Sparkles className={iconDims} />
+      )}
     </div>
   );
 }
@@ -73,8 +78,8 @@ function GuruAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 function ThinkingIndicator({ t }: { t: any }) {
   return (
     <div className="flex items-start gap-3 max-w-3xl mx-auto">
-      <GuruAvatar size="sm" />
-      <div className="bg-surface border border-border-subtle rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-sm">
+      <GuruAvatar size="sm" type="letter" />
+      <div className="bg-[#f5ebd5]/10 dark:bg-surface border border-[#c9a84c]/20 dark:border-border-subtle rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-sm">
         <div className="flex items-center gap-2.5">
           <span className="text-[10px] font-black text-subtle uppercase tracking-widest">{t('guru_processing')}</span>
           <span className="flex gap-1">
@@ -94,16 +99,12 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   const sourceTag = !isUser ? detectSource(message.content) : null;
 
   return (
-    <div className={`py-5 ${isUser ? '' : 'bg-surface/50'}`}>
+    <div className={`py-5 ${isUser ? '' : 'bg-[#f5ebd5]/5 dark:bg-surface/30 border-y border-border-subtle/10'}`}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className={`flex items-start gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
-          {/* Avatar */}
-          {isUser ? (
-            <div className="h-7 w-7 rounded-xl bg-[#1e3a5f] text-[#c9a84c] border border-[#c9a84c]/20 flex items-center justify-center flex-shrink-0 text-[10px] font-black uppercase tracking-widest shadow-sm">
-              YOU
-            </div>
-          ) : (
-            <GuruAvatar size="sm" />
+          {/* Avatar - only for assistant */}
+          {!isUser && (
+            <GuruAvatar size="sm" type="letter" />
           )}
 
           {/* Content */}
@@ -116,17 +117,18 @@ function MessageBubble({ message }: { message: ChatMessage }) {
               </div>
             )}
 
-            <div className={`inline-block text-left reading-area prose prose-sm dark:prose-invert max-w-none text-[15px] leading-[1.8] font-medium prose-headings:text-foreground prose-strong:text-foreground prose-p:text-foreground prose-li:text-foreground prose-ol:text-foreground prose-ul:text-foreground ${
-              isUser
-                ? 'bg-[#1e3a5f] text-[#c9a84c] px-5 py-3 rounded-2xl rounded-br-sm shadow-lg shadow-[#1e3a5f]/10 border border-[#c9a84c]/10'
-                : 'text-foreground'
-            }`}>
-              {isUser ? (
-                <div className="whitespace-pre-wrap">{message.content}</div>
-              ) : (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-              )}
-            </div>
+            {isUser ? (
+              <div className="inline-block text-left bg-[#1e3a5f] text-white px-5 py-3.5 rounded-2xl rounded-tr-sm shadow-md shadow-[#1e3a5f]/15 border border-[#1e3a5f] text-[15px] font-medium leading-[1.7] whitespace-pre-wrap max-w-[85%]">
+                {message.content}
+              </div>
+            ) : (
+              <div className="inline-block text-left bg-[#f5ebd5]/10 dark:bg-surface border border-[#c9a84c]/20 dark:border-border-subtle rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm text-[15px] leading-[1.8] font-medium max-w-[90%] md:max-w-full">
+                <span className="block font-black text-[#1e3a5f] dark:text-[#c9a84c] text-[12px] uppercase tracking-wider mb-2">Loksewa Guru:</span>
+                <div className="reading-area prose prose-sm dark:prose-invert max-w-none prose-headings:text-foreground prose-strong:text-foreground prose-p:text-foreground prose-li:text-foreground prose-ol:text-foreground prose-ul:text-foreground">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                </div>
+              </div>
+            )}
 
             {message.created_at && (
               <p className={`text-[9px] font-black text-muted/50 mt-2 uppercase tracking-widest ${isUser ? 'text-right' : ''}`}>
@@ -521,18 +523,25 @@ function GuruContent() {
     <div className="-mx-4 sm:-mx-8 lg:-mx-10 -mb-32 md:-mb-12 flex flex-col relative h-[calc(100vh-9rem)] md:h-[calc(100vh-4rem)]">
       
       {/* ── Slim Top Bar ──────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border-subtle bg-background/80 backdrop-blur-md flex-shrink-0 z-20">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 border-b border-border-subtle bg-background/80 backdrop-blur-md flex-shrink-0 z-20 gap-3">
         <div className="flex items-center gap-3">
-          <GuruAvatar size="md" />
+          <GuruAvatar size="md" type="icon" />
           <div className="min-w-0">
-            <h1 className="text-sm font-black text-foreground tracking-tighter uppercase">{t('guru_title')}</h1>
-            <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">
-              {isStreaming ? t('guru_status_thinking') : t('guru_status_active')}
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-black text-[#1e3a5f] dark:text-[#c9a84c] tracking-tight uppercase leading-none">
+                {t('guru_title')}
+              </h1>
+              <span className="inline-block px-2.5 py-0.5 bg-[#f5ebd5]/50 dark:bg-[#f5ebd5]/10 border border-[#c9a84c]/20 text-[#1e3a5f] dark:text-[#c9a84c] text-[8px] font-black tracking-widest rounded-full uppercase">
+                SMART AI ASSISTANT
+              </span>
+            </div>
+            <p className="text-[9px] font-black text-muted uppercase tracking-widest mt-1.5">
+              24/7 AI TUTOR SPECIALIZED IN PSC SYLLABUS
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-end sm:self-center">
           {/* Exam Selector */}
           {exams.length > 1 && (
             <div className="relative">
@@ -556,7 +565,7 @@ function GuruContent() {
 
           <button
             onClick={startNewChat}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black hover:opacity-90 transition-all min-h-[36px] shadow-sm shadow-[#1e3a5f]/10"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1e3a5f] text-white text-[10px] font-black hover:opacity-90 transition-all min-h-[36px] shadow-sm shadow-[#1e3a5f]/10"
           >
             <Plus className="h-3.5 w-3.5" />
             <span className="hidden sm:inline uppercase tracking-widest">{t('guru_new_chat')}</span>
@@ -583,7 +592,7 @@ function GuruContent() {
           /* ── Empty State ─────────────────────────────────────────── */
           <div className="flex flex-col items-center justify-center min-h-full text-center px-6 py-16">
             <div className="mb-6">
-              <GuruAvatar size="lg" />
+              <GuruAvatar size="lg" type="icon" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter mb-2 uppercase">
               {t('guru_empty_title')}
