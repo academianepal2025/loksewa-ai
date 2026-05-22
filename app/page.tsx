@@ -127,7 +127,7 @@ export default async function Home() {
                 <ScrollReveal delay={0.1}>
                   <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-50 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] mb-8 border border-indigo-100 shadow-sm">
                     <span className="flex h-2 w-2 rounded-full bg-[#c9a84c] mr-3 animate-pulse"></span>
-                    Nepal's First AI Tutor for PSC
+                    Nepal&apos;s First AI Tutor for PSC
                   </div>
                 </ScrollReveal>
                 
@@ -283,6 +283,43 @@ export default async function Home() {
                   </div>
                 </div>
 
+                {/* Special Bundle Offer Card */}
+                <div className="bg-[#1e3a5f]/5 border border-[#c9a84c]/30 rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-[#c9a84c]/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                  
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 bg-[#c9a84c]/20 text-[#c9a84c] border border-[#c9a84c]/30 text-[9px] font-black tracking-widest rounded-full uppercase">
+                      Special Bundle Offer
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-xl font-black text-[#1e3a5f] tracking-tight">
+                    Get <span className="text-[#c9a84c]">Loksewa Flashcards Premium</span> For Free!
+                  </h3>
+                  
+                  <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                    Subscribe to our <strong>Pro Version</strong> and get the premium version of the Loksewa Flashcards companion app for the <strong>same period for absolutely free</strong>!
+                  </p>
+
+                  <div className="space-y-3 pt-2">
+                    <h4 className="text-xs font-black text-[#1e3a5f] uppercase tracking-wider">Steps to claim this offer:</h4>
+                    <ol className="space-y-2 text-xs text-gray-500 font-bold">
+                      <li className="flex items-start gap-2.5">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1e3a5f] text-white text-[10px] font-black">1</span>
+                        <span>Purchase the Loksewa AI Pro Version.</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1e3a5f] text-white text-[10px] font-black">2</span>
+                        <span>Install the Loksewa Flashcards app from Google Play.</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#1e3a5f] text-white text-[10px] font-black">3</span>
+                        <span>WhatsApp your registered email ID to activate your premium access.</span>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+
                 <div className="pt-6">
                   <a 
                     href="https://play.google.com/store/apps/details?id=app.lovable.fc6eeb197a144f488639eefd563fc26f&pcampaignid=web_share" 
@@ -330,7 +367,7 @@ export default async function Home() {
                     <div className="h-px bg-gray-100 my-2"></div>
                     
                     <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
-                      Point your phone's camera here to download the Android app.
+                      Point your phone&apos;s camera here to download the Android app.
                     </p>
                   </div>
                 </div>
