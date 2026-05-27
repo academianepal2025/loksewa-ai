@@ -55,7 +55,7 @@ CRITICAL PERFORMANCE RULES:
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { examId, userId } = body;
+    const { examId, userId, language } = body;
 
     const supabase = await createClient();
 
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       .eq('user_id', userId)
       .maybeSingle();
     
-    const userLang = prefs?.language || 'en';
+    const userLang = language || prefs?.language || 'en';
 
     if (!examId || !userId) {
       return NextResponse.json({ success: false, message: 'Missing examId or userId' }, { status: 400 });

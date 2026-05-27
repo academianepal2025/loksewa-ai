@@ -679,7 +679,8 @@ export default function StudyPlanPage() {
           topic: topicToGen,
           subtopics: subtopicsToGen,
           date: day.date,
-          force_generate: force
+          force_generate: force,
+          language
         })
       });
       

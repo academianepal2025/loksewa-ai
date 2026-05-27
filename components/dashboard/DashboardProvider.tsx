@@ -166,9 +166,19 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
     const cookieValue = JSON.stringify({ language: newPrefs.language, theme: newPrefs.brand_theme, fontScale: newPrefs.reading_font_scale });
     document.cookie = `loksewa_prefs=${encodeURIComponent(cookieValue)}; path=/; max-age=31536000; SameSite=Lax`;
 
-    // Upsert to DB
+    // Upsert to DB via server-side API to bypass RLS limits
     try {
-      await supabase.from('user_preferences').upsert(newPrefs, { onConflict: 'user_id' });
+      await fetch('/api/settings/preferences', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          uiPreferences: {
+            language: newPrefs.language,
+            theme: newPrefs.brand_theme,
+            fontScale: newPrefs.reading_font_scale
+          }
+        })
+      });
     } catch (e) {
       console.warn("DB Sync failed, persisting locally only", e);
     }

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(request: Request) {
@@ -31,9 +32,10 @@ export async function PATCH(request: Request) {
       }
     }
 
-    // 2. Synchronize UI Preferences (Language, Theme) in user_preferences table
+    // 2. Synchronize UI Preferences (Language, Theme) in user_preferences table using admin client to bypass RLS limits
     if (uiPreferences) {
-      const { error: uiError } = await supabase
+      const adminClient = createAdminClient();
+      const { error: uiError } = await adminClient
         .from('user_preferences')
         .upsert({
           user_id: user.id,
@@ -58,3 +60,4 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+

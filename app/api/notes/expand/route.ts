@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { noteId, sectionToExpand } = body;
+    const { noteId, sectionToExpand, language } = body;
 
     if (!noteId || !sectionToExpand) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       .eq('user_id', user.id)
       .maybeSingle();
     
-    const userLang = prefs?.language || 'en';
+    const userLang = language || prefs?.language || 'en';
 
     console.log(`[DEBUG] Expanding section "${sectionToExpand}" for note "${existingNote.topic}" in language "${userLang}"`);
 

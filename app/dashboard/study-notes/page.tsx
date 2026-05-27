@@ -45,7 +45,7 @@ interface StudyNote {
 
 export default function StudyNotesPage() {
   const supabase = createClient();
-  useDashboard();
+  const { language } = useDashboard();
   const [notes, setNotes] = useState<StudyNote[]>([]);
   const [exams, setExams] = useState<{id: string, exam_name: string}[]>([]);
   const [selectedExamId, setSelectedExamId] = useState<string>('all');
@@ -176,7 +176,8 @@ export default function StudyNotesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           noteId: activeNote.id,
-          sectionToExpand: expansionTopic.trim()
+          sectionToExpand: expansionTopic.trim(),
+          language
         })
       });
       

@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { examId, day_number, topic, subtopics = [], date, force_generate = false } = body;
+    const { examId, day_number, topic, subtopics = [], date, force_generate = false, language } = body;
 
     if (!examId || !day_number || !topic) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       .eq('user_id', user.id)
       .maybeSingle();
     
-    const userLang = prefs?.language || 'en';
+    const userLang = language || prefs?.language || 'en';
 
     // Check if notes already exist
     const { data: existingNote } = await supabase
