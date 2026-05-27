@@ -16,8 +16,9 @@ import {
   Calendar,
   AlertCircle,
   Hash,
-  ChevronRight,
-  BookOpen
+  BookOpen,
+  Sparkles,
+  RefreshCw
 } from 'lucide-react';
 
 interface NoteContent {
@@ -44,7 +45,7 @@ interface StudyNote {
 
 export default function StudyNotesPage() {
   const supabase = createClient();
-  const { t } = useDashboard();
+  useDashboard();
   const [notes, setNotes] = useState<StudyNote[]>([]);
   const [exams, setExams] = useState<{id: string, exam_name: string}[]>([]);
   const [selectedExamId, setSelectedExamId] = useState<string>('all');
@@ -56,6 +57,10 @@ export default function StudyNotesPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  // Expansion Mode
+  const [expansionTopic, setExpansionTopic] = useState('');
+  const [isExpanding, setIsExpanding] = useState(false);
 
 
   useEffect(() => {
@@ -152,10 +157,54 @@ export default function StudyNotesPage() {
       setNotes(prev => prev.map(n => n.id === activeNote.id ? updatedNote : n));
       setIsEditing(false);
       toast.success('Notes updated successfully');
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      const errMsg = e instanceof Error ? e.message : String(e);
+      toast.error(errMsg);
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleExpandTopic = async () => {
+    if (!activeNote || !expansionTopic.trim()) return;
+    setIsExpanding(true);
+    toast(`Expanding note section for "${expansionTopic}"...`, { icon: '⏳' });
+    
+    try {
+      const res = await fetch('/api/notes/expand', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          noteId: activeNote.id,
+          sectionToExpand: expansionTopic.trim()
+        })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to expand note');
+      }
+      
+      const updatedNote = {
+        ...activeNote,
+        notes_content: {
+          ...activeNote.notes_content!,
+          full_markdown: data.updated_markdown,
+          word_count: data.word_count
+        }
+      };
+      
+      setActiveNote(updatedNote);
+      setEditContent(data.updated_markdown);
+      setNotes(prev => prev.map(n => n.id === activeNote.id ? updatedNote : n));
+      setExpansionTopic('');
+      toast.success(`Expanded note section saved successfully!`);
+    } catch (e: unknown) {
+      const errMsg = e instanceof Error ? e.message : String(e);
+      toast.error(errMsg || 'Error expanding notes');
+    } finally {
+      setIsExpanding(false);
     }
   };
 
@@ -322,6 +371,76 @@ export default function StudyNotesPage() {
                     <p className="text-[10px] font-black text-subtle uppercase tracking-widest mt-2 leading-relaxed opacity-70">
                       No uploaded materials found for this topic. These notes were generated using general PSC syllabus knowledge.
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* AI Expansion Expander Card */}
+              {!isEditing && activeNote && (
+                <div className="mb-8 bg-surface border border-border-subtle rounded-2xl p-5 sm:p-6 shadow-sm relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-[40px] -mr-16 -mt-16" />
+                  <div className="relative z-10 space-y-4">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20 flex items-center justify-center">
+                        <Sparkles className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-foreground uppercase tracking-widest">AI Deep-Dive Expander</h4>
+                        <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Generate more detail for any subtopic</p>
+                      </div>
+                    </div>
+
+                    <p className="text-[11px] font-medium text-foreground leading-relaxed">
+                      Need more details? Select an existing subtopic or type a custom concept (e.g., <em>planning</em>, <em>organizing</em>) to have the AI write a comprehensive detailed guide and save it to these notes.
+                    </p>
+
+                    {/* Prepopulated Subtopics Pills */}
+                    {activeNote.notes_content?.subtopics && activeNote.notes_content.subtopics.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-[8px] font-black text-subtle uppercase tracking-widest">Suggested Subtopics</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activeNote.notes_content.subtopics.map((sub, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setExpansionTopic(sub)}
+                              className={`px-2.5 py-1 text-[9px] font-black rounded-lg border transition-all uppercase tracking-widest ${
+                                expansionTopic.toLowerCase() === sub.toLowerCase()
+                                  ? 'bg-[#c9a84c]/20 border-[#c9a84c]/40 text-[#c9a84c]'
+                                  : 'bg-background border-border-subtle text-subtle hover:text-foreground'
+                              }`}
+                            >
+                              {sub}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Input and Action */}
+                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                      <input
+                        type="text"
+                        value={expansionTopic}
+                        onChange={(e) => setExpansionTopic(e.target.value)}
+                        placeholder="Enter a concept or subtopic to expand..."
+                        className="flex-1 px-4 py-2.5 bg-background border border-border-subtle rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all placeholder:text-subtle/50 text-foreground"
+                      />
+                      <button
+                        onClick={handleExpandTopic}
+                        disabled={isExpanding || !expansionTopic.trim()}
+                        className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-md ${
+                          isExpanding || !expansionTopic.trim()
+                            ? 'bg-background border border-border-subtle text-subtle cursor-not-allowed'
+                            : 'bg-[#1e3a5f] text-[#c9a84c] border border-transparent hover:opacity-90 active:scale-95 shadow-[#1e3a5f]/10'
+                        }`}
+                      >
+                        {isExpanding ? (
+                          <><RefreshCw className="h-4 w-4 animate-spin" /> Expanding...</>
+                        ) : (
+                          <><Sparkles className="h-4 w-4" /> Expand Topic</>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
