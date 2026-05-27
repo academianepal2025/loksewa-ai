@@ -36,7 +36,7 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
     } else {
       const { data } = await supabase.from('daily_usage').select('*').eq('user_id', user.id).eq('usage_date', today).maybeSingle();
       const map = { chat: 'chat_messages_sent', quizzes: 'quizzes_generated', flashcards: 'quizzes_generated' };
-      const maxMap = { chat: 5, quizzes: 3, flashcards: 3 };
+      const maxMap = { chat: 3, quizzes: 3, flashcards: 3 };
       setUsage({ used: data?.[map[type as keyof typeof map]] || 0, max: maxMap[type as keyof typeof map] });
     }
     setLoading(false);
@@ -70,7 +70,7 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
             <div className="flex items-center gap-2">
                <Zap className={`h-3 w-3 ${isExceeded ? 'text-red-500' : isNearLimit ? 'text-amber-500 animate-pulse' : 'text-[#c9a84c]'}`} />
                <span className="text-[9px] font-black uppercase tracking-widest leading-none">
-                  {type === 'documents' ? 'Storage' : type === 'exams' ? 'Missions' : type === 'chat' ? 'Daily Guru' : type === 'quizzes' ? 'Daily Quizzes' : type === 'notes' ? 'Daily Notes' : 'Daily Usage'}: {usage.used}/{usage.max}
+                  {type === 'documents' ? 'Storage' : type === 'exams' ? 'Missions' : type === 'chat' ? 'Daily Guru' : type === 'quizzes' ? 'Daily Quizzes' : type === 'notes' ? 'Study Notes' : 'Daily Usage'}: {usage.used}/{usage.max}
                </span>
             </div>
             {isExceeded && (

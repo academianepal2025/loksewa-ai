@@ -12,7 +12,7 @@ export async function GET() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    const [subRes, docRes, dailyRes, examRes, payReqRes] = await Promise.all([
+    const [subRes, docRes, dailyRes, notesRes, examRes, payReqRes] = await Promise.all([
       // Active subscription
       supabase
         .from('subscriptions')
@@ -29,10 +29,16 @@ export async function GET() {
       // Today's daily usage
       supabase
         .from('daily_usage')
-        .select('chat_count, quiz_count, notes_count')
+        .select('chat_messages_sent, quizzes_generated')
         .eq('user_id', user.id)
         .eq('usage_date', today)
         .maybeSingle(),
+      // Ready study notes
+      supabase
+        .from('study_notes')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('generation_status', 'ready'),
       // Active exams count
       supabase
         .from('user_exams')
@@ -53,9 +59,9 @@ export async function GET() {
       subscription: subRes.data || null,
       usage: {
         documents: docRes.count || 0,
-        daily_chats: daily?.chat_count || 0,
-        daily_quizzes: daily?.quiz_count || 0,
-        daily_notes: daily?.notes_count || 0,
+        daily_chats: daily?.chat_messages_sent || 0,
+        daily_quizzes: daily?.quizzes_generated || 0,
+        daily_notes: notesRes.count || 0,
         active_exams: examRes.count || 0
       },
       paymentRequests: payReqRes.data || []

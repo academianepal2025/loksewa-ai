@@ -8,9 +8,9 @@ import Link from 'next/link';
 const features = [
   { name: "Document Uploads", free: "3 docs", pro: "Unlimited", cycle: "Unlimited", group: "Study Plan" },
   { name: "Personal Study Plan", free: "Basic", pro: "Advanced AI", cycle: "Advanced AI", group: "Study Plan" },
-  { name: "Daily Guru Chat", free: "5 msgs", pro: "Unlimited", cycle: "Unlimited", group: "AI Chat" },
+  { name: "Daily Guru Chat", free: "3 msgs", pro: "Unlimited", cycle: "Unlimited", group: "AI Chat" },
   { name: "Quiz Generation", free: "3/day", pro: "Unlimited", cycle: "Unlimited", group: "Practice" },
-  { name: "Study Notes Gen", free: "1/day", pro: "Unlimited", cycle: "Unlimited", group: "Notes" },
+  { name: "Study Notes Gen", free: "3 total", pro: "Unlimited", cycle: "Unlimited", group: "Notes" },
   { name: "Gap Analysis", free: false, pro: true, cycle: true, group: "Analytics" },
   { name: "Weekly AI Feedback", free: false, pro: true, cycle: true, group: "Analytics" },
   { name: "Performance Analytics", free: false, pro: true, cycle: true, group: "Analytics" },
@@ -65,10 +65,10 @@ export function Pricing() {
             <div className="space-y-4 mt-auto">
               {[
                 { label: "3 document uploads", checked: true },
-                { label: "5 Guru chat messages", checked: true },
+                { label: "3 Guru chat messages", checked: true },
                 { label: "3 quizzes per day", checked: true },
-                { label: "1 note generation", checked: true },
-                { label: "1 active exam", checked: true },
+                { label: "3 study notes (lifetime)", checked: true },
+                { label: "1 exam", checked: true },
                 { label: "Unlimited quizzes", checked: false },
                 { label: "Gap analysis", checked: false },
               ].map((f, i) => (

@@ -76,7 +76,7 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
     notes: { used: totalNotesCount || 0, max: 3, exceeded: (totalNotesCount || 0) >= 3 },
     
     // DAILY LIMITS
-    chat: { used: usage?.chat_messages_sent || 0, max: 5, exceeded: (usage?.chat_messages_sent || 0) >= 5 },
+    chat: { used: usage?.chat_messages_sent || 0, max: 3, exceeded: (usage?.chat_messages_sent || 0) >= 3 },
     quizzes: { used: usage?.quizzes_generated || 0, max: 3, exceeded: (usage?.quizzes_generated || 0) >= 3 },
     mock_tests: { used: 0, max: 0, exceeded: true }, 
   };

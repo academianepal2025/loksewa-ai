@@ -14,6 +14,8 @@ import {
   Sparkles,
   History
 } from 'lucide-react';
+import { useUpgradeModal } from '@/lib/UpgradeModalContext';
+import { useDashboard } from '@/components/dashboard/DashboardProvider';
 
 interface Exam {
   id: string;
@@ -305,6 +307,8 @@ export default function ExamsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
+  const { showUpgradeModal } = useUpgradeModal();
+  const { isPro, isAdmin } = useDashboard();
 
   const fetchExams = useCallback(async () => {
     setLoading(true);
@@ -321,6 +325,14 @@ export default function ExamsPage() {
   }, [supabase]);
 
   useEffect(() => { fetchExams(); }, [fetchExams]);
+
+  const handleAddClick = () => {
+    if (!isPro && !isAdmin && exams.length >= 1) {
+      showUpgradeModal('exam_limit');
+    } else {
+      setIsModalOpen(true);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
@@ -341,7 +353,7 @@ export default function ExamsPage() {
              </p>
           </div>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleAddClick}
             className="bg-[#1e3a5f] text-[#c9a84c] px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
           >
             <Plus className="h-5 w-5" />
@@ -364,7 +376,7 @@ export default function ExamsPage() {
           <h2 className="text-2xl font-black text-foreground mb-3 tracking-tighter uppercase">Command Center Empty</h2>
           <p className="text-[10px] font-black text-subtle max-w-sm mx-auto mb-10 uppercase tracking-widest leading-relaxed">You haven't initialized any exam objectives yet. Your study journey begins with a target.</p>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleAddClick}
             className="bg-[#1e3a5f] text-[#c9a84c] px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest inline-flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
           >
             <Plus className="h-5 w-5" />

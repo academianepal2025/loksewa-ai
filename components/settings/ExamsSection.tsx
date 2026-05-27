@@ -13,7 +13,7 @@ function computeExamDate(days: number) { const d = new Date(); d.setDate(d.getDa
 
 interface Exam { id: string; exam_name: string; exam_category: string; exam_date: string; daily_study_hours: number; total_papers: number; status: string; }
 
-export function ExamsSection({ user, supabase }: any) {
+export function ExamsSection({ user, supabase, showUpgradeModal, dashboard }: any) {
   const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -74,6 +74,16 @@ export function ExamsSection({ user, supabase }: any) {
     setAddSaving(false);
   };
 
+  const handleAddClick = () => {
+    const isPro = dashboard?.isPro;
+    const isAdmin = dashboard?.isAdmin;
+    if (!isPro && !isAdmin && exams.length >= 1) {
+      showUpgradeModal('exam_limit');
+    } else {
+      setShowAdd(true);
+    }
+  };
+
   return (
     <div className="bg-surface border border-border-subtle rounded-2xl p-6">
       <div className="flex items-center justify-between mb-6">
@@ -81,7 +91,7 @@ export function ExamsSection({ user, supabase }: any) {
           <h2 className="text-lg font-black text-foreground tracking-tighter mb-1 uppercase">My Exams</h2>
           <p className="text-xs text-subtle font-black uppercase tracking-widest opacity-70">Manage your exam targets and study timelines.</p>
         </div>
-        <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 shadow-lg shadow-[#1e3a5f]/10">
+        <button onClick={handleAddClick} className="flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 shadow-lg shadow-[#1e3a5f]/10">
           <Plus className="h-3.5 w-3.5" /> Add Mission
         </button>
       </div>

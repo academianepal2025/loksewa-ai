@@ -14,8 +14,8 @@ const PLAN_NAMES: Record<string, string> = {
   pro_monthly: 'Pro Monthly', pro_quarterly: 'Pro Quarterly', cycle_pack: 'Exam Cycle Pack',
 };
 
-const FREE_LIMITS = { documents: 3, daily_chats: 5, daily_quizzes: 3, daily_notes: 1, active_exams: 1 };
-const LIMIT_LABELS: Record<string, string> = { documents: 'Documents', daily_chats: 'Daily Chat Messages', daily_quizzes: 'Daily Quizzes', daily_notes: 'Daily Notes', active_exams: 'Active Exams' };
+const FREE_LIMITS = { documents: 3, daily_chats: 3, daily_quizzes: 3, daily_notes: 3, active_exams: 1 };
+const LIMIT_LABELS: Record<string, string> = { documents: 'Documents', daily_chats: 'Daily Chat Messages', daily_quizzes: 'Daily Quizzes', daily_notes: 'Study Notes', active_exams: 'Exams' };
 
 export function SubscriptionSection({ showUpgradeModal, dashboard }: any) {
   const [data, setData] = useState<any>(null);
