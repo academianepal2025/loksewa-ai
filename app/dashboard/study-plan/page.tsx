@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
 import { useRotatingMessages } from '@/lib/hooks';
@@ -658,6 +658,7 @@ export default function StudyPlanPage() {
   }, [supabase]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkLimits();
     window.addEventListener('usage-updated', checkLimits);
     return () => window.removeEventListener('usage-updated', checkLimits);
@@ -703,10 +704,8 @@ export default function StudyPlanPage() {
         // Success
         window.dispatchEvent(new CustomEvent('usage-updated'));
         
-        // If it was forced, automatically redirect to it
-        if (force) {
-          router.push(`/dashboard/study-notes?day=${day.day_number}&topic=${encodeURIComponent(topicToGen)}`);
-        }
+        // Redirect to the study notes page for this generated note
+        router.push(`/dashboard/study-notes?day=${day.day_number}&topic=${encodeURIComponent(topicToGen)}`);
       }
     } catch (e: any) {
       toast.error(e.message);
@@ -845,7 +844,15 @@ export default function StudyPlanPage() {
   const completedDays = progress.filter((p: StudyProgress) => p.is_completed).length;
   const totalStudyDays = planData?.daily_plans.filter((d: DailyPlan) => d.day_type !== 'rest').length || 1;
   const completionPct = Math.round((completedDays / totalStudyDays) * 100);
-  const daysRem = exams.find((e: Exam) => e.id === activeExamId) ? Math.max(0, Math.ceil((new Date(exams.find((e: Exam) => e.id === activeExamId)!.exam_date).getTime() - Date.now()) / 86400000)) : 0;
+  const daysRem = useMemo(() => {
+    const activeExam = exams.find((e: Exam) => e.id === activeExamId);
+    if (!activeExam) return 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const examDate = new Date(activeExam.exam_date);
+    examDate.setHours(0, 0, 0, 0);
+    return Math.max(0, Math.ceil((examDate.getTime() - today.getTime()) / 86400000));
+  }, [exams, activeExamId]);
   const currentWeekNum = todayPlan ? (todayPlan.week_number || Math.ceil(todayPlan.day_number / 7)) : 1;
   const currentWeekTarget = planData?.weekly_targets.find((w: WeeklyTarget) => w.week_number === currentWeekNum);
   const weeklyGroups: Record<number, DailyPlan[]> = {};
@@ -903,7 +910,7 @@ export default function StudyPlanPage() {
               </div>
               <h3 className="text-xl font-black text-foreground uppercase tracking-tighter">Missing Intel</h3>
               <p className="text-[11px] font-medium text-subtle leading-relaxed">
-                We couldn't find any content for <strong className="text-foreground">{missingContentPrompt.topic}</strong> in your uploaded documents. 
+                We couldn&apos;t find any content for <strong className="text-foreground">{missingContentPrompt.topic}</strong> in your uploaded documents. 
                 Do you want to upload study materials for this topic, or force the AI to generate notes using its general knowledge?
               </p>
             </div>
