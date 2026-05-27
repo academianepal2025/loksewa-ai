@@ -2,12 +2,13 @@ import { createClient } from '@/lib/supabase/server';
 
 // Model pricing per 1 Million tokens
 const MODEL_PRICING: Record<string, { input: number; output: number }> = {
-  'gemini-3.1-flash-lite-preview': { input: 0.25, output: 1.50 },
+  'gemini-2.5-flash-lite': { input: 0.10, output: 0.40 },
   'gemini-2.5-flash': { input: 0.30, output: 2.50 },
   'gemini-1.5-flash': { input: 0.075, output: 0.30 },
+  'gemini-3.1-flash-lite-preview': { input: 0.25, output: 1.50 },
 };
 
-const DEFAULT_LOGGER_MODEL = 'gemini-3.1-flash-lite-preview';
+const DEFAULT_LOGGER_MODEL = 'gemini-2.5-flash-lite';
 
 export async function logAiUsage(params: {
   userId: string;
