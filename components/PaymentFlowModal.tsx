@@ -138,7 +138,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg bg-surface border border-border-subtle rounded-3xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg md:max-w-xl bg-surface border border-border-subtle rounded-3xl shadow-2xl overflow-hidden"
           >
             {/* Step Indicator */}
             <div className="flex h-1.5 w-full bg-background/50">
@@ -170,33 +170,56 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                        <p className="text-xs font-medium text-subtle">Plan: <span className="text-foreground font-bold">{selectedPlan.name}</span> • Amount: <span className="text-[#c9a84c] font-bold">NPR {selectedPlan.price}</span></p>
                     </div>
 
-                    <div className="flex justify-center p-4 bg-white rounded-2xl border border-border-subtle shadow-inner min-h-[224px] items-center">
-                       {qrLoading ? (
-                         <div className="flex flex-col items-center gap-2">
-                           <div className="h-40 w-40 bg-gray-100 animate-pulse rounded-xl" />
-                           <p className="text-[10px] font-bold text-subtle uppercase animate-pulse">Loading QR...</p>
-                         </div>
-                       ) : (
-                         <div className="relative h-56 w-56 group">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Khalti Card */}
+                      <div className="flex flex-col items-center p-4 bg-white dark:bg-background border border-border-subtle rounded-2xl shadow-inner group/khalti relative overflow-hidden transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/[0.02]">
+                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-600" />
+                         <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-1.5">
+                           <Smartphone className="h-3.5 w-3.5" /> Khalti QR
+                         </span>
+                         {qrLoading ? (
+                           <div className="flex flex-col items-center justify-center h-40 w-40 bg-gray-100 dark:bg-surface/50 animate-pulse rounded-xl">
+                             <p className="text-[9px] font-black text-subtle uppercase animate-pulse">Loading...</p>
+                           </div>
+                         ) : (
+                           <div className="relative h-40 w-40">
+                              <img 
+                                src={qrUrl} 
+                                alt="Khalti Payment QR" 
+                                className="h-full w-full object-contain rounded-lg"
+                                onError={(e) => {
+                                  (e.target as any).src = "https://placehold.co/400x400/5c2d91/ffffff?text=KHALTI+QR";
+                                }}
+                              />
+                           </div>
+                         )}
+                         <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-3">Scan to Pay via Khalti</p>
+                      </div>
+
+                      {/* eSewa Card */}
+                      <div className="flex flex-col items-center p-4 bg-white dark:bg-background border border-border-subtle rounded-2xl shadow-inner group/esewa relative overflow-hidden transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/[0.02]">
+                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600" />
+                         <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-1.5">
+                           <Smartphone className="h-3.5 w-3.5" /> eSewa QR
+                         </span>
+                         <div className="relative h-40 w-40">
                             <img 
-                              src={qrUrl} 
-                              alt="Payment QR Code" 
+                              src="/esewa_qr.jpg" 
+                              alt="eSewa Payment QR" 
                               className="h-full w-full object-contain rounded-lg"
                               onError={(e) => {
-                                (e.target as any).src = "https://placehold.co/400x400/1e3a5f/c9a84c?text=SCAN+TO+PAY";
+                                (e.target as any).src = "https://placehold.co/400x400/60b524/ffffff?text=ESEWA+QR";
                               }}
                             />
-                            <div className="absolute inset-0 bg-[#c9a84c]/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
-                               <QrCode className="h-10 w-10 text-[#c9a84c]" />
-                            </div>
                          </div>
-                       )}
+                         <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-3">Scan to Pay via eSewa</p>
+                      </div>
                     </div>
 
                     <div className="p-5 bg-[#c9a84c]/[0.03] border border-[#c9a84c]/10 rounded-2xl space-y-4">
                        <div className="flex items-start gap-3">
                           <div className="h-5 w-5 rounded-full bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
-                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Open <span className="font-bold">eSewa, Khalti, or IME Pay</span> and scan the QR code above.</p>
+                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Open <span className="font-bold">eSewa or Khalti</span> and scan either of the QR codes above.</p>
                        </div>
                        <div className="flex items-start gap-3">
                           <div className="h-5 w-5 rounded-full bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
