@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/adminAuth';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   try {
     const { error } = await verifyAdmin();

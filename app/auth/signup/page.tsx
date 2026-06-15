@@ -14,7 +14,13 @@ const signupSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  phone: z.string().regex(/^\+977\d{10}$/, 'Format: +977 followed by 10 digits'),
+  phone: z
+    .string()
+    .optional()
+    .or(z.literal(''))
+    .refine((val) => !val || /^\d{10}$/.test(val), {
+      message: 'Phone number must be exactly 10 digits',
+    }),
 });
 
 type SignupValues = z.infer<typeof signupSchema>;
@@ -38,7 +44,7 @@ export default function SignUp() {
       options: {
         data: {
           full_name: data.fullName,
-          phone_number: data.phone,
+          phone_number: data.phone || null,
         },
       },
     });
@@ -118,13 +124,13 @@ export default function SignUp() {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Phone Number</label>
+                    <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Phone Number (Optional)</label>
                     <div className="relative">
                       <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                       <input
                         {...register('phone')}
                         className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.phone ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
-                        placeholder="+977..."
+                        placeholder="98XXXXXXXX"
                       />
                     </div>
                   </div>

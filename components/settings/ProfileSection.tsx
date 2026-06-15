@@ -6,14 +6,14 @@ import { toast } from 'sonner';
 
 export function ProfileSection({ user, profile, supabase, markDirty, clearDirty, setProfile }: any) {
   const [fullName, setFullName] = useState(profile?.full_name || '');
-  const [phone, setPhone] = useState(profile?.phone || '+977');
+  const [phone, setPhone] = useState(profile?.phone || '');
   const [photoPreview, setPhotoPreview] = useState<string | null>(profile?.photo_url || null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const initials = (fullName || user?.email || 'U').split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0, 2);
-  const isDirty = fullName !== (profile?.full_name || '') || phone !== (profile?.phone || '+977') || !!photoFile;
+  const isDirty = fullName !== (profile?.full_name || '') || phone !== (profile?.phone || '') || !!photoFile;
 
   useEffect(() => {
     if (isDirty) markDirty('profile');
@@ -30,8 +30,10 @@ export function ProfileSection({ user, profile, supabase, markDirty, clearDirty,
 
   const handleSave = async () => {
     if (!fullName.trim()) { toast.error('Full name is required'); return; }
-    const phoneRegex = /^\+977\d{9,10}$/;
-    if (phone && !phoneRegex.test(phone)) { toast.error('Phone must be +977 followed by 9-10 digits'); return; }
+    if (phone && phone.trim() !== '') {
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(phone)) { toast.error('Phone must be exactly 10 digits'); return; }
+    }
 
     setSaving(true);
     try {
@@ -98,12 +100,12 @@ export function ProfileSection({ user, profile, supabase, markDirty, clearDirty,
             />
           </div>
           <div>
-            <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Phone Number</label>
+            <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Phone Number (Optional)</label>
             <input
               value={phone}
               onChange={e => setPhone(e.target.value)}
               className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-[13px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 transition-all placeholder:text-subtle/30 shadow-sm"
-              placeholder="+9779812345678"
+              placeholder="98XXXXXXXX"
             />
           </div>
           <div>

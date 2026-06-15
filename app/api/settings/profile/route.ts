@@ -18,16 +18,18 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Full name is required' }, { status: 400 });
     }
 
-    // Validate Nepal phone format: +977 followed by 9 or 10 digits
-    const phoneRegex = /^\+977\d{9,10}$/;
-    if (!phoneRegex.test(phone)) {
-      return NextResponse.json({ error: 'Invalid phone format. Use +977 followed by 9-10 digits.' }, { status: 400 });
+    // Validate Nepal phone format: exactly 10 digits, optional
+    if (phone && phone.trim() !== '') {
+      const phoneRegex = /^\d{10}$/;
+      if (!phoneRegex.test(phone)) {
+        return NextResponse.json({ error: 'Invalid phone format. Must be exactly 10 digits.' }, { status: 400 });
+      }
     }
 
     // 1. Update Profile Table
     const updateData: any = {
       full_name: fullName,
-      phone: phone,
+      phone: phone && phone.trim() !== '' ? phone : null,
     };
 
     if (photoUrl) updateData.photo_url = photoUrl;
