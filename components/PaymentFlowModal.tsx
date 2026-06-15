@@ -138,14 +138,14 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg md:max-w-xl bg-surface border border-border-subtle rounded-3xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg md:max-w-xl bg-surface border border-border-subtle rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
           >
             {/* Step Indicator */}
-            <div className="flex h-1.5 w-full bg-background/50">
+            <div className="flex h-1.5 w-full bg-background/50 flex-shrink-0">
                <div className={`h-full bg-[#c9a84c] transition-all duration-500 ${step === 1 ? 'w-1/3' : step === 2 ? 'w-2/3' : 'w-full'}`} />
             </div>
 
-            <div className="p-6 sm:p-8">
+            <div className="p-6 sm:p-8 overflow-y-auto flex-1 scrollbar-hide">
                <div className="flex justify-between items-center mb-8">
                   <div className="flex items-center gap-3">
                      {step > 1 && step < 3 && (
