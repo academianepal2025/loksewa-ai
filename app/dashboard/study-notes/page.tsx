@@ -18,7 +18,8 @@ import {
   Hash,
   BookOpen,
   Sparkles,
-  RefreshCw
+  RefreshCw,
+  ChevronLeft
 } from 'lucide-react';
 
 interface NoteContent {
@@ -101,9 +102,12 @@ export default function StudyNotesPage() {
         } else {
           const firstReady = data.find((n: StudyNote) => n.generation_status === 'ready' && n.notes_content);
           if (firstReady) {
-            setActiveNote(firstReady);
-            setEditContent(firstReady.notes_content!.full_markdown);
-            setSelectedExamId(firstReady.exam_id);
+            // Only set default active note if screen is not mobile (>= 768px)
+            if (window.innerWidth >= 768) {
+              setActiveNote(firstReady);
+              setEditContent(firstReady.notes_content!.full_markdown);
+              setSelectedExamId(firstReady.exam_id);
+            }
           }
         }
       }
@@ -232,7 +236,7 @@ export default function StudyNotesPage() {
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Note List */}
-        <div className="w-full md:w-80 border-r border-border-subtle bg-surface/50 flex flex-col flex-none transition-all">
+        <div className={`w-full md:w-80 border-r border-border-subtle bg-surface/50 flex flex-col flex-none transition-all ${activeNote ? 'hidden md:flex' : 'flex'}`}>
           <div className="p-4 border-b border-border-subtle bg-surface sticky top-0 z-10 space-y-3">
             {exams.length > 0 && (
               <select
@@ -323,6 +327,14 @@ export default function StudyNotesPage() {
           ) : (
             <div className="max-w-4xl mx-auto w-full p-4 sm:p-8 lg:p-12 animate-fade-in pb-32">
               
+              {/* Back to list button for mobile */}
+              <button 
+                onClick={() => setActiveNote(null)}
+                className="md:hidden mb-6 flex items-center gap-1.5 text-xs font-black text-accent uppercase tracking-widest hover:opacity-80 transition-all"
+              >
+                <ChevronLeft className="h-4 w-4" /> Back to Notes List
+              </button>
+
               {/* Note Controls */}
               <div className="flex flex-wrap gap-3 justify-between items-end mb-8 border-b border-border-subtle pb-6">
                 <div>

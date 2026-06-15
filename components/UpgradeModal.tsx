@@ -110,21 +110,21 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
                     <Info className="h-4 w-4 text-accent" />
                     <h3 className="text-xs font-bold uppercase tracking-widest text-subtle">Feature Comparison</h3>
                   </div>
-                  <div className="bg-background/50 border border-border-subtle rounded-2xl overflow-hidden">
-                    <table className="w-full text-left border-collapse">
+                  <div className="bg-background/50 border border-border-subtle rounded-2xl overflow-x-auto scrollbar-thin">
+                    <table className="w-full text-left border-collapse min-w-[500px] sm:min-w-0">
                       <thead>
                         <tr className="bg-surface/50 border-b border-border-subtle">
-                          <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-subtle">Core Abilities</th>
-                          <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-subtle text-center">Free Tier</th>
-                          <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#c9a84c] text-center">Pro Intelligence</th>
+                          <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-subtle">Core Abilities</th>
+                          <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-subtle text-center">Free Tier</th>
+                          <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-[#c9a84c] text-center">Pro Intelligence</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border-subtle">
                         {features.map((f, i) => (
                           <tr key={i} className="hover:bg-surface/30 transition-colors">
-                            <td className="px-6 py-3.5 text-sm font-bold text-foreground">{f.name}</td>
-                            <td className="px-6 py-3.5 text-sm font-medium text-subtle text-center">{f.free}</td>
-                            <td className="px-6 py-3.5 text-sm font-bold text-foreground text-center">
+                            <td className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-bold text-foreground">{f.name}</td>
+                            <td className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-medium text-subtle text-center">{f.free}</td>
+                            <td className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-bold text-foreground text-center">
                               <span className="inline-flex items-center gap-1.5 text-[#c9a84c]">
                                 {f.pro === 'Unlimited' && <Zap className="h-3.5 w-3.5" />}
                                 {f.pro}
@@ -144,13 +144,13 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
                      <p className="text-sm font-medium text-subtle">Choose the duration that matches your exam timeline.</p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 pt-4">
                     {plans.map((p) => (
                       <div 
                         key={p.id}
                         className={`relative p-8 rounded-3xl border-2 transition-all flex flex-col group ${
                           p.popular 
-                            ? 'border-blue-600/50 bg-blue-600/[0.03] scale-105 z-10 shadow-xl shadow-blue-600/5' 
+                            ? 'border-blue-600/50 bg-blue-600/[0.03] md:scale-105 z-10 shadow-xl shadow-blue-600/5' 
                             : 'border-border-subtle bg-surface hover:border-accent/40'
                         }`}
                       >

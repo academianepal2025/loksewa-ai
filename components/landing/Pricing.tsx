@@ -82,7 +82,7 @@ export function Pricing() {
 
           {/* Pro Monthly */}
           <div
-            className="bg-white rounded-3xl border-2 border-[#c9a84c] p-8 flex flex-col shadow-2xl relative z-20 scale-105"
+            className="bg-white rounded-3xl border-2 border-[#c9a84c] p-8 flex flex-col shadow-2xl relative z-20 md:scale-105"
           >
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#c9a84c] text-[#1e3a5f] text-[10px] font-black uppercase px-4 py-1.5 rounded-full tracking-widest whitespace-nowrap">
               Most Popular
