@@ -50,18 +50,21 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
     { data: usage },
     { count: examCount },
     { count: totalNotesCount },
-    { count: totalChatMessagesCount }
+    { count: totalChatMessagesCount },
+    { data: allUsage }
   ] = await Promise.all([
     supabase.from('subscriptions').select('plan, status, expires_at').eq('user_id', userId).eq('status', 'active').gt('expires_at', now).maybeSingle(),
     supabase.from('documents').select('*', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('daily_usage').select('*').eq('user_id', userId).eq('usage_date', today).maybeSingle(),
     supabase.from('user_exams').select('*', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('study_notes').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('generation_status', 'ready'),
-    supabase.from('chat_messages').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('role', 'user')
+    supabase.from('chat_messages').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('role', 'user'),
+    supabase.from('daily_usage').select('quizzes_generated').eq('user_id', userId)
   ]);
 
   const isPro = subscription && subscription.plan !== 'free';
   const planType = isPro ? subscription.plan : 'free';
+  const totalQuizzesCount = (allUsage || []).reduce((acc, row) => acc + (row.quizzes_generated || 0), 0);
 
   // 3. Define Limits based on Plan
   const limits = isPro ? {
@@ -85,7 +88,13 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
       lifetimeUsed: totalChatMessagesCount || 0,
       lifetimeMax: 10
     },
-    quizzes: { used: usage?.quizzes_generated || 0, max: 3, exceeded: (usage?.quizzes_generated || 0) >= 3 },
+    quizzes: { 
+      used: usage?.quizzes_generated || 0, 
+      max: 3, 
+      exceeded: (usage?.quizzes_generated || 0) >= 3 || totalQuizzesCount >= 5,
+      lifetimeUsed: totalQuizzesCount,
+      lifetimeMax: 5
+    },
     mock_tests: { used: 0, max: 0, exceeded: true }, 
   };
 

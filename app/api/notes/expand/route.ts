@@ -33,6 +33,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { checkUserLimits } = await import('@/lib/checkUserLimits');
+    const limits = await checkUserLimits(user.id);
+    if (limits.plan === 'free') {
+      return NextResponse.json(
+        { error: 'Note expansion is a premium feature. Please upgrade to Pro to unlock deep-dive analyses.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { noteId, sectionToExpand, language } = body;
 

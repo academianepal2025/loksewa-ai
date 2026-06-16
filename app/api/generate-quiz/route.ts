@@ -64,12 +64,17 @@ export async function POST(request: Request) {
     // ── Step 0: Check Plan Limits ──────────────────────────────────
     const limits = await checkUserLimits(userId);
     if (limits.limits.quizzes.exceeded) {
+      const isLifetimeExceeded = limits.plan === 'free' && ((limits.limits.quizzes as any).lifetimeUsed || 0) >= 5;
       return NextResponse.json(
         { 
           error: 'limit_reached', 
           limit_type: 'quiz_limit',
           is_pro: limits.plan !== 'free',
-          message: limits.plan !== 'free' ? 'You are generating more than usual. Come back tomorrow for more.' : 'Daily limit reached.'
+          message: limits.plan !== 'free' 
+            ? 'You are generating more than usual. Come back tomorrow for more.' 
+            : isLifetimeExceeded 
+              ? 'You have reached the lifetime free quiz limit of 5 quizzes. Please upgrade to Pro for unlimited quizzes.' 
+              : 'Daily free quiz limit of 3 quizzes reached. Please upgrade to Pro or come back tomorrow.'
         },
         { status: 403 }
       );

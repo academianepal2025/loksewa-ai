@@ -29,6 +29,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: 'Document not found' }, { status: 404 });
     }
 
+    // Load limits to check tier
+    const { checkUserLimits } = await import('@/lib/checkUserLimits');
+    const limits = await checkUserLimits(document.user_id);
+
     // 2. Update processing_status to 'processing'
     await supabase
       .from('documents')
@@ -78,7 +82,31 @@ export async function POST(request: Request) {
         ]);
         const data = await parseWithTimeout;
         extractedText = data.text || '';
-      } catch (err) {
+        const pageCount = data.numpages || 1;
+
+        if (limits.plan === 'free' && pageCount > 15) {
+          await supabase.from('documents').update({ 
+            processing_status: 'failed',
+            error_message: 'Document exceeds free tier page limit of 15 pages.'
+          }).eq('id', documentId);
+          return NextResponse.json({ 
+            success: false, 
+            message: 'Free tier is limited to documents under 15 pages. Please upgrade to Pro.' 
+          }, { status: 403 });
+        }
+      } catch (err: any) {
+        // Double check pageCount in catch if pdfParse still managed to parse metadata before failing
+        const pageCount = err?.numpages || 1;
+        if (limits.plan === 'free' && pageCount > 15) {
+          await supabase.from('documents').update({ 
+            processing_status: 'failed',
+            error_message: 'Document exceeds free tier page limit of 15 pages.'
+          }).eq('id', documentId);
+          return NextResponse.json({ 
+            success: false, 
+            message: 'Free tier is limited to documents under 15 pages. Please upgrade to Pro.' 
+          }, { status: 403 });
+        }
         console.warn('[DEBUG] Native PDF parsing failed or timed out. Falling back to Gemini API.');
       }
     }
