@@ -104,23 +104,23 @@ BEGIN
     -- 3. Enforce limits
     IF v_is_pro THEN
         -- Pro user daily limits:
-        -- Chat messages: 20
-        IF NEW.chat_messages_sent > 20 THEN
-            RAISE EXCEPTION 'Daily chat message limit reached (20/day) for Pro users.';
+        -- Chat messages: 10
+        IF NEW.chat_messages_sent > 10 THEN
+            RAISE EXCEPTION 'Daily chat message limit reached for Pro users. Please try again tomorrow.';
         END IF;
-        -- Notes generated: 10
-        IF NEW.notes_generated > 10 THEN
-            RAISE EXCEPTION 'Daily note generation limit reached (10/day) for Pro users.';
+        -- Notes generated: 5
+        IF NEW.notes_generated > 5 THEN
+            RAISE EXCEPTION 'Daily note generation limit reached for Pro users. Please try again tomorrow.';
         END IF;
     ELSE
         -- Free user daily limits:
         -- Chat messages: 3
         IF NEW.chat_messages_sent > 3 THEN
-            RAISE EXCEPTION 'Daily chat message limit reached (3/day). Please upgrade to Pro.';
+            RAISE EXCEPTION 'Daily chat message limit reached. Please upgrade to Pro.';
         END IF;
         -- Quizzes generated: 3
         IF NEW.quizzes_generated > 3 THEN
-            RAISE EXCEPTION 'Daily quiz generation limit reached (3/day). Please upgrade to Pro.';
+            RAISE EXCEPTION 'Daily quiz generation limit reached. Please upgrade to Pro.';
         END IF;
     END IF;
 

@@ -64,9 +64,9 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
   // 3. Define Limits based on Plan
   const limits = isPro ? {
     documents: { used: docCount || 0, max: Infinity, exceeded: false },
-    chat: { used: usage?.chat_messages_sent || 0, max: 20, exceeded: (usage?.chat_messages_sent || 0) >= 20 },
+    chat: { used: usage?.chat_messages_sent || 0, max: 10, exceeded: (usage?.chat_messages_sent || 0) >= 10 },
     quizzes: { used: usage?.quizzes_generated || 0, max: Infinity, exceeded: false },
-    notes: { used: usage?.notes_generated || 0, max: 10, exceeded: (usage?.notes_generated || 0) >= 10 },
+    notes: { used: usage?.notes_generated || 0, max: 5, exceeded: (usage?.notes_generated || 0) >= 5 },
     exams: { used: examCount || 0, max: Infinity, exceeded: false },
     mock_tests: { used: 0, max: Infinity, exceeded: false },
   } : {
