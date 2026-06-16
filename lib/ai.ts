@@ -131,6 +131,7 @@ export async function generateJSON(
           systemInstruction: systemPrompt,
           responseMimeType: 'application/json',
           temperature: 0.3,
+          maxOutputTokens: 1500,
         },
         contents: contents,
       });
@@ -240,7 +241,8 @@ export async function generateText(
         model: modelToUse,
         config: {
           systemInstruction: systemPrompt,
-          temperature: 0.7,
+          temperature: 0.3,
+          maxOutputTokens: 1000,
         },
         contents: contents,
       });
@@ -281,6 +283,8 @@ export async function streamText(
         model: modelToUse,
         config: {
           systemInstruction: systemPrompt,
+          temperature: 0.5,
+          maxOutputTokens: 800,
         },
         history: conversationHistory,
       });

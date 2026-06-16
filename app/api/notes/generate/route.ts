@@ -52,7 +52,8 @@ Provide 2 to 3 mnemonic devices, acronyms, or memory tricks for the hardest fact
 IMPORTANT RULES:
 1. Write in ${isNp ? 'Clear Nepali Language' : 'Clear Simple English'}.
 2. ${isNp ? 'Always include relevant English technical terms in brackets [English Term] after Nepali terms.' : 'Where Nepali terms are important include them in parentheses after the English.'}
-3. Every specific fact that could be a direct exam question should be bolded.`;
+3. Every specific fact that could be a direct exam question should be bolded.
+4. Keep notes highly concise, dense with facts, and completely free of conversational filler or fluff. Use bullet points or lists wherever possible. Limit the total notes content size to be crisp and readable.`;
 
   if (!hasContent) {
     instruction += `\n\nCRITICAL: The student has not provided any uploaded study materials for this topic. You must generate general knowledge PSC exam notes based on your own expert knowledge of the Nepal Loksewa syllabus.`;

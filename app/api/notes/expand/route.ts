@@ -20,7 +20,8 @@ FORMATTING RULES:
 - Format in Markdown. Use ### for headers.
 - Write in ${isNp ? 'Clear Nepali Language' : 'Clear Simple English'}.
 - ${isNp ? 'Always include relevant English technical terms in brackets [English Term] after Nepali terms.' : 'Where Nepali terms are important, include them in parentheses after the English.'}
-- Use bold text for key facts.`;
+- Use bold text for key facts.
+- Keep the expansion extremely concise and direct. Avoid conversational preambles, repetitive conclusions, or fluff. Deliver high-density information using bullet points and brief paragraphs.`;
 };
 
 export async function POST(request: Request) {
