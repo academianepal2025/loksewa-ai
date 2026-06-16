@@ -234,7 +234,8 @@ export async function generateText(
   systemPrompt: string, 
   contents: any, 
   modelToUse = DEFAULT_MODEL,
-  loggingContext?: { userId: string; feature: string }
+  loggingContext?: { userId: string; feature: string },
+  maxOutputTokens?: number
 ): Promise<string> {
   try {
     return await globalQueue.add(() => withRetry(async () => {
@@ -243,7 +244,7 @@ export async function generateText(
         config: {
           systemInstruction: systemPrompt,
           temperature: 0.3,
-          maxOutputTokens: 1000,
+          ...(maxOutputTokens ? { maxOutputTokens } : {}),
         },
         contents: contents,
       });
@@ -276,7 +277,8 @@ export async function generateText(
 export async function streamText(
   systemPrompt: string, 
   conversationHistory: any[], 
-  modelToUse = DEFAULT_MODEL
+  modelToUse = DEFAULT_MODEL,
+  maxOutputTokens?: number
 ): Promise<{ chat: any; modelUsed: string }> {
   try {
     const chat = await withRetry(async () => {
@@ -285,7 +287,7 @@ export async function streamText(
         config: {
           systemInstruction: systemPrompt,
           temperature: 0.5,
-          maxOutputTokens: 800,
+          ...(maxOutputTokens ? { maxOutputTokens } : {}),
         },
         history: conversationHistory,
       });
