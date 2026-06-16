@@ -58,9 +58,14 @@ export async function POST(request: Request) {
 
     // ── Step 0: Check Plan Limits ──────────────────────────────────
     const limits = await checkUserLimits(userId);
-    if (!limits.allowed && limits.exceeded_limit === 'mock_test_limit') {
+    if (limits.limits.mock_tests.exceeded) {
       return NextResponse.json(
-        { error: 'limit_reached', limit_type: 'mock_test_limit' },
+        { 
+          error: 'limit_reached', 
+          limit_type: 'mock_test_limit',
+          is_pro: limits.plan !== 'free',
+          message: 'Mock tests and evaluation are premium features. Please upgrade to Pro.'
+        },
         { status: 403 }
       );
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateJSON } from '@/lib/ai';
+import { checkUserLimits } from '@/lib/checkUserLimits';
 
 const getSystemInstruction = (lang: string) => {
   const base = `You are an expert exam simulator for PSC Nepal (Loksewa Ayog).
@@ -44,6 +45,20 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, message: 'Missing required fields: examId, userId' },
         { status: 400 }
+      );
+    }
+
+    // ── Check Plan Limits ──────────────────────────────────
+    const limits = await checkUserLimits(userId);
+    if (limits.limits.mock_tests.exceeded) {
+      return NextResponse.json(
+        { 
+          error: 'limit_reached', 
+          limit_type: 'mock_test_limit',
+          is_pro: limits.plan !== 'free',
+          message: 'Mock tests and evaluation are premium features. Please upgrade to Pro.'
+        },
+        { status: 403 }
       );
     }
 
