@@ -230,10 +230,11 @@ async function getPlatformStats(supabaseAdmin: any) {
     supabaseAdmin.from('documents')
       .select('id', { count: 'exact', head: true })
       .eq('processing_status', 'failed'),
-    // AI Cost & Usage (Last 30 Days)
+    // AI Cost & Usage (Last 30 Days - Order Descending to get most recent logs first)
     supabaseAdmin.from('ai_usage_logs')
       .select('cost_estimate, feature, input_tokens, output_tokens, model, created_at, user_id')
-      .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
+      .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+      .order('created_at', { ascending: false }),
     // DAU (Today)
     supabaseAdmin.from('activity_logs').select('user_id', { head: false }).eq('activity_date', new Date().toISOString().split('T')[0]),
     // MAU (Last 30 Days)
