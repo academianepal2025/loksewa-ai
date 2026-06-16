@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     let relevantContext = '';
     try {
       const { generateQueryEmbedding } = await import('@/lib/ai');
-      const topicEmbedding = await generateQueryEmbedding(topic);
+      const topicEmbedding = await generateQueryEmbedding(topic, { userId });
 
       const { data: chunks, error: searchError } = await supabase.rpc(
         'search_documents',

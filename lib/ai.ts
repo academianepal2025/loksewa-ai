@@ -305,16 +305,28 @@ export async function streamText(
 /**
  * Generates vector embedding for document retrieval
  */
-export async function generateEmbedding(text: string) {
+export async function generateEmbedding(text: string, loggingContext?: { userId: string }) {
   return globalQueue.add(() => withRetry(async () => {
+    const modelUsed = 'gemini-embedding-001';
     const result = await ai.models.embedContent({
-      model: 'gemini-embedding-001',
+      model: modelUsed,
       contents: text,
       config: {
         taskType: 'RETRIEVAL_DOCUMENT',
         outputDimensionality: 768,
       },
     });
+
+    if (loggingContext?.userId) {
+      const estimatedTokens = Math.max(1, Math.ceil(text.length / 4.0));
+      logAiUsage({
+        userId: loggingContext.userId,
+        feature: 'embedding',
+        inputTokens: estimatedTokens,
+        outputTokens: 0,
+        model: modelUsed
+      }).catch(err => console.error('[AI Log Error] Failed to log embedding usage:', err));
+    }
 
     return result.embeddings?.[0]?.values || [];
   }));
@@ -323,16 +335,28 @@ export async function generateEmbedding(text: string) {
 /**
  * Generates vector embedding for search queries (skips queue for speed)
  */
-export async function generateQueryEmbedding(text: string) {
+export async function generateQueryEmbedding(text: string, loggingContext?: { userId: string }) {
   return withRetry(async () => {
+    const modelUsed = 'gemini-embedding-001';
     const result = await ai.models.embedContent({
-      model: 'gemini-embedding-001',
+      model: modelUsed,
       contents: text,
       config: {
         taskType: 'RETRIEVAL_QUERY',
         outputDimensionality: 768,
       },
     });
+
+    if (loggingContext?.userId) {
+      const estimatedTokens = Math.max(1, Math.ceil(text.length / 4.0));
+      logAiUsage({
+        userId: loggingContext.userId,
+        feature: 'query_embedding',
+        inputTokens: estimatedTokens,
+        outputTokens: 0,
+        model: modelUsed
+      }).catch(err => console.error('[AI Log Error] Failed to log query embedding usage:', err));
+    }
 
     return result.embeddings?.[0]?.values || [];
   });

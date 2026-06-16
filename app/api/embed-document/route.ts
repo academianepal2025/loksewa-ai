@@ -60,8 +60,8 @@ export async function POST(request: Request) {
       const batchPromises = batch.map(async (chunkText, batchIdx) => {
         const currentIndex = globalChunkIndex + batchIdx;
         
-        // 5a. Call Gemini embedding API via centralized utility
-        const embedding = await generateEmbedding(chunkText);
+        // 5a. Call Gemini embedding API via centralized utility with logging context
+        const embedding = await generateEmbedding(chunkText, { userId });
         
         // Return formatted object for the DB
         return {

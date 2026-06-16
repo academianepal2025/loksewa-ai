@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 // Model pricing per 1 Million tokens
 const MODEL_PRICING: Record<string, { input: number; output: number }> = {
@@ -6,6 +6,8 @@ const MODEL_PRICING: Record<string, { input: number; output: number }> = {
   'gemini-2.5-flash': { input: 0.30, output: 2.50 },
   'gemini-1.5-flash': { input: 0.075, output: 0.30 },
   'gemini-3.1-flash-lite-preview': { input: 0.25, output: 1.50 },
+  'gemini-embedding-001': { input: 0.15, output: 0.00 },
+  'text-embedding-004': { input: 0.15, output: 0.00 },
 };
 
 const DEFAULT_LOGGER_MODEL = 'gemini-2.5-flash-lite';
@@ -18,7 +20,7 @@ export async function logAiUsage(params: {
   model?: string;
 }) {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     
     // Fallback estimates if token counts aren't perfectly available from the API stream
     // These are rough averages based on feature type
@@ -31,6 +33,8 @@ export async function logAiUsage(params: {
         case 'quiz': estimatedInput = 2000; estimatedOutput = 1000; break;
         case 'notes': estimatedInput = 5000; estimatedOutput = 1500; break;
         case 'study_plan': estimatedInput = 2500; estimatedOutput = 800; break;
+        case 'embedding': estimatedInput = 300; estimatedOutput = 0; break;
+        case 'query_embedding': estimatedInput = 50; estimatedOutput = 0; break;
         default: estimatedInput = 500; estimatedOutput = 200; break;
       }
     }
@@ -42,7 +46,7 @@ export async function logAiUsage(params: {
       ((estimatedInput / 1000000) * pricing.input) +
       ((estimatedOutput / 1000000) * pricing.output);
 
-    await supabase.from('ai_usage_logs').insert({
+    const { error: insertError } = await supabase.from('ai_usage_logs').insert({
       user_id: params.userId,
       feature: params.feature,
       input_tokens: estimatedInput,
@@ -50,6 +54,10 @@ export async function logAiUsage(params: {
       model: modelUsed,
       cost_estimate: costEstimate
     });
+
+    if (insertError) {
+      throw insertError;
+    }
 
   } catch (error) {
     console.error('Failed to log AI usage:', error);

@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     const userLang = prefs?.language || 'en';
 
     // ── Step 2: Generate query embedding using centralized utility ────
-    const queryEmbedding = await generateQueryEmbedding(message);
+    const queryEmbedding = await generateQueryEmbedding(message, { userId });
 
     // ── Step 2: Search relevant document chunks ───────────────────
     const { data: relevantChunks, error: searchError } = await supabase.rpc(
@@ -159,6 +159,7 @@ export async function POST(request: Request) {
 
     // ── Step 6: Stream response via ReadableStream ────────────────
     let fullResponse = '';
+    let lastUsageMetadata: any = null;
 
     const stream = new ReadableStream({
       async start(controller) {
@@ -166,6 +167,9 @@ export async function POST(request: Request) {
         try {
           for await (const chunk of streamResult) {
             const text = chunk.text ?? '';
+            if (chunk.usageMetadata) {
+              lastUsageMetadata = chunk.usageMetadata;
+            }
             if (text) {
               fullResponse += text;
               controller.enqueue(encoder.encode(text));
@@ -183,17 +187,9 @@ export async function POST(request: Request) {
             const { incrementUsage } = await import('@/lib/usage');
             await incrementUsage(userId, 'chat');
             
-            // Extract real token usage from stream response
-            let inputTokens: number | undefined;
-            let outputTokens: number | undefined;
-            try {
-              const response = await streamResult.response;
-              const usage = response.usageMetadata;
-              inputTokens = usage?.promptTokenCount;
-              outputTokens = usage?.candidatesTokenCount;
-            } catch (tokenError) {
-              console.warn('Failed to extract real token usage from stream response:', tokenError);
-            }
+            // Extract real token usage from stream response metadata captured during iteration
+            const inputTokens = lastUsageMetadata?.promptTokenCount;
+            const outputTokens = lastUsageMetadata?.candidatesTokenCount;
 
             const { logAiUsage } = await import('@/lib/ai-logger');
             await logAiUsage({ 

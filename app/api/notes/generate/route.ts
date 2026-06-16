@@ -141,7 +141,7 @@ export async function POST(request: Request) {
 
     // --- NEW RAG Logic: Vector Similarity Search ---
     console.log(`[DEBUG] Generating embedding for topic: ${topic}`);
-    const queryEmbedding = await generateQueryEmbedding(topic);
+    const queryEmbedding = await generateQueryEmbedding(topic, { userId: user.id });
     
     const { data: matchedChunks, error: rpcError } = await supabase.rpc('match_document_chunks', {
       query_embedding: queryEmbedding,
