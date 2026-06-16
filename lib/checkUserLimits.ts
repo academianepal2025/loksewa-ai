@@ -49,13 +49,15 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
     { count: docCount },
     { data: usage },
     { count: examCount },
-    { count: totalNotesCount }
+    { count: totalNotesCount },
+    { count: totalChatMessagesCount }
   ] = await Promise.all([
     supabase.from('subscriptions').select('plan, status, expires_at').eq('user_id', userId).eq('status', 'active').gt('expires_at', now).maybeSingle(),
     supabase.from('documents').select('*', { count: 'exact', head: true }).eq('user_id', userId),
     supabase.from('daily_usage').select('*').eq('user_id', userId).eq('usage_date', today).maybeSingle(),
     supabase.from('user_exams').select('*', { count: 'exact', head: true }).eq('user_id', userId),
-    supabase.from('study_notes').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('generation_status', 'ready')
+    supabase.from('study_notes').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('generation_status', 'ready'),
+    supabase.from('chat_messages').select('*', { count: 'exact', head: true }).eq('user_id', userId).eq('role', 'user')
   ]);
 
   const isPro = subscription && subscription.plan !== 'free';
@@ -73,10 +75,16 @@ export async function checkUserLimits(userId: string): Promise<UserLimits> {
     // LIFETIME LIMITS
     documents: { used: docCount || 0, max: 3, exceeded: (docCount || 0) >= 3 },
     exams: { used: examCount || 0, max: 1, exceeded: (examCount || 0) >= 1 },
-    notes: { used: totalNotesCount || 0, max: 3, exceeded: (totalNotesCount || 0) >= 3 },
+    notes: { used: totalNotesCount || 0, max: 1, exceeded: (totalNotesCount || 0) >= 1 },
     
     // DAILY LIMITS
-    chat: { used: usage?.chat_messages_sent || 0, max: 3, exceeded: (usage?.chat_messages_sent || 0) >= 3 },
+    chat: { 
+      used: usage?.chat_messages_sent || 0, 
+      max: 3, 
+      exceeded: (usage?.chat_messages_sent || 0) >= 3 || (totalChatMessagesCount || 0) >= 10,
+      lifetimeUsed: totalChatMessagesCount || 0,
+      lifetimeMax: 10
+    },
     quizzes: { used: usage?.quizzes_generated || 0, max: 3, exceeded: (usage?.quizzes_generated || 0) >= 3 },
     mock_tests: { used: 0, max: 0, exceeded: true }, 
   };

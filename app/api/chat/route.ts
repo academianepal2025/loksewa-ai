@@ -64,12 +64,17 @@ export async function POST(request: Request) {
     // ── Step 0: Check Plan Limits ──────────────────────────────────
     const limits = await checkUserLimits(userId);
     if (limits.limits.chat.exceeded) {
+      const isLifetimeExceeded = limits.plan === 'free' && ((limits.limits.chat as any).lifetimeUsed || 0) >= 10;
       return new Response(
         JSON.stringify({ 
            error: 'limit_reached', 
            limit_type: 'chat_limit',
            is_pro: limits.plan !== 'free',
-           message: limits.plan !== 'free' ? 'You have reached your daily guru limit. Come back tomorrow for more.' : 'Daily limit reached.' 
+           message: limits.plan !== 'free' 
+             ? 'You have reached your daily guru limit. Come back tomorrow for more.' 
+             : isLifetimeExceeded 
+               ? 'You have reached the lifetime free chat limit of 10 messages. Please upgrade to Pro for unlimited chat.' 
+               : 'Daily free chat limit of 3 messages reached. Please upgrade to Pro or come back tomorrow.' 
         }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );

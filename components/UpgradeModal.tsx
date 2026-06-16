@@ -7,9 +7,9 @@ import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 
 const features = [
   { name: 'Document Uploads', free: '3 Total', pro: 'Unlimited' },
-  { name: 'Guru Chat Messages', free: '3 Per Day', pro: 'Unlimited' },
+  { name: 'Guru Chat Messages', free: '3 Daily (Max 10)', pro: 'Unlimited' },
   { name: 'Quiz Generations', free: '3 Per Day', pro: 'Unlimited' },
-  { name: 'Notes Generations', free: '3 Total', pro: 'Unlimited' },
+  { name: 'Notes Generations', free: '1 Total', pro: 'Unlimited' },
   { name: 'Exams', free: '1 Total', pro: 'Unlimited' },
   { name: 'Flashcard Generations', free: 'Limited', pro: 'Unlimited' },
   { name: 'Gap Analysis', free: 'Not Available', pro: 'Available' },
@@ -55,9 +55,9 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
   const getLimitMessage = () => {
     switch (limitType) {
       case 'document_limit': return 'You have reached the 3 document upload limit on the free plan.';
-      case 'chat_limit': return 'You have used all 3 daily Guru chat messages.';
+      case 'chat_limit': return 'You have reached the free Guru chat message limit (3 daily / 10 maximum).';
       case 'quiz_limit': return 'You have used all 3 daily quiz generations.';
-      case 'notes_limit': return 'You have reached the 3 lifetime note generation limit.';
+      case 'notes_limit': return 'You have reached the 1 lifetime note generation limit.';
       case 'exam_limit': return 'Free plan supports only 1 exam.';
       case 'mock_test_limit': return 'Mock tests are available exclusively for Pro members.';
       default: return 'Unlock the full potential of Loksewa AI.';

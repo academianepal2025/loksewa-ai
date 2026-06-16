@@ -12,7 +12,7 @@ export async function GET() {
 
     const today = new Date().toISOString().split('T')[0];
 
-    const [subRes, docRes, dailyRes, notesRes, examRes, payReqRes] = await Promise.all([
+    const [subRes, docRes, dailyRes, notesRes, examRes, payReqRes, totalChatsRes] = await Promise.all([
       // Active subscription
       supabase
         .from('subscriptions')
@@ -49,7 +49,13 @@ export async function GET() {
         .from('payment_requests')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: false }),
+      // Lifetime chat messages
+      supabase
+        .from('chat_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('role', 'user')
     ]);
 
     const daily = dailyRes.data;
@@ -60,6 +66,7 @@ export async function GET() {
       usage: {
         documents: docRes.count || 0,
         daily_chats: daily?.chat_messages_sent || 0,
+        total_chats: totalChatsRes.count || 0,
         daily_quizzes: daily?.quizzes_generated || 0,
         daily_notes: notesRes.count || 0,
         active_exams: examRes.count || 0

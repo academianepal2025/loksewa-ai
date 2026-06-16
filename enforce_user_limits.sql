@@ -39,8 +39,8 @@ BEGIN
         END IF;
     ELSIF TG_TABLE_NAME = 'study_notes' THEN
         SELECT COUNT(*) INTO v_count FROM public.study_notes WHERE user_id = NEW.user_id AND generation_status = 'ready';
-        IF v_count >= 3 THEN
-            RAISE EXCEPTION 'Notes Limit Reached. Free plan is limited to 3 study notes. Please upgrade to Pro.';
+        IF v_count >= 1 THEN
+            RAISE EXCEPTION 'Notes Limit Reached. Free plan is limited to 1 study note. Please upgrade to Pro.';
         END IF;
     ELSIF TG_TABLE_NAME = 'mock_test_submissions' THEN
         RAISE EXCEPTION 'Mock tests and evaluations are premium features. Please upgrade to Pro.';
@@ -133,3 +133,53 @@ CREATE TRIGGER trg_enforce_daily_usage_limits
 BEFORE INSERT OR UPDATE ON public.daily_usage
 FOR EACH ROW
 EXECUTE FUNCTION enforce_daily_usage_limits();
+
+
+-- Trigger for chat_messages (lifetime free chat limit check)
+CREATE OR REPLACE FUNCTION enforce_chat_messages_limit()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_is_pro BOOLEAN;
+    v_is_admin BOOLEAN;
+    v_count INTEGER;
+BEGIN
+    -- Only check limit for user messages
+    IF NEW.role <> 'user' THEN
+        RETURN NEW;
+    END IF;
+
+    -- 1. Check if user is admin
+    SELECT is_admin INTO v_is_admin FROM public.profiles WHERE id = NEW.user_id;
+    IF v_is_admin THEN
+        RETURN NEW;
+    END IF;
+
+    -- 2. Check if user has active pro subscription
+    SELECT EXISTS (
+        SELECT 1 FROM public.subscriptions 
+        WHERE user_id = NEW.user_id 
+          AND plan <> 'free' 
+          AND status = 'active' 
+          AND expires_at > NOW()
+    ) INTO v_is_pro;
+
+    IF v_is_pro THEN
+        RETURN NEW;
+    END IF;
+
+    -- 3. Enforce lifetime chats limit (max 10)
+    SELECT COUNT(*) INTO v_count FROM public.chat_messages WHERE user_id = NEW.user_id AND role = 'user';
+    IF v_count >= 10 THEN
+        RAISE EXCEPTION 'Lifetime free chat limit reached (10 messages). Please upgrade to Pro for unlimited chat.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_enforce_chat_messages_limit ON public.chat_messages;
+CREATE TRIGGER trg_enforce_chat_messages_limit
+BEFORE INSERT ON public.chat_messages
+FOR EACH ROW
+EXECUTE FUNCTION enforce_chat_messages_limit();
+
