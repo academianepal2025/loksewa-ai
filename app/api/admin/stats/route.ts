@@ -230,21 +230,9 @@ async function getPlatformStats(supabaseAdmin: any) {
     supabaseAdmin.from('documents')
       .select('id', { count: 'exact', head: true })
       .eq('processing_status', 'failed'),
-    // AI Cost & Usage (Last 30 Days with User profiles)
+    // AI Cost & Usage (Last 30 Days)
     supabaseAdmin.from('ai_usage_logs')
-      .select(`
-        cost_estimate,
-        feature,
-        input_tokens,
-        output_tokens,
-        model,
-        created_at,
-        user_id,
-        profiles (
-          full_name,
-          email
-        )
-      `)
+      .select('cost_estimate, feature, input_tokens, output_tokens, model, created_at, user_id')
       .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
     // DAU (Today)
     supabaseAdmin.from('activity_logs').select('user_id', { head: false }).eq('activity_date', new Date().toISOString().split('T')[0]),
@@ -265,6 +253,19 @@ async function getPlatformStats(supabaseAdmin: any) {
   const aiModelMetrics: Record<string, { calls: number; inputTokens: number; outputTokens: number; cost: number }> = {};
   const aiUserMetrics: Record<string, { name: string; email: string; calls: number; totalTokens: number; cost: number }> = {};
   const aiDailyMetrics: Record<string, { cost: number; tokens: number; calls: number }> = {};
+
+  // Fetch profiles for users in AI logs in memory to bypass PostgREST cache joins
+  const logUserIds = [...new Set(aiCostRes?.data?.map((l: any) => l.user_id).filter(Boolean) || [])];
+  const aiProfileMap = new Map();
+  if (logUserIds.length > 0) {
+    const { data: profiles } = await supabaseAdmin
+      .from('profiles')
+      .select('id, full_name, email')
+      .in('id', logUserIds);
+    if (profiles) {
+      profiles.forEach((p: any) => aiProfileMap.set(p.id, p));
+    }
+  }
 
   if (aiCostRes?.data) {
      aiCostRes.data.forEach((log: any) => {
@@ -300,7 +301,7 @@ async function getPlatformStats(supabaseAdmin: any) {
         const userId = log.user_id;
         if (userId) {
           if (!aiUserMetrics[userId]) {
-            const profile = log.profiles || {};
+            const profile = aiProfileMap.get(userId) || {};
             aiUserMetrics[userId] = {
               name: profile.full_name || 'Anonymous User',
               email: profile.email || 'No Email',
