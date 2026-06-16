@@ -121,7 +121,8 @@ export async function generateJSON(
   systemPrompt: string, 
   contents: any, 
   modelToUse = DEFAULT_MODEL,
-  loggingContext?: { userId: string; feature: string }
+  loggingContext?: { userId: string; feature: string },
+  maxOutputTokens?: number
 ): Promise<any> {
   try {
     return await globalQueue.add(() => withRetry(async () => {
@@ -131,7 +132,7 @@ export async function generateJSON(
           systemInstruction: systemPrompt,
           responseMimeType: 'application/json',
           temperature: 0.3,
-          maxOutputTokens: 1500,
+          ...(maxOutputTokens ? { maxOutputTokens } : {}),
         },
         contents: contents,
       });
