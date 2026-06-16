@@ -11,6 +11,7 @@ interface DashboardContextType {
   activeExamId: string | null;
   isAdmin: boolean;
   isPro: boolean;
+  isExpiredPro: boolean;
   subscription: any | null;
   t: (key: TranslationKey) => string;
   updatePreference: (key: string, value: string) => Promise<void>;
@@ -31,6 +32,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPro, setIsPro] = useState(false);
+  const [isExpiredPro, setIsExpiredPro] = useState(false);
   const [subscription, setSubscription] = useState<any | null>(null);
 
   // ── Translation Logic ────────────────────────────────────────────────
@@ -96,16 +98,34 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
         // Track Daily Active User (DAU)
         fetch('/api/user/heartbeat', { method: 'POST' }).catch(() => {});
 
-        // Fetch Profile & Subscription
+        // Fetch Profile & Subscription without filters so we can detect expired status
         const [{ data: prof }, { data: sub }] = await Promise.all([
           supabase.from('profiles').select('is_admin').eq('id', user.id).single(),
-          supabase.from('subscriptions').select('*').eq('user_id', user.id).eq('status', 'active').gt('expires_at', new Date().toISOString()).maybeSingle()
+          supabase.from('subscriptions').select('*').eq('user_id', user.id).maybeSingle()
         ]);
 
         if (prof) setIsAdmin(!!prof.is_admin);
-        if (sub && sub.plan !== 'free') {
-          setIsPro(true);
-          setSubscription(sub);
+        if (sub) {
+          const nowStr = new Date().toISOString();
+          const isActive = sub.status === 'active' && sub.expires_at && sub.expires_at > nowStr;
+          
+          if (isActive && sub.plan !== 'free') {
+            setIsPro(true);
+            setIsExpiredPro(false);
+            setSubscription(sub);
+          } else if (sub.plan !== 'free') {
+            setIsPro(false);
+            setIsExpiredPro(true);
+            setSubscription(sub);
+          } else {
+            setIsPro(false);
+            setIsExpiredPro(false);
+            setSubscription(null);
+          }
+        } else {
+          setIsPro(false);
+          setIsExpiredPro(false);
+          setSubscription(null);
         }
 
         const channelName = `prefs-${user.id}`;
@@ -200,6 +220,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
       activeExamId, 
       isAdmin,
       isPro,
+      isExpiredPro,
       subscription,
       t, 
       updatePreference, 

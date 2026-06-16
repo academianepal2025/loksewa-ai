@@ -53,13 +53,60 @@ const navItems = [
   { key: 'settings', href: '/dashboard/settings', icon: Settings, tooltip: 'System Config: Manage account and preferences.' },
 ];
 
+function ExpiredSubscriptionLock() {
+  const { showUpgradeModal } = useUpgradeModal();
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8 bg-surface border border-border-subtle rounded-3xl shadow-xl max-w-2xl mx-auto my-12 animate-in fade-in zoom-in-95 duration-300">
+      <div className="h-20 w-20 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mb-6 border border-red-500/20">
+        <ShieldAlert className="h-10 w-10 animate-pulse" />
+      </div>
+      
+      <h2 className="text-2xl font-black text-[#1e3a5f] mb-3 uppercase tracking-tight">
+        Access Suspended
+      </h2>
+      
+      <p className="text-sm text-subtle max-w-md mx-auto mb-8 leading-relaxed">
+        Your Pro subscription has expired. Access to your saved study plans, custom study notes, active recall quizzes, AI tutor chat logs, and progress analytics is locked until you renew.
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full max-w-md">
+        <button
+          onClick={() => showUpgradeModal()}
+          className="w-full sm:w-auto px-8 py-3.5 bg-[#1e3a5f] hover:bg-[#1e3a5f]/90 text-[#c9a84c] border border-[#c9a84c]/20 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#1e3a5f]/20 hover:scale-105 transition-all cursor-pointer min-h-[44px]"
+        >
+          Renew Pro Subscription
+        </button>
+        <button
+          onClick={() => router.push('/dashboard')}
+          className="w-full sm:w-auto px-8 py-3.5 bg-surface hover:bg-background border border-border-subtle text-foreground rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all cursor-pointer min-h-[44px]"
+        >
+          Back to Command Center
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
   const router = useRouter();
   const currentPath = usePathname() || '/dashboard';
   const { theme, setTheme } = useTheme();
-  const { t, language, isAdmin, isPro, updatePreference } = useDashboard();
+  const { t, language, isAdmin, isPro, isExpiredPro, updatePreference } = useDashboard();
   const { setSelectedPlan, selectedPlan } = useUpgradeModal();
+
+  const lockedPaths = [
+    '/dashboard/study-plan',
+    '/dashboard/study-notes',
+    '/dashboard/practice',
+    '/dashboard/guru',
+    '/dashboard/performance',
+    '/dashboard/intelligence'
+  ];
+  
+  const isLocked = isExpiredPro && lockedPaths.some(path => currentPath.startsWith(path));
   const [mounted, setMounted] = useState(false);
   const [fullName, setFullName] = useState('User');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -307,7 +354,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
         {/* Content */}
         <main className="flex-1 fluid-container pb-32 md:pb-12 px-safe">
-          {children}
+          {isLocked ? <ExpiredSubscriptionLock /> : children}
         </main>
       </div>
 
