@@ -230,8 +230,22 @@ async function getPlatformStats(supabaseAdmin: any) {
     supabaseAdmin.from('documents')
       .select('id', { count: 'exact', head: true })
       .eq('processing_status', 'failed'),
-    // AI Cost & Usage
-    supabaseAdmin.from('ai_usage_logs').select('cost_estimate, feature'),
+    // AI Cost & Usage (Last 30 Days with User profiles)
+    supabaseAdmin.from('ai_usage_logs')
+      .select(`
+        cost_estimate,
+        feature,
+        input_tokens,
+        output_tokens,
+        model,
+        created_at,
+        user_id,
+        profiles (
+          full_name,
+          email
+        )
+      `)
+      .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
     // DAU (Today)
     supabaseAdmin.from('activity_logs').select('user_id', { head: false }).eq('activity_date', new Date().toISOString().split('T')[0]),
     // MAU (Last 30 Days)
@@ -245,11 +259,98 @@ async function getPlatformStats(supabaseAdmin: any) {
   // Calculate AI Cost and Feature breakdown from logs
   let totalAiCost = 0;
   const aiFeatureUsage: Record<string, number> = { chat: 0, quiz: 0, notes: 0, study_plan: 0 };
+  
+  // Detailed aggregates for dashboard
+  const aiFeatureMetrics: Record<string, { calls: number; inputTokens: number; outputTokens: number; cost: number }> = {};
+  const aiModelMetrics: Record<string, { calls: number; inputTokens: number; outputTokens: number; cost: number }> = {};
+  const aiUserMetrics: Record<string, { name: string; email: string; calls: number; totalTokens: number; cost: number }> = {};
+  const aiDailyMetrics: Record<string, { cost: number; tokens: number; calls: number }> = {};
+
   if (aiCostRes?.data) {
      aiCostRes.data.forEach((log: any) => {
-        totalAiCost += (log.cost_estimate || 0);
-        aiFeatureUsage[log.feature] = (aiFeatureUsage[log.feature] || 0) + 1;
+        const cost = Number(log.cost_estimate || 0);
+        const input = Number(log.input_tokens || 0);
+        const output = Number(log.output_tokens || 0);
+        const feature = log.feature || 'unknown';
+        const model = log.model || 'unknown';
+        const dateKey = log.created_at ? log.created_at.split('T')[0] : new Date().toISOString().split('T')[0];
+
+        totalAiCost += cost;
+        aiFeatureUsage[feature] = (aiFeatureUsage[feature] || 0) + 1;
+
+        // 1. Feature aggregation
+        if (!aiFeatureMetrics[feature]) {
+          aiFeatureMetrics[feature] = { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 };
+        }
+        aiFeatureMetrics[feature].calls += 1;
+        aiFeatureMetrics[feature].inputTokens += input;
+        aiFeatureMetrics[feature].outputTokens += output;
+        aiFeatureMetrics[feature].cost += cost;
+
+        // 2. Model aggregation
+        if (!aiModelMetrics[model]) {
+          aiModelMetrics[model] = { calls: 0, inputTokens: 0, outputTokens: 0, cost: 0 };
+        }
+        aiModelMetrics[model].calls += 1;
+        aiModelMetrics[model].inputTokens += input;
+        aiModelMetrics[model].outputTokens += output;
+        aiModelMetrics[model].cost += cost;
+
+        // 3. User aggregation
+        const userId = log.user_id;
+        if (userId) {
+          if (!aiUserMetrics[userId]) {
+            const profile = log.profiles || {};
+            aiUserMetrics[userId] = {
+              name: profile.full_name || 'Anonymous User',
+              email: profile.email || 'No Email',
+              calls: 0,
+              totalTokens: 0,
+              cost: 0
+            };
+          }
+          aiUserMetrics[userId].calls += 1;
+          aiUserMetrics[userId].totalTokens += (input + output);
+          aiUserMetrics[userId].cost += cost;
+        }
+
+        // 4. Daily aggregation
+        if (!aiDailyMetrics[dateKey]) {
+          aiDailyMetrics[dateKey] = { cost: 0, tokens: 0, calls: 0 };
+        }
+        aiDailyMetrics[dateKey].cost += cost;
+        aiDailyMetrics[dateKey].tokens += (input + output);
+        aiDailyMetrics[dateKey].calls += 1;
      });
+  }
+
+  // Convert aggregates to clean lists
+  const aiFeatureList = Object.entries(aiFeatureMetrics).map(([name, stats]) => ({
+    name,
+    ...stats
+  })).sort((a, b) => b.cost - a.cost);
+
+  const aiModelList = Object.entries(aiModelMetrics).map(([name, stats]) => ({
+    name,
+    ...stats
+  })).sort((a, b) => b.cost - a.cost);
+
+  const aiUserList = Object.values(aiUserMetrics)
+    .sort((a, b) => b.cost - a.cost)
+    .slice(0, 10);
+
+  const aiDailyList: { date: string; cost: number; tokens: number; calls: number }[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    const stats = aiDailyMetrics[key] || { cost: 0, tokens: 0, calls: 0 };
+    aiDailyList.push({
+      date: key,
+      cost: Number(stats.cost.toFixed(4)),
+      tokens: stats.tokens,
+      calls: stats.calls
+    });
   }
 
   // Calculate unique DAU and MAU
@@ -323,6 +424,12 @@ async function getPlatformStats(supabaseAdmin: any) {
       },
       aiUsage: aiFeatureUsage,
       aiCost: totalAiCost,
+      aiAnalysis: {
+        features: aiFeatureList,
+        models: aiModelList,
+        users: aiUserList,
+        daily: aiDailyList
+      },
       dau: uniqueDAU,
       mau: uniqueMAU,
       topActiveUsers: topActive,

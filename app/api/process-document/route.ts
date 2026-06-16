@@ -119,9 +119,9 @@ Rules:
       ];
 
       try {
-        console.log('[DEBUG] Sending to gemini-2.5-flash for visual extraction...');
-        // We use gemini-2.5-flash as it is more robust for high-fidelity OCR than the lite model
-        const aiResponse = await generateText(systemPrompt, contents, 'gemini-2.5-flash');
+        console.log('[DEBUG] Sending to gemini-2.5-flash-lite for visual extraction...');
+        // We use gemini-2.5-flash-lite as it is highly cost-effective and falls back to standard flash if needed
+        const aiResponse = await generateText(systemPrompt, contents, 'gemini-2.5-flash-lite', { userId: document.user_id, feature: 'document_processing' });
         console.log(`[DEBUG] Gemini response length: ${aiResponse?.length || 0}`);
         
         if (aiResponse && aiResponse.trim().length > 10) {

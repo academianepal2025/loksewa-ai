@@ -97,7 +97,7 @@ export async function POST(request: Request) {
       'search_documents',
       {
         query_embedding: queryEmbedding,
-        match_count: 8,
+        match_count: 5,
         filter_user_id: userId,
         filter_exam_id: examId,
       }
@@ -138,16 +138,17 @@ export async function POST(request: Request) {
       ? `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nContext from student's documents and syllabus intelligence:\n${contextString}`
       : `${SYSTEM_INSTRUCTION}\n\n[USER PREFERENCE]: All responses MUST be in ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}. If Nepali, use Devanagari script.\n\nNo relevant context was found in the student's documents for this query. You MUST fallback to your general knowledge to answer the query, and you MUST prepend the warning notice at the very top of your response.`;
 
-    // ── Step 4: Convert conversation history to Gemini format ─────
+    // ── Step 4: Convert conversation history to Gemini format (capped at last 10 messages for cost control) ─────
     const geminiHistory = (conversationHistory as ChatMessageHistory[])
       .filter((msg) => msg.role && msg.content)
+      .slice(-10)
       .map((msg) => ({
         role: msg.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: msg.content }],
       }));
 
     // ── Step 5: Start streaming chat using centralized utility ──
-    const chat = await streamText(fullSystemPrompt, geminiHistory);
+    const { chat, modelUsed } = await streamText(fullSystemPrompt, geminiHistory);
     const streamResult = await chat.sendMessageStream({ message });
 
     // ── Step 6: Stream response via ReadableStream ────────────────
@@ -176,8 +177,26 @@ export async function POST(request: Request) {
             const { incrementUsage } = await import('@/lib/usage');
             await incrementUsage(userId, 'chat');
             
+            // Extract real token usage from stream response
+            let inputTokens: number | undefined;
+            let outputTokens: number | undefined;
+            try {
+              const response = await streamResult.response;
+              const usage = response.usageMetadata;
+              inputTokens = usage?.promptTokenCount;
+              outputTokens = usage?.candidatesTokenCount;
+            } catch (tokenError) {
+              console.warn('Failed to extract real token usage from stream response:', tokenError);
+            }
+
             const { logAiUsage } = await import('@/lib/ai-logger');
-            await logAiUsage({ userId, feature: 'chat' });
+            await logAiUsage({ 
+              userId, 
+              feature: 'chat',
+              inputTokens,
+              outputTokens,
+              model: modelUsed
+            });
           } catch (saveError) {
             console.error('Background tasks failed:', saveError);
           }

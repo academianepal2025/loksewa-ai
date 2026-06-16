@@ -89,7 +89,7 @@ export async function POST(request: Request) {
         'search_documents',
         {
           query_embedding: topicEmbedding,
-          match_count: 10,
+          match_count: 6,
           filter_user_id: userId,
           filter_exam_id: examId,
         }
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
         .select('chunk_text, doc_type')
         .eq('exam_id', examId)
         .ilike('chunk_text', `%${topic}%`)
-        .limit(10);
+        .limit(6);
       
       if (fallbackChunks && fallbackChunks.length > 0) {
         relevantContext = fallbackChunks.map((c: any, i: number) => `[Context ${i + 1} - ${(c.doc_type || 'NOTES').toUpperCase()}]\n${c.chunk_text}`).join('\n\n---\n\n');
@@ -122,21 +122,18 @@ Focus on authentic Loksewa Ayog patterns.
 Content Context:
 ${contextContent}`;
 
-    const parsedData = await generateJSON(getSystemInstruction(userLang), userMessage);
+    const parsedData = await generateJSON(getSystemInstruction(userLang), userMessage, undefined, { userId, feature: 'quiz' });
 
     if (!parsedData.questions || !Array.isArray(parsedData.questions)) {
       throw new Error('AI failed to generate a valid list of questions.');
     }
 
-    // 3. Increment Usage & Log AI Cost in Background
+    // 3. Increment Usage in Background
     try {
       const { incrementUsage } = await import('@/lib/usage');
       await incrementUsage(userId, 'quiz');
-      
-      const { logAiUsage } = await import('@/lib/ai-logger');
-      await logAiUsage({ userId, feature: 'quiz' });
     } catch (e) {
-      console.error('Failed to increment/log quiz usage:', e);
+      console.error('Failed to increment quiz usage:', e);
     }
 
     // 4. Return the generated quiz

@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { logAiUsage } from './ai-logger';
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error('GEMINI_API_KEY is not defined in environment variables');
@@ -116,7 +117,12 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 /**
  * Generates structured JSON data from Gemini
  */
-export async function generateJSON(systemPrompt: string, contents: any, modelToUse = DEFAULT_MODEL): Promise<any> {
+export async function generateJSON(
+  systemPrompt: string, 
+  contents: any, 
+  modelToUse = DEFAULT_MODEL,
+  loggingContext?: { userId: string; feature: string }
+): Promise<any> {
   try {
     return await globalQueue.add(() => withRetry(async () => {
       const result = await ai.models.generateContent({
@@ -128,6 +134,17 @@ export async function generateJSON(systemPrompt: string, contents: any, modelToU
         },
         contents: contents,
       });
+
+      if (loggingContext?.userId && loggingContext?.feature) {
+        const usage = result.usageMetadata;
+        logAiUsage({
+          userId: loggingContext.userId,
+          feature: loggingContext.feature,
+          inputTokens: usage?.promptTokenCount,
+          outputTokens: usage?.candidatesTokenCount,
+          model: modelToUse
+        }).catch(err => console.error('[AI Log Error] Failed to log usage:', err));
+      }
 
       let text = result.text || '';
       
@@ -148,7 +165,7 @@ export async function generateJSON(systemPrompt: string, contents: any, modelToU
   } catch (error) {
     if (modelToUse === DEFAULT_MODEL) {
       console.warn(`[AI FALLBACK] ${DEFAULT_MODEL} failed. Falling back to ${FALLBACK_MODEL}...`);
-      return generateJSON(systemPrompt, contents, FALLBACK_MODEL);
+      return generateJSON(systemPrompt, contents, FALLBACK_MODEL, loggingContext);
     }
     throw error;
   }
@@ -157,7 +174,13 @@ export async function generateJSON(systemPrompt: string, contents: any, modelToU
 /**
  * Generates JSON from Gemini with Multimodal (Vision) support
  */
-export async function generateMultimodalJSON(systemPrompt: string, userText: string, media: { mimeType: string; data: string }[], modelToUse = DEFAULT_MODEL): Promise<any> {
+export async function generateMultimodalJSON(
+  systemPrompt: string, 
+  userText: string, 
+  media: { mimeType: string; data: string }[], 
+  modelToUse = DEFAULT_MODEL,
+  loggingContext?: { userId: string; feature: string }
+): Promise<any> {
   try {
     return await globalQueue.add(() => withRetry(async () => {
       const parts = [{ text: userText }];
@@ -173,6 +196,17 @@ export async function generateMultimodalJSON(systemPrompt: string, userText: str
         contents: [{ role: 'user', parts }],
       });
 
+      if (loggingContext?.userId && loggingContext?.feature) {
+        const usage = result.usageMetadata;
+        logAiUsage({
+          userId: loggingContext.userId,
+          feature: loggingContext.feature,
+          inputTokens: usage?.promptTokenCount,
+          outputTokens: usage?.candidatesTokenCount,
+          model: modelToUse
+        }).catch(err => console.error('[AI Log Error] Failed to log usage:', err));
+      }
+
       const text = result.text || '';
       try {
         return JSON.parse(text);
@@ -185,7 +219,7 @@ export async function generateMultimodalJSON(systemPrompt: string, userText: str
   } catch (error) {
     if (modelToUse === DEFAULT_MODEL) {
       console.warn(`[AI MULTIMODAL FALLBACK] ${DEFAULT_MODEL} failed. Falling back to ${FALLBACK_MODEL}...`);
-      return generateMultimodalJSON(systemPrompt, userText, media, FALLBACK_MODEL);
+      return generateMultimodalJSON(systemPrompt, userText, media, FALLBACK_MODEL, loggingContext);
     }
     throw error;
   }
@@ -194,7 +228,12 @@ export async function generateMultimodalJSON(systemPrompt: string, userText: str
 /**
  * Generates plain text response from Gemini
  */
-export async function generateText(systemPrompt: string, contents: any, modelToUse = DEFAULT_MODEL): Promise<string> {
+export async function generateText(
+  systemPrompt: string, 
+  contents: any, 
+  modelToUse = DEFAULT_MODEL,
+  loggingContext?: { userId: string; feature: string }
+): Promise<string> {
   try {
     return await globalQueue.add(() => withRetry(async () => {
       const result = await ai.models.generateContent({
@@ -206,12 +245,23 @@ export async function generateText(systemPrompt: string, contents: any, modelToU
         contents: contents,
       });
 
+      if (loggingContext?.userId && loggingContext?.feature) {
+        const usage = result.usageMetadata;
+        logAiUsage({
+          userId: loggingContext.userId,
+          feature: loggingContext.feature,
+          inputTokens: usage?.promptTokenCount,
+          outputTokens: usage?.candidatesTokenCount,
+          model: modelToUse
+        }).catch(err => console.error('[AI Log Error] Failed to log usage:', err));
+      }
+
       return result.text || '';
     }));
   } catch (error) {
     if (modelToUse === DEFAULT_MODEL) {
       console.warn(`[AI FALLBACK] ${DEFAULT_MODEL} failed. Falling back to ${FALLBACK_MODEL}...`);
-      return generateText(systemPrompt, contents, FALLBACK_MODEL);
+      return generateText(systemPrompt, contents, FALLBACK_MODEL, loggingContext);
     }
     throw error;
   }
@@ -220,9 +270,13 @@ export async function generateText(systemPrompt: string, contents: any, modelToU
 /**
  * Streams chat response from Gemini (skips queue for interactivity)
  */
-export async function streamText(systemPrompt: string, conversationHistory: any[], modelToUse = DEFAULT_MODEL): Promise<any> {
+export async function streamText(
+  systemPrompt: string, 
+  conversationHistory: any[], 
+  modelToUse = DEFAULT_MODEL
+): Promise<{ chat: any; modelUsed: string }> {
   try {
-    return await withRetry(async () => {
+    const chat = await withRetry(async () => {
       return ai.chats.create({
         model: modelToUse,
         config: {
@@ -231,6 +285,7 @@ export async function streamText(systemPrompt: string, conversationHistory: any[
         history: conversationHistory,
       });
     });
+    return { chat, modelUsed: modelToUse };
   } catch (error) {
     if (modelToUse === DEFAULT_MODEL) {
       console.warn(`[AI FALLBACK] ${DEFAULT_MODEL} failed. Falling back to ${FALLBACK_MODEL}...`);

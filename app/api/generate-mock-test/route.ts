@@ -90,7 +90,7 @@ Generate a comprehensive Mock Test that simulates a full examination.
 PYQ Context:
 ${contextContent}`;
 
-    const parsedData = await generateJSON(getSystemInstruction(userLang), userMessage);
+    const parsedData = await generateJSON(getSystemInstruction(userLang), userMessage, undefined, { userId, feature: 'mock_test' });
 
     if (!parsedData.sections || !Array.isArray(parsedData.sections)) {
       throw new Error('AI failed to generate a valid mock test with sections.');

@@ -30,6 +30,57 @@ import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
 import { useDashboard } from '@/components/dashboard/DashboardProvider';
 import { TacticalPrompt } from '@/components/dashboard/TacticalPrompt';
 
+// Browser-side image resizing and compression to reduce token costs and upload times
+function resizeImageIfNeeded(file: File, maxW = 1200, maxH = 1200): Promise<File> {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      resolve(file);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width <= maxW && height <= maxH) {
+          resolve(file);
+          return;
+        }
+        if (width > height) {
+          if (width > maxW) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          }
+        } else {
+          if (height > maxH) {
+            width = Math.round((width * maxH) / height);
+            height = maxH;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(new (window as any).File([blob], file.name, { type: file.type, lastModified: Date.now() }));
+            } else {
+              resolve(file);
+            }
+          }, file.type, 0.85); // 85% compression quality
+        } else {
+          resolve(file);
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 interface Exam {
   id: string;
   exam_name: string;
@@ -195,13 +246,14 @@ function UploadZone({
         continue;
       }
 
-      const fileExt = file.name.split('.').pop();
+      const processedFile = await resizeImageIfNeeded(file);
+      const fileExt = processedFile.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `${authUser.id}/${examId}/${docType}/${fileName}`;
 
       const { error: storageError } = await supabase.storage
         .from('user-documents')
-        .upload(filePath, file);
+        .upload(filePath, processedFile);
 
       if (storageError) {
         toast.error('Upload Failed', { description: storageError.message });

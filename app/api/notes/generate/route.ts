@@ -145,7 +145,7 @@ export async function POST(request: Request) {
     const { data: matchedChunks, error: rpcError } = await supabase.rpc('match_document_chunks', {
       query_embedding: queryEmbedding,
       match_threshold: 0.35,
-      match_count: 15,
+      match_count: 8,
       p_user_id: user.id,
       p_exam_id: examId
     });
@@ -214,7 +214,7 @@ The output language must be: ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}.
 \nRELEVANT CONTEXT FROM STUDENT DOCUMENTS:\n${contextString}`;
 
     // Call AI
-    const markdownOutput = await generateText(getSystemInstruction(examId, relevantChunks.length > 0, userLang), userPrompt);
+    const markdownOutput = await generateText(getSystemInstruction(examId, relevantChunks.length > 0, userLang), userPrompt, undefined, { userId: user.id, feature: 'notes' });
 
     const wordCount = markdownOutput.split(/\s+/).filter(w => w.length > 0).length;
     const uniqueDocs = new Set(relevantChunks.map((c: any) => c.document_id)).size;
@@ -251,11 +251,8 @@ The output language must be: ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}.
     try {
       const { incrementUsage } = await import('@/lib/usage');
       await incrementUsage(user.id, 'note');
-
-      const { logAiUsage } = await import('@/lib/ai-logger');
-      await logAiUsage({ userId: user.id, feature: 'notes' });
     } catch (e) {
-      console.warn("Failed to increment/log notes usage:", e);
+      console.warn("Failed to increment notes usage:", e);
     }
 
     return NextResponse.json({

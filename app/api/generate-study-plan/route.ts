@@ -202,7 +202,7 @@ Syllabus Analysis JSON:
 ${JSON.stringify(analysis.analysis_data, null, 2)}`;
 
     console.log(`Generating study plan for ${exam.exam_name} (${totalDays} days remaining, ${studyHours} hours/day)...`);
-    let planData = await generateJSON(systemInstruction, userMessage);
+    let planData = await generateJSON(systemInstruction, userMessage, undefined, { userId, feature: 'study_plan' });
 
     // Normalize potential nested structures from Gemini
     if (planData.plan && Array.isArray(planData.plan.daily_plans)) {
@@ -236,14 +236,6 @@ ${JSON.stringify(analysis.analysis_data, null, 2)}`;
 
     if (insertError) {
       throw new Error(`Failed to save study plan: ${insertError.message}`);
-    }
-
-    // Log AI Usage
-    try {
-      const { logAiUsage } = await import('@/lib/ai-logger');
-      await logAiUsage({ userId, feature: 'study_plan' });
-    } catch (e) {
-      console.warn("Failed to log AI usage for study plan:", e);
     }
 
     // 6. Return plan JSON

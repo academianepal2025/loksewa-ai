@@ -66,7 +66,9 @@ export async function POST(request: Request) {
     // Generate expansion using Gemini
     const expansionMarkdown = await generateText(
       getSystemInstruction(existingNote.topic, sectionToExpand, userLang),
-      userPrompt
+      userPrompt,
+      undefined,
+      { userId: user.id, feature: 'notes' }
     );
 
     const headingText = userLang === 'np' ? `🔍 विस्तृत विश्लेषण: ${sectionToExpand}` : `🔍 Deep Dive: ${sectionToExpand}`;
@@ -90,14 +92,6 @@ export async function POST(request: Request) {
 
     if (updateError) {
       throw new Error(updateError.message);
-    }
-
-    // Log AI Usage
-    try {
-      const { logAiUsage } = await import('@/lib/ai-logger');
-      await logAiUsage({ userId: user.id, feature: 'notes' });
-    } catch (e) {
-      console.warn("Failed to log AI cost usage:", e);
     }
 
     return NextResponse.json({

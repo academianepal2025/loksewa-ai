@@ -39,6 +39,57 @@ import ReactMarkdown from 'react-markdown';
 import { useUpgradeModal } from '@/lib/UpgradeModalContext';
 import { UsageIndicator } from '@/components/dashboard/UsageIndicator';
 
+// Browser-side image resizing and compression to reduce token costs and upload times
+function resizeImageIfNeeded(file: File, maxW = 1200, maxH = 1200): Promise<File> {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/')) {
+      resolve(file);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+        if (width <= maxW && height <= maxH) {
+          resolve(file);
+          return;
+        }
+        if (width > height) {
+          if (width > maxW) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          }
+        } else {
+          if (height > maxH) {
+            width = Math.round((width * maxH) / height);
+            height = maxH;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(new (window as any).File([blob], file.name, { type: file.type, lastModified: Date.now() }));
+            } else {
+              resolve(file);
+            }
+          }, file.type, 0.85); // 85% compression quality
+        } else {
+          resolve(file);
+        }
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 // --- Types ---
 interface Flashcard {
   id: string;
@@ -913,9 +964,10 @@ export default function PracticePage() {
                       setIsEvaluating(true);
                       setError(null);
                       try {
-                        const fileExt = file.name.split('.').pop();
+                        const processedFile = await resizeImageIfNeeded(file);
+                        const fileExt = processedFile.name.split('.').pop();
                         const fileName = `${authUser.id}/${Date.now()}.${fileExt}`;
-                        const { data: uploadData, error: uploadError } = await supabase.storage.from('answer-sheets').upload(fileName, file);
+                        const { data: uploadData, error: uploadError } = await supabase.storage.from('answer-sheets').upload(fileName, processedFile);
                         if (uploadError) throw uploadError;
                         const { data: signedData, error: signedError } = await supabase.storage
                           .from('answer-sheets')

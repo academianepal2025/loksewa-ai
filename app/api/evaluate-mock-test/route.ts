@@ -82,7 +82,9 @@ export async function POST(request: Request) {
     const evaluation = await generateMultimodalJSON(
       getEvaluationPrompt(userLang), 
       userPrompt, 
-      [{ mimeType, data: base64Image }]
+      [{ mimeType, data: base64Image }],
+      undefined,
+      { userId, feature: 'evaluate_mock_test' }
     );
 
     // 4. Update submission in DB

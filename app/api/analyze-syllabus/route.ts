@@ -136,7 +136,7 @@ Syllabus Content:
 ${combinedSyllabusText}`;
 
     // 5. Call Gemini API with structured output using centralized utility
-    const analysisData = await generateJSON(getSystemInstruction(userLang), userMessage);
+    const analysisData = await generateJSON(getSystemInstruction(userLang), userMessage, undefined, { userId, feature: 'syllabus_analysis' });
 
     console.log(`[DEBUG] Analysis complete. Found ${analysisData.exam_overview?.total_topics || 0} total topics.`);
 

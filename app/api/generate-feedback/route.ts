@@ -131,7 +131,7 @@ ${gapContext}
 Please generate my weekly performance review based on this data.`;
 
     // 6. Call Gemini 2.0 Flash via centralized utility
-    const responseText = await generateText(getSystemInstruction(userLang), userPrompt);
+    const responseText = await generateText(getSystemInstruction(userLang), userPrompt, undefined, { userId, feature: 'feedback' });
 
     // 7. Persist to weekly_feedback table
     const { error: insertError } = await supabase.from('weekly_feedback').insert({

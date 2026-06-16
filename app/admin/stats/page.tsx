@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
-  XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend
+  XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
+  AreaChart, Area
 } from 'recharts';
 import {
   TrendingUp, DollarSign, Users, MessageSquare,
   ClipboardList, BookOpen, Brain, FileText,
-  CheckCircle2, XCircle, Loader2
+  CheckCircle2, XCircle, Loader2, Cpu, Coins
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -42,6 +43,12 @@ export default function AdminStatsPage() {
   const topUsers = platformData?.topActiveUsers || [];
   const planDist = platformData?.planDistribution || [];
   const totalFeatures = (featureUsage.chats || 0) + (featureUsage.quizzes || 0) + (featureUsage.notes || 0) + (featureUsage.studyPlans || 0);
+
+  const aiAnalysis = platformData?.aiAnalysis || { features: [], models: [], users: [], daily: [] };
+  const aiFeatures = aiAnalysis.features || [];
+  const aiModels = aiAnalysis.models || [];
+  const aiUsers = aiAnalysis.users || [];
+  const aiDaily = aiAnalysis.daily || [];
 
   return (
     <div className="space-y-8">
@@ -276,6 +283,224 @@ export default function AdminStatsPage() {
           </table>
         </div>
       </motion.div>
+
+      {/* AI Token & Cost Analytics Section */}
+      <div className="border-t border-border-subtle pt-8">
+        <div className="mb-6">
+          <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest">Intelligence Operations</span>
+          <h2 className="text-xl font-black text-foreground tracking-tighter uppercase flex items-center gap-2 mt-1">
+            <Cpu className="h-5 w-5 text-indigo-500 animate-pulse" /> AI Token & Cost Analytics
+          </h2>
+          <p className="text-[10px] text-subtle mt-1 uppercase tracking-widest font-black">
+            Real usage analysis from API calling logs (Last 30 Days)
+          </p>
+        </div>
+
+        {/* AI Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Daily AI Cost Trend */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="bg-surface border border-border-subtle rounded-2xl p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-8 w-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center border border-indigo-500/20 shadow-sm">
+                <TrendingUp className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Daily AI Cost Trend</h3>
+                <p className="text-[10px] text-subtle font-medium">Daily API usage cost in USD (30d)</p>
+              </div>
+            </div>
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={aiDaily}>
+                  <defs>
+                    <linearGradient id="colorCost" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10 }} tickFormatter={(v) => v.slice(5)} stroke="var(--subtle)" />
+                  <YAxis tick={{ fontSize: 10 }} stroke="var(--subtle)" tickFormatter={(v) => `$${v}`} />
+                  <Tooltip
+                    contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)', borderRadius: '12px', fontSize: '12px' }}
+                    formatter={(v: any) => [`$${Number(v).toFixed(4)}`, 'Cost']}
+                    labelFormatter={(v) => `Date: ${v}`}
+                  />
+                  <Area type="monotone" dataKey="cost" stroke="#8b5cf6" strokeWidth={2.5} fillOpacity={1} fill="url(#colorCost)" name="AI Cost" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+
+          {/* AI Cost by Feature */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            className="bg-surface border border-border-subtle rounded-2xl p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20 shadow-sm">
+                <Coins className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-foreground uppercase tracking-widest">AI Cost by Feature</h3>
+                <p className="text-[10px] text-subtle font-medium">Distribution of API costs by feature area (30d)</p>
+              </div>
+            </div>
+            <div className="h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={aiFeatures}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-subtle)" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="var(--subtle)" tickFormatter={(v) => v.replace(/_/g, ' ').toUpperCase()} />
+                  <YAxis tick={{ fontSize: 10 }} stroke="var(--subtle)" tickFormatter={(v) => `$${v}`} />
+                  <Tooltip
+                    contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)', borderRadius: '12px', fontSize: '12px' }}
+                    formatter={(v: any) => [`$${Number(v).toFixed(4)}`, 'Cost']}
+                    labelFormatter={(v) => `Feature: ${v}`}
+                  />
+                  <Bar dataKey="cost" fill="#10b981" radius={[4, 4, 0, 0]} name="Cost" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* AI Metrics Tables Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+          {/* AI Feature Metrics Table */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+            className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
+            <div className="p-5 border-b border-border-subtle">
+              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Brain className="h-4 w-4 text-subtle" /> AI Feature Usage Breakdown
+              </h3>
+            </div>
+            <div className="overflow-x-auto admin-table-scroll">
+              <table className="w-full text-left min-w-[500px]">
+                <thead className="bg-background/50 border-b border-border-subtle">
+                  <tr>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">Feature</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Calls</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Input Tokens</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Output Tokens</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center font-black">Est. Cost</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border-subtle text-xs">
+                  {aiFeatures.length === 0 ? (
+                    <tr><td colSpan={5} className="px-5 py-8 text-center text-sm text-subtle">No AI feature data yet</td></tr>
+                  ) : aiFeatures.map((f: any) => (
+                    <tr key={f.name} className="hover:bg-background/30 transition-all">
+                      <td className="px-5 py-4 font-bold text-foreground capitalize">
+                        {f.name.replace(/_/g, ' ')}
+                      </td>
+                      <td className="px-5 py-4 text-center font-semibold text-foreground">{f.calls}</td>
+                      <td className="px-5 py-4 text-center text-subtle">{f.inputTokens?.toLocaleString()}</td>
+                      <td className="px-5 py-4 text-center text-subtle">{f.outputTokens?.toLocaleString()}</td>
+                      <td className="px-5 py-4 text-center font-black text-emerald-600">
+                        ${f.cost.toFixed(4)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+
+          {/* AI Model Metrics Table */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+            className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
+            <div className="p-5 border-b border-border-subtle">
+              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Cpu className="h-4 w-4 text-subtle" /> AI Model Performance & Costs
+              </h3>
+            </div>
+            <div className="overflow-x-auto admin-table-scroll">
+              <table className="w-full text-left min-w-[500px]">
+                <thead className="bg-background/50 border-b border-border-subtle">
+                  <tr>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">Model</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Calls</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Input Tokens</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Output Tokens</th>
+                    <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center font-black">Est. Cost</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border-subtle text-xs">
+                  {aiModels.length === 0 ? (
+                    <tr><td colSpan={5} className="px-5 py-8 text-center text-sm text-subtle">No AI model data yet</td></tr>
+                  ) : aiModels.map((m: any) => (
+                    <tr key={m.name} className="hover:bg-background/30 transition-all">
+                      <td className="px-5 py-4 font-bold text-foreground">
+                        {m.name}
+                      </td>
+                      <td className="px-5 py-4 text-center font-semibold text-foreground">{m.calls}</td>
+                      <td className="px-5 py-4 text-center text-subtle">{m.inputTokens?.toLocaleString()}</td>
+                      <td className="px-5 py-4 text-center text-subtle">{m.outputTokens?.toLocaleString()}</td>
+                      <td className="px-5 py-4 text-center font-black text-emerald-600">
+                        ${m.cost.toFixed(4)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Top AI Consumers */}
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+          className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
+          <div className="p-5 border-b border-border-subtle">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <Users className="h-4 w-4 text-subtle" /> Top AI Consumers (Last 30 Days)
+            </h3>
+          </div>
+          <div className="overflow-x-auto admin-table-scroll">
+            <table className="w-full text-left min-w-[700px]">
+              <thead className="bg-background/50 border-b border-border-subtle">
+                <tr>
+                  <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest w-10">#</th>
+                  <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">User</th>
+                  <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Invocations</th>
+                  <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center">Total Tokens</th>
+                  <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest text-center font-black">Est. Cost</th>
+                  <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">Cost Share</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border-subtle">
+                {aiUsers.length === 0 ? (
+                  <tr><td colSpan={6} className="px-5 py-8 text-center text-sm text-subtle">No AI consumer data yet</td></tr>
+                ) : aiUsers.map((u: any, i: number) => {
+                  const pct = platformData?.aiCost > 0 ? (u.cost / platformData.aiCost) * 100 : 0;
+                  return (
+                    <tr key={u.email} className="hover:bg-background/30 transition-all">
+                      <td className="px-5 py-4">
+                        <span className="h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-black bg-background text-subtle border border-border-subtle">
+                          {i + 1}
+                        </span>
+                      </td>
+                      <td className="px-5 py-4">
+                        <p className="text-sm font-bold text-foreground">{u.name}</p>
+                        <p className="text-[10px] text-subtle">{u.email}</p>
+                      </td>
+                      <td className="px-5 py-4 text-xs font-semibold text-foreground text-center">{u.calls}</td>
+                      <td className="px-5 py-4 text-xs text-subtle text-center">{u.totalTokens.toLocaleString()}</td>
+                      <td className="px-5 py-4 text-xs font-black text-center text-emerald-600">${u.cost.toFixed(4)}</td>
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-1.5 bg-border-subtle rounded-full overflow-hidden">
+                            <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${Math.max(1, pct)}%` }} />
+                          </div>
+                          <span className="text-[10px] font-bold text-subtle">{Math.round(pct)}%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }

@@ -75,7 +75,7 @@ export async function POST(request: Request) {
         'search_documents',
         {
           query_embedding: topicEmbedding,
-          match_count: 8,
+          match_count: 5,
           filter_user_id: userId,
           filter_exam_id: examId,
         }
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
         .select('chunk_text, doc_type')
         .eq('exam_id', examId)
         .ilike('chunk_text', `%${topic}%`)
-        .limit(8);
+        .limit(5);
       
       if (fallbackChunks && fallbackChunks.length > 0) {
         relevantContext = fallbackChunks.map((c: any, i: number) => `[Source ${i + 1} — ${(c.doc_type || 'notes').toUpperCase()}]\n${c.chunk_text}`).join('\n\n---\n\n');
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
 
     // 2. Call Gemini API with JSON response via centralized utility
     const userMessage = `Create ${count} flashcards on: ${topic}\n\nContent:\n${contextContent}`;
-    const parsed = await generateJSON(getSystemInstruction(userLang), userMessage);
+    const parsed = await generateJSON(getSystemInstruction(userLang), userMessage, undefined, { userId, feature: 'flashcards' });
 
     const flashcards = parsed?.flashcards;
     if (!Array.isArray(flashcards) || flashcards.length === 0) {
