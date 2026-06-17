@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -152,6 +153,7 @@ export default async function RootLayout({
           {children}
           <Toaster richColors position="top-right" />
           <CookieConsent />
+          <Analytics />
         </ThemeProvider>
         <script
           dangerouslySetInnerHTML={{
