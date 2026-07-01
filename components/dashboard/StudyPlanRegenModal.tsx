@@ -44,7 +44,7 @@ export function StudyPlanRegenModal({
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                   className="bg-surface p-8 sm:p-10 rounded-[2.5rem] max-w-md w-full border border-border-subtle shadow-2xl relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-[40px] -mr-16 -mt-16" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-[40px] -mr-16 -mt-16" />
                   
                   <button
                     onClick={onClose}
@@ -53,7 +53,7 @@ export function StudyPlanRegenModal({
                     <X className="h-5 w-5" />
                   </button>
 
-                  <div className="h-14 w-14 bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
+                  <div className="h-14 w-14 bg-accent/10 text-accent border border-accent/20 rounded-2xl flex items-center justify-center mb-8 shadow-sm">
                     <RefreshCw className="h-7 w-7" />
                   </div>
 
@@ -68,14 +68,14 @@ export function StudyPlanRegenModal({
                     {/* Days Input */}
                     <div className="space-y-3">
                       <label className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1 flex items-center gap-2">
-                        <Calendar className="h-3 w-3 text-[#c9a84c]" /> Study Duration
+                        <Calendar className="h-3 w-3 text-accent" /> Study Duration
                       </label>
                       <div className="relative group">
                         <input
                           type="number"
                           value={days}
                           onChange={(e) => setDays(Math.max(1, parseInt(e.target.value) || 1))}
-                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-[13px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] outline-none transition-all shadow-sm"
+                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-[13px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all shadow-sm"
                           placeholder="DAYS"
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-subtle uppercase tracking-widest">Days</div>
@@ -85,23 +85,23 @@ export function StudyPlanRegenModal({
                     {/* Hours Input */}
                     <div className="space-y-3">
                       <label className="text-[10px] font-black text-subtle uppercase tracking-widest ml-1 flex items-center gap-2">
-                        <Clock className="h-3 w-3 text-[#c9a84c]" /> Daily Load
+                        <Clock className="h-3 w-3 text-accent" /> Daily Load
                       </label>
                       <div className="relative group">
                         <input
                           type="number"
                           value={hours}
                           onChange={(e) => setHours(Math.max(1, Math.min(24, parseInt(e.target.value) || 1)))}
-                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-[13px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] outline-none transition-all shadow-sm"
+                          className="w-full bg-background border border-border-subtle rounded-2xl px-5 py-4 text-[13px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all shadow-sm"
                           placeholder="HOURS"
                         />
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-subtle uppercase tracking-widest">Hrs/Day</div>
                       </div>
                     </div>
 
-                    <div className="bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-xl p-4 flex gap-3 shadow-sm">
-                      <AlertTriangle className="h-5 w-5 text-[#c9a84c] flex-shrink-0" />
-                      <p className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest leading-tight">
+                    <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 flex gap-3 shadow-sm">
+                      <AlertTriangle className="h-5 w-5 text-accent flex-shrink-0" />
+                      <p className="text-[9px] font-black text-accent uppercase tracking-widest leading-tight">
                         Critical: All mission logs and performance data for this roadmap will be purged.
                       </p>
                     </div>
@@ -116,7 +116,7 @@ export function StudyPlanRegenModal({
                     </button>
                     <button
                       onClick={() => onConfirm(days, hours)}
-                      className="flex-1 py-4 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-[#1e3a5f]/10 hover:opacity-95 transition-all active:scale-[0.98]"
+                      className="flex-1 py-4 bg-primary text-accent rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/10 hover:opacity-95 transition-all active:scale-[0.98]"
                     >
                       Re-Deploy
                     </button>

@@ -112,7 +112,7 @@ export function DataPrivacySection({ user }: any) {
         <div className="bg-background border border-border-subtle rounded-xl p-5 shadow-sm">
           <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-1.5">Export My Data (PDF)</h3>
           <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4 leading-relaxed opacity-70">Download all mission data including study plans, quiz history, and notes as a tactical PDF document.</p>
-          <button onClick={handleExport} disabled={exporting} className="flex items-center gap-2 px-5 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10">
+          <button onClick={handleExport} disabled={exporting} className="flex items-center gap-2 px-5 py-2.5 bg-primary text-accent rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 shadow-lg shadow-primary/10">
             {exporting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Download className="h-3.5 w-3.5" />} Export Mission Data
           </button>
         </div>

@@ -109,9 +109,9 @@ export function MissionChecklist() {
       animate={{ opacity: 1, y: 0 }}
       className="bg-surface border border-border-subtle rounded-3xl overflow-hidden shadow-sm mb-8"
     >
-      <div className="p-6 border-b border-border-subtle bg-[#1e3a5f]/[0.02] flex items-center justify-between">
+      <div className="p-6 border-b border-border-subtle bg-primary/[0.02] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-[#1e3a5f] flex items-center justify-center text-[#c9a84c] shadow-lg shadow-primary/10">
+          <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center text-accent shadow-lg shadow-primary/10">
             <Rocket className="h-5 w-5" />
           </div>
           <div>
@@ -120,7 +120,7 @@ export function MissionChecklist() {
           </div>
         </div>
         <div className="flex flex-col items-end">
-          <span className="text-xl font-black text-[#c9a84c] tracking-tighter">{completedCount}/{steps.length}</span>
+          <span className="text-xl font-black text-accent tracking-tighter">{completedCount}/{steps.length}</span>
           <span className="text-[9px] font-black text-subtle uppercase tracking-widest">Steps Completed</span>
         </div>
       </div>
@@ -130,7 +130,7 @@ export function MissionChecklist() {
           <Link 
             key={step.id} 
             href={step.href}
-            className="p-5 hover:bg-[#1e3a5f]/[0.03] transition-all group relative overflow-hidden"
+            className="p-5 hover:bg-primary/[0.03] transition-all group relative overflow-hidden"
           >
             {step.isCompleted && (
               <div className="absolute top-0 right-0 p-2">

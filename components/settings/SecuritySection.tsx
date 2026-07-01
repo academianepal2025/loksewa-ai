@@ -75,26 +75,26 @@ export function SecuritySection({ user, markDirty, clearDirty }: any) {
       {/* Change Password */}
       <div className="border border-border-subtle rounded-xl overflow-hidden">
         <button onClick={() => setShowPassword(!showPassword)} className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-background/50 transition-all">
-          <span className="text-[11px] font-black text-foreground tracking-widest uppercase">Change Password</span>
+          <span className="text-xs font-bold text-foreground">Change Password</span>
           {showPassword ? <ChevronUp className="h-4 w-4 text-[#c9a84c]" /> : <ChevronDown className="h-4 w-4 text-[#c9a84c]" />}
         </button>
         {showPassword && (
           <div className="px-4 pb-4 space-y-3 border-t border-border-subtle pt-4 bg-background/30">
             <div className="relative">
-              <input type={showCurrentPw ? 'text' : 'password'} value={currentPw} onChange={e => setCurrentPw(e.target.value)} placeholder="CURRENT PASSWORD" className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 pr-10 text-[13px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 placeholder:text-subtle/30 shadow-sm" />
+              <input type={showCurrentPw ? 'text' : 'password'} value={currentPw} onChange={e => setCurrentPw(e.target.value)} placeholder="Current Password" className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 pr-10 text-sm font-semibold text-foreground outline-none focus:border-accent/50 placeholder:text-subtle/30 shadow-sm" />
               <button onClick={() => setShowCurrentPw(!showCurrentPw)} className="absolute right-3 top-3 text-subtle">{showCurrentPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
             </div>
             <div className="relative">
-              <input type={showNewPw ? 'text' : 'password'} value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="NEW PASSWORD (MIN 8)" className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 pr-10 text-[13px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 placeholder:text-subtle/30 shadow-sm" />
+              <input type={showNewPw ? 'text' : 'password'} value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="New Password (min 8)" className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 pr-10 text-sm font-semibold text-foreground outline-none focus:border-accent/50 placeholder:text-subtle/30 shadow-sm" />
               <button onClick={() => setShowNewPw(!showNewPw)} className="absolute right-3 top-3 text-subtle">{showNewPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button>
               <PasswordStrength password={newPw} />
             </div>
-            <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} placeholder="CONFIRM NEW PASSWORD" className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-[13px] font-black uppercase tracking-widest text-foreground outline-none focus:border-[#c9a84c]/50 placeholder:text-subtle/30 shadow-sm" />
+            <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)} placeholder="Confirm New Password" className="w-full bg-background border border-border-subtle rounded-xl px-4 py-3 text-sm font-semibold text-foreground outline-none focus:border-accent/50 placeholder:text-subtle/30 shadow-sm" />
             {newPw && confirmPw && newPw !== confirmPw && (
-              <p className="text-[10px] font-black text-red-500">Passwords do not match</p>
+              <p className="text-[10px] font-bold text-red-500">Passwords do not match</p>
             )}
-            <button onClick={handlePasswordChange} disabled={pwSaving} className="flex items-center gap-2 px-5 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10">
-              {pwSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Update Mission Password
+            <button onClick={handlePasswordChange} disabled={pwSaving} className="flex items-center gap-2 px-5 py-2.5 bg-primary text-accent rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-40 shadow-lg shadow-primary/10">
+              {pwSaving && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Update Password
             </button>
           </div>
         )}

@@ -70,7 +70,7 @@ export function DangerZoneSection({ user }: any) {
 
       <p className="text-[12px] text-foreground/70 mb-4 leading-relaxed">Deleting your account is permanent and irreversible. All your data will be permanently removed from our systems.</p>
 
-      <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-6 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10">
+      <button onClick={() => setShowModal(true)} className="flex items-center gap-2 px-6 py-3 bg-primary text-accent rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-primary/10">
         <Trash2 className="h-3.5 w-3.5" /> Delete Account
       </button>
 

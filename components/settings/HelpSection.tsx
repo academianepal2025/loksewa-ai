@@ -30,7 +30,7 @@ export function HelpSection() {
           <div key={i} className="border border-border-subtle rounded-xl overflow-hidden shadow-sm">
             <button onClick={() => setOpenIdx(openIdx === i ? null : i)} className="w-full flex items-center justify-between px-4 py-3.5 text-left hover:bg-background/50 transition-all">
               <span className="text-[11px] font-black text-foreground pr-4 tracking-widest uppercase">{item.q}</span>
-              {openIdx === i ? <ChevronUp className="h-4 w-4 text-[#c9a84c] flex-shrink-0" /> : <ChevronDown className="h-4 w-4 text-subtle flex-shrink-0" />}
+              {openIdx === i ? <ChevronUp className="h-4 w-4 text-accent flex-shrink-0" /> : <ChevronDown className="h-4 w-4 text-subtle flex-shrink-0" />}
             </button>
             {openIdx === i && (
               <div className="px-4 pb-4 text-[11px] text-subtle font-black uppercase tracking-widest leading-relaxed border-t border-border-subtle pt-4 bg-background/30 opacity-80">{item.a}</div>
@@ -41,21 +41,21 @@ export function HelpSection() {
 
       {/* Contact */}
       <div className="bg-background border border-border-subtle rounded-xl p-5 mb-4 shadow-sm">
-        <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-3 flex items-center gap-2"><MessageSquare className="h-4 w-4 text-[#c9a84c]" /> Contact Support</h3>
+        <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-3 flex items-center gap-2"><MessageSquare className="h-4 w-4 text-accent" /> Contact Support</h3>
         <p className="text-[10px] text-subtle font-black uppercase tracking-widest mb-4">Email: loksewagkdose@gmail.com</p>
-        <a href="https://wa.me/9779808493504" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#1e3a5f] text-[#c9a84c] border border-[#c9a84c]/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10">
+        <a href="https://wa.me/9779808493504" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-2.5 bg-primary text-accent border border-accent/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-primary/10">
           <MessageSquare className="h-3.5 w-3.5" /> WhatsApp Dispatch <ExternalLink className="h-3 w-3" />
         </a>
       </div>
 
       {/* Version */}
       <div className="bg-background border border-border-subtle rounded-xl p-5 mb-4 shadow-sm">
-        <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-1.5 flex items-center gap-2"><Info className="h-4 w-4 text-[#c9a84c]" /> App Version</h3>
+        <h3 className="text-[11px] font-black text-foreground uppercase tracking-widest mb-1.5 flex items-center gap-2"><Info className="h-4 w-4 text-accent" /> App Version</h3>
         <p className="text-[10px] text-subtle font-black uppercase tracking-widest opacity-60">Version 0.1.0 · May 2025 Release</p>
       </div>
 
       {/* Terms */}
-      <button onClick={() => setShowTerms(true)} className="text-[10px] font-black text-[#c9a84c] hover:underline uppercase tracking-widest ml-1">Access Terms of Use</button>
+      <button onClick={() => setShowTerms(true)} className="text-[10px] font-black text-accent hover:underline uppercase tracking-widest ml-1">Access Terms of Use</button>
 
       {showTerms && (
         <div className="fixed inset-0 z-[110] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowTerms(false)}>

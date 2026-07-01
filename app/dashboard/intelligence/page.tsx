@@ -53,10 +53,10 @@ function IntelligenceCard({ title, icon: Icon, children, status }: any) {
     <div className="bg-surface border border-border-subtle rounded-xl overflow-hidden transition-all">
       <div className="px-5 py-3 border-b border-border-subtle flex justify-between items-center">
         <div className="flex items-center gap-2.5">
-          <Icon className="h-4 w-4 text-[#c9a84c]" />
+          <Icon className="h-4 w-4 text-accent" />
           <div>
             <h3 className="text-[10px] font-black tracking-widest uppercase text-foreground">{title}</h3>
-            {status && <p className="text-[9px] font-black text-[#c9a84c] tracking-widest uppercase">{status}</p>}
+            {status && <p className="text-[9px] font-black text-accent tracking-widest uppercase">{status}</p>}
           </div>
         </div>
       </div>
@@ -177,11 +177,11 @@ export default function IntelligenceHubPage() {
       <div className="px-8 py-10 sm:px-12 sm:py-16">
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
           <div className="lg:col-span-8">
-            <div className="inline-flex items-center gap-2 text-[9px] font-black text-[#c9a84c] uppercase tracking-[0.2em] mb-3">
+            <div className="inline-flex items-center gap-2 text-[9px] font-black text-accent uppercase tracking-[0.2em] mb-3">
               Intelligence Center
             </div>
             <h1 className="text-3xl sm:text-4xl font-black tracking-tighter mb-4 text-foreground uppercase">
-              Intelligence <span className="text-[#c9a84c]">Archive</span>
+              Intelligence <span className="text-accent">Archive</span>
             </h1>
             <p className="text-[10px] text-subtle font-black uppercase tracking-widest max-w-2xl leading-relaxed mb-8">
               Analyzed tactical documentation and structured knowledge insights.
@@ -192,7 +192,7 @@ export default function IntelligenceHubPage() {
                 <button
                   key={e.id}
                   onClick={() => setActiveExamId(e.id)}
-                  className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeExamId === e.id ? 'bg-[#1e3a5f] text-[#c9a84c]' : 'bg-background text-muted border border-border-subtle hover:bg-surface'}`}
+                  className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeExamId === e.id ? 'bg-primary text-accent' : 'bg-background text-muted border border-border-subtle hover:bg-surface'}`}
                 >
                   {e.exam_name}
                 </button>
@@ -202,12 +202,12 @@ export default function IntelligenceHubPage() {
           
           <div className="lg:col-span-4 grid grid-cols-2 gap-3">
             <div className="p-5 bg-surface border border-border-subtle rounded-2xl shadow-sm">
-              <Database className="h-4 w-4 text-[#c9a84c] mb-3" />
+              <Database className="h-4 w-4 text-accent mb-3" />
               <p className="text-2xl font-black text-foreground tracking-tighter">{documents.length}</p>
               <p className="text-[9px] font-black uppercase text-subtle tracking-widest">Sources Indexed</p>
             </div>
             <div className="p-5 bg-surface border border-border-subtle rounded-2xl shadow-sm">
-              <Zap className="h-4 w-4 text-[#c9a84c] mb-3" />
+              <Zap className="h-4 w-4 text-accent mb-3" />
               <p className="text-2xl font-black text-foreground tracking-tighter">{documents.filter(d => d.processing_status === 'ready').length}</p>
               <p className="text-[9px] font-black uppercase text-subtle tracking-widest">Active Intelligence</p>
             </div>
@@ -238,11 +238,11 @@ export default function IntelligenceHubPage() {
         {activeTab === 'syllabus' ? (
           <div className="space-y-6">
             {!syllabusAnalysis ? (
-              <div className="bg-surface dark:bg-slate-900 border border-border-subtle p-20 rounded-3xl text-center">
+              <div className="bg-surface border border-border-subtle p-20 rounded-3xl text-center">
                 <AlertCircle className="h-12 w-12 text-muted mx-auto mb-4" />
                 <h3 className="text-2xl font-black">No Analysis Available</h3>
                 <p className="text-base text-muted mt-2 mb-6 max-w-sm mx-auto">Please upload a syllabus in the Materials Repo and trigger a new analysis.</p>
-                <button onClick={() => router.push('/dashboard/documents')} className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl text-sm font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-[#1e3a5f]/20">Go to Material Repo</button>
+                <button onClick={() => router.push('/dashboard/documents')} className="px-8 py-3 bg-primary text-accent rounded-2xl text-sm font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-primary/20">Go to Material Repo</button>
               </div>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -253,7 +253,7 @@ export default function IntelligenceHubPage() {
                         <div key={i} className="p-5 border border-border-subtle rounded-xl bg-background group hover:border-accent/30 transition-all shadow-sm">
                           <div className="flex justify-between items-start mb-4">
                             <h4 className="font-black text-xs text-foreground uppercase tracking-widest">{topic.topic_name}</h4>
-                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${topic.priority === 'critical' ? 'bg-[#1e3a5f] text-[#c9a84c] border border-[#c9a84c]/20' : 'bg-[#c9a84c]/10 text-[#c9a84c]'}`}>
+                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${topic.priority === 'critical' ? 'bg-primary text-accent border border-accent/20' : 'bg-accent/10 text-accent'}`}>
                               {topic.priority}
                             </span>
                           </div>
@@ -266,7 +266,7 @@ export default function IntelligenceHubPage() {
                              <p className="reading-area text-[13px] text-muted leading-relaxed">{topic.priority_reason}</p>
                              <button 
                               onClick={() => navigateToGuru(topic.topic_name, `Subtopics: ${topic.subtopics.join(', ')}. Context: ${topic.priority_reason}`)}
-                              className="mt-4 w-full py-2 bg-surface border border-border-subtle rounded-lg text-[10px] font-black uppercase tracking-widest text-subtle flex items-center justify-center gap-2 hover:bg-[#1e3a5f] hover:text-[#c9a84c] hover:border-[#1e3a5f] transition-all"
+                              className="mt-4 w-full py-2 bg-surface border border-border-subtle rounded-lg text-[10px] font-black uppercase tracking-widest text-subtle flex items-center justify-center gap-2 hover:bg-primary hover:text-accent hover:border-primary transition-all"
                              >
                                Exploration by Guru <ArrowRight className="h-3 w-3" />
                              </button>
@@ -293,7 +293,7 @@ export default function IntelligenceHubPage() {
                         </div>
                         <div className="flex justify-between items-center">
                            <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Prep Depth</span>
-                           <span className="text-xl font-black text-[#c9a84c] tracking-tighter">ADVANCED</span>
+                           <span className="text-xl font-black text-accent tracking-tighter">ADVANCED</span>
                         </div>
                         <div className="flex justify-between items-center">
                            <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Est. Effort</span>
@@ -302,8 +302,8 @@ export default function IntelligenceHubPage() {
                      </div>
                   </div>
 
-                  <div className="bg-[#1e3a5f] p-6 rounded-2xl text-[#c9a84c] shadow-xl shadow-[#1e3a5f]/10">
-                     <h4 className="text-[10px] font-black uppercase tracking-widest mb-4 flex items-center gap-2 text-[#c9a84c]"><Sparkles className="h-3.5 w-3.5" /> Critical Focus</h4>
+                  <div className="bg-primary p-6 rounded-2xl text-accent shadow-xl shadow-primary/10">
+                     <h4 className="text-[10px] font-black uppercase tracking-widest mb-4 flex items-center gap-2 text-accent"><Sparkles className="h-3.5 w-3.5" /> Critical Focus</h4>
                      <p className="reading-area text-xs font-medium leading-relaxed opacity-80 italic text-white/90">
                         {syllabusAnalysis.analysis_data.critical_topics_summary}
                      </p>
@@ -316,7 +316,7 @@ export default function IntelligenceHubPage() {
         ) : (
           <div className="space-y-4">
             {filteredDocs.length === 0 ? (
-               <div className="bg-surface dark:bg-slate-900 border border-border-subtle p-20 rounded-3xl text-center">
+               <div className="bg-surface border border-border-subtle p-20 rounded-3xl text-center">
                 <Database className="h-12 w-12 text-muted mx-auto mb-4" />
                 <h3 className="text-xl font-black">No Data Uploaded</h3>
                 <p className="text-sm text-muted mt-2">You haven't uploaded any {activeTab === 'notes' ? 'notes' : 'PYQs'} yet.</p>
@@ -330,7 +330,7 @@ export default function IntelligenceHubPage() {
                       onClick={() => setExpandedDoc(expandedDoc === doc.id ? null : doc.id)}
                     >
                        <div className="flex items-center gap-4">
-                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center transition-colors ${doc.processing_status === 'ready' ? 'bg-[#c9a84c]/10 text-[#c9a84c]' : 'bg-background text-subtle border border-border-subtle'}`}>
+                          <div className={`h-10 w-10 rounded-lg flex items-center justify-center transition-colors ${doc.processing_status === 'ready' ? 'bg-accent/10 text-accent' : 'bg-background text-subtle border border-border-subtle'}`}>
                              {activeTab === 'notes' ? <Files className="h-4 w-4" /> : <History className="h-4 w-4" />}
                           </div>
                           <div>
@@ -343,7 +343,7 @@ export default function IntelligenceHubPage() {
                        <div className="flex items-center gap-3">
                           <button 
                             onClick={(e) => { e.stopPropagation(); navigateToGuru(doc.file_name, `Extracted Content: ${doc.parsed_text?.slice(0, 1000)}`); }}
-                            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-background border border-border-subtle text-muted text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-[#1e3a5f] hover:text-[#c9a84c] transition-all"
+                            className="hidden sm:flex items-center gap-2 px-4 py-2 bg-background border border-border-subtle text-muted text-[10px] font-black uppercase tracking-widest rounded-lg hover:bg-primary hover:text-accent transition-all"
                           >
                              Consult Guru <MessageSquare className="h-3 w-3" />
                           </button>
@@ -355,7 +355,7 @@ export default function IntelligenceHubPage() {
                        <div className="px-5 pb-5 pt-0">
                           <div className="bg-background p-6 rounded-xl border border-border-subtle">
                              <div className="flex items-center gap-2 mb-4">
-                                <Terminal className="h-3.5 w-3.5 text-[#c9a84c]" />
+                                <Terminal className="h-3.5 w-3.5 text-accent" />
                                 <span className="text-[10px] font-black text-subtle uppercase tracking-widest">Extracted Intelligence Stream</span>
                              </div>
                              <div className="reading-area text-[13px] font-medium leading-relaxed text-foreground whitespace-pre-wrap max-h-[400px] overflow-y-auto custom-scrollbar">
@@ -365,7 +365,7 @@ export default function IntelligenceHubPage() {
                                 <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">Validated by Loksewa AI</p>
                                 <button 
                                   onClick={() => navigateToGuru(doc.file_name, doc.parsed_text || '')}
-                                  className="w-full sm:w-auto px-6 py-2 bg-[#1e3a5f] text-[#c9a84c] text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
+                                  className="w-full sm:w-auto px-6 py-2 bg-primary text-accent text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-primary/10"
                                 >
                                    Ask Guru about this document <ArrowRight className="h-3.5 w-3.5" />
                                 </button>
@@ -393,12 +393,12 @@ export default function IntelligenceHubPage() {
         >
           <button
             onClick={handleAskGuruSelection}
-            className="flex items-center gap-2 px-4 py-2 bg-[#1e3a5f] text-[#c9a84c] rounded-full shadow-2xl border border-[#c9a84c]/20 text-[10px] font-black uppercase tracking-widest hover:scale-110 active:scale-95 transition-all whitespace-nowrap"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-accent rounded-full shadow-2xl border border-accent/20 text-[10px] font-black uppercase tracking-widest hover:scale-110 active:scale-95 transition-all whitespace-nowrap"
           >
             <MessageSquare className="h-3 w-3" />
             {language === 'np' ? 'गुरुलाई सोध्नुहोस्' : 'Ask Guru'}
           </button>
-          <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-[#1e3a5f] mx-auto" />
+          <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-primary mx-auto" />
         </div>
       )}
     </div>

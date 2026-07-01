@@ -142,7 +142,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
           >
             {/* Step Indicator */}
             <div className="flex h-1.5 w-full bg-background/50 flex-shrink-0">
-               <div className={`h-full bg-[#c9a84c] transition-all duration-500 ${step === 1 ? 'w-1/3' : step === 2 ? 'w-2/3' : 'w-full'}`} />
+               <div className={`h-full bg-accent transition-all duration-500 ${step === 1 ? 'w-1/3' : step === 2 ? 'w-2/3' : 'w-full'}`} />
             </div>
 
             <div className="p-6 sm:p-8 overflow-y-auto flex-1 scrollbar-hide">
@@ -167,7 +167,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                  <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
                     <div className="text-center">
                        <h4 className="text-xl font-bold text-foreground mb-1">Complete Your Payment</h4>
-                       <p className="text-xs font-medium text-subtle">Plan: <span className="text-foreground font-bold">{selectedPlan.name}</span> • Amount: <span className="text-[#c9a84c] font-bold">NPR {selectedPlan.price}</span></p>
+                       <p className="text-xs font-medium text-subtle">Plan: <span className="text-foreground font-bold">{selectedPlan.name}</span> • Amount: <span className="text-accent font-bold">NPR {selectedPlan.price}</span></p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -216,24 +216,24 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                       </div>
                     </div>
 
-                    <div className="p-5 bg-[#c9a84c]/[0.03] border border-[#c9a84c]/10 rounded-2xl space-y-4">
+                    <div className="p-5 bg-accent/[0.03] border border-accent/10 rounded-2xl space-y-4">
                        <div className="flex items-start gap-3">
-                          <div className="h-5 w-5 rounded-full bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                          <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
                           <p className="text-xs font-medium text-foreground/80 leading-relaxed">Open <span className="font-bold">eSewa or Khalti</span> and scan either of the QR codes above.</p>
                        </div>
                        <div className="flex items-start gap-3">
-                          <div className="h-5 w-5 rounded-full bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
-                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Pay exact amount <span className="font-bold text-[#c9a84c]">NPR {selectedPlan.price}</span>. In remarks, write your full name.</p>
+                          <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Pay exact amount <span className="font-bold text-accent">NPR {selectedPlan.price}</span>. In remarks, write your full name.</p>
                        </div>
                        <div className="flex items-start gap-3">
-                          <div className="h-5 w-5 rounded-full bg-[#1e3a5f] text-[#c9a84c] flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                          <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
                           <p className="text-xs font-medium text-foreground/80 leading-relaxed">Enter your details in the next step to notify our team.</p>
                        </div>
                     </div>
 
                     <button 
                       onClick={() => setStep(2)}
-                      className="w-full py-4 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-all min-h-[52px]"
+                      className="w-full py-4 bg-primary text-accent rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-all min-h-[52px]"
                     >
                        I have paid, Next <ArrowRight className="h-4 w-4" />
                     </button>
@@ -275,7 +275,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                     <button 
                       onClick={handleSubmit}
                       disabled={loading}
-                      className="w-full py-4 bg-[#1e3a5f] text-[#c9a84c] rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-50 transition-all min-h-[52px]"
+                      className="w-full py-4 bg-primary text-accent rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-50 transition-all min-h-[52px]"
                     >
                        {loading ? 'Processing...' : 'Notify Admin of Payment'} 
                        {!loading && <CheckCircle2 className="h-4 w-4" />}
@@ -294,7 +294,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                     <div className="space-y-3">
                        <h4 className="text-2xl font-bold text-foreground tracking-tight">Payment Request Submitted</h4>
                        <p className="text-sm font-medium text-subtle leading-relaxed">
-                          Thank you <span className="text-foreground font-bold">{formData.fullName}</span>. We will verify your payment against your phone number <span className="font-bold text-[#c9a84c]">{formData.phone}</span>.
+                          Thank you <span className="text-foreground font-bold">{formData.fullName}</span>. We will verify your payment against your phone number <span className="font-bold text-accent">{formData.phone}</span>.
                        </p>
                     </div>
 
@@ -302,7 +302,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                        <div className="flex flex-col items-center">
                           <span className="text-[10px] font-bold text-subtle uppercase tracking-[0.2em] mb-1">REQUEST REFERENCE ID</span>
                           <div className="flex items-center gap-2">
-                             <code className="text-sm font-black text-[#c9a84c] bg-[#c9a84c]/5 px-3 py-1 rounded-lg border border-[#c9a84c]/20">{requestId?.slice(0, 8).toUpperCase()}</code>
+                             <code className="text-sm font-black text-accent bg-accent/5 px-3 py-1 rounded-lg border border-accent/20">{requestId?.slice(0, 8).toUpperCase()}</code>
                              <button 
                                onClick={() => {
                                  navigator.clipboard.writeText(requestId || '');

@@ -19,7 +19,8 @@ import {
   BookOpen,
   Sparkles,
   RefreshCw,
-  ChevronLeft
+  ChevronLeft,
+  ChevronDown
 } from 'lucide-react';
 
 interface NoteContent {
@@ -217,7 +218,7 @@ export default function StudyNotesPage() {
   if (loading) {
     return (
       <div className="flex h-[calc(100vh-5rem)] items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1e3a5f]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -225,30 +226,33 @@ export default function StudyNotesPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-4rem)] bg-background">
       {/* Header */}
-      <div className="flex-none p-5 border-b border-border-subtle bg-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10 shadow-sm">
+      <div className="flex-none p-5 border-b border-border-subtle/60 bg-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10">
         <div>
-          <h1 className="text-2xl font-black text-foreground tracking-tighter flex items-center gap-2 uppercase">
+          <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <BookOpen className="h-6 w-6 text-accent" /> AI Study Notes
           </h1>
-          <p className="text-[10px] text-subtle font-black mt-1 uppercase tracking-widest">Unified Tactical Intelligence</p>
+          <p className="text-xs font-semibold text-subtle mt-1 capitalize tracking-wide">Unified Tactical Intelligence</p>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Note List */}
-        <div className={`w-full md:w-80 border-r border-border-subtle bg-surface/50 flex flex-col flex-none transition-all ${activeNote ? 'hidden md:flex' : 'flex'}`}>
-          <div className="p-4 border-b border-border-subtle bg-surface sticky top-0 z-10 space-y-3">
+        <div className={`w-full md:w-80 border-r border-border-subtle/60 bg-surface/30 flex flex-col flex-none transition-all ${activeNote ? 'hidden md:flex' : 'flex'}`}>
+          <div className="p-4 border-b border-border-subtle/50 bg-surface sticky top-0 z-10 space-y-3">
             {exams.length > 0 && (
-              <select
-                value={selectedExamId}
-                onChange={(e) => setSelectedExamId(e.target.value)}
-                className="w-full px-3 py-2 bg-background border border-border-subtle rounded-xl text-[10px] font-black text-foreground focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all appearance-none uppercase tracking-widest"
-              >
-                <option value="all">All Exams</option>
-                {exams.map(ex => (
-                  <option key={ex.id} value={ex.id}>{ex.exam_name}</option>
-                ))}
-              </select>
+              <div className="relative w-full">
+                <select
+                  value={selectedExamId}
+                  onChange={(e) => setSelectedExamId(e.target.value)}
+                  className="w-full px-5 py-3.5 bg-primary text-accent border-2 border-accent/20 rounded-xl text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all appearance-none cursor-pointer shadow-md"
+                >
+                  <option value="all" className="bg-surface text-foreground">All Exams</option>
+                  {exams.map(ex => (
+                    <option key={ex.id} value={ex.id} className="bg-surface text-foreground">{ex.exam_name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-accent pointer-events-none" />
+              </div>
             )}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
@@ -257,7 +261,7 @@ export default function StudyNotesPage() {
                 placeholder="Search notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 bg-background border border-border-subtle rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                className="w-full pl-9 pr-4 py-2.5 bg-background border border-border-subtle/80 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
               />
             </div>
           </div>
@@ -265,14 +269,14 @@ export default function StudyNotesPage() {
           <div className="flex-1 overflow-y-auto p-3 space-y-6">
             {Object.keys(groupedNotes).length === 0 ? (
               <div className="text-center py-10 px-4">
-                <FileText className="h-8 w-8 text-border-subtle mx-auto mb-3" />
+                <FileText className="h-8 w-8 text-border-subtle/60 mx-auto mb-3" />
                 <p className="text-sm font-bold text-subtle">No notes found.</p>
                 <p className="text-[11px] text-muted mt-1">Generate them from your Study Plan.</p>
               </div>
             ) : (
               Object.entries(groupedNotes).map(([week, weekNotes]) => (
                 <div key={week} className="space-y-2">
-                  <h3 className="text-[9px] font-black text-subtle uppercase tracking-widest px-2 flex items-center gap-2">
+                  <h3 className="text-xs font-semibold text-subtle capitalize tracking-wide px-2 flex items-center gap-2">
                     <Calendar className="h-3 w-3" /> Week {week}
                   </h3>
                   <div className="space-y-1">
@@ -287,19 +291,19 @@ export default function StudyNotesPage() {
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }
                         }}
-                        className={`w-full text-left p-3 rounded-xl transition-all group ${
+                        className={`w-full text-left p-3 rounded-lg transition-all group ${
                           activeNote?.id === note.id 
-                            ? 'bg-accent/10 border-accent/20' 
+                            ? 'bg-accent/10 border-accent/25' 
                             : 'hover:bg-background border-transparent'
                         } border`}
                       >
                         <div className="flex justify-between items-start">
-                          <span className="text-[10px] font-black text-subtle bg-background px-1.5 py-0.5 rounded border border-border-subtle uppercase tracking-widest">Day {note.day_number}</span>
+                          <span className="text-[10px] font-bold text-subtle bg-background px-1.5 py-0.5 rounded-md border border-border-subtle/80 tracking-wide capitalize">Day {note.day_number}</span>
                           {note.notes_content?.has_pyq_content && (
-                            <span className="text-[8px] font-black text-accent bg-accent/10 px-1.5 py-0.5 rounded uppercase tracking-widest">PYQ INC</span>
+                            <span className="text-[9px] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded tracking-wider">PYQ INC</span>
                           )}
                         </div>
-                        <p className={`text-sm font-black mt-2 line-clamp-2 leading-tight tracking-tighter ${activeNote?.id === note.id ? 'text-accent' : 'text-foreground'}`}>
+                        <p className={`text-sm font-semibold mt-2 line-clamp-2 leading-tight tracking-tight ${activeNote?.id === note.id ? 'text-accent' : 'text-foreground'}`}>
                           {note.topic}
                         </p>
                       </button>
@@ -316,7 +320,7 @@ export default function StudyNotesPage() {
         <div className={`flex-1 overflow-y-auto bg-background transition-all ${!activeNote && 'hidden md:flex items-center justify-center'}`}>
           {!activeNote ? (
             <div className="text-center max-w-sm mx-auto p-6">
-              <div className="h-16 w-16 bg-surface border border-border-subtle rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <div className="h-16 w-16 bg-surface border border-border-subtle/60 rounded-xl flex items-center justify-center mx-auto mb-6">
                 <BookOpen className="h-8 w-8 text-subtle opacity-50" />
               </div>
               <h2 className="text-xl font-bold text-foreground mb-2">Select a Note</h2>
@@ -330,7 +334,7 @@ export default function StudyNotesPage() {
               {/* Back to list button for mobile */}
               <button 
                 onClick={() => setActiveNote(null)}
-                className="md:hidden mb-6 flex items-center gap-1.5 text-xs font-black text-accent uppercase tracking-widest hover:opacity-80 transition-all"
+                className="md:hidden mb-6 flex items-center gap-1.5 text-xs font-semibold text-accent capitalize tracking-wide hover:opacity-80 transition-all"
               >
                 <ChevronLeft className="h-4 w-4" /> Back to Notes List
               </button>
@@ -339,26 +343,26 @@ export default function StudyNotesPage() {
               <div className="flex flex-wrap gap-3 justify-between items-end mb-8 border-b border-border-subtle pb-6">
                 <div>
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-black text-subtle rounded-lg uppercase tracking-widest flex items-center gap-1.5">
+                    <span className="px-2.5 py-1 bg-surface border border-border-subtle/80 text-[11px] font-semibold text-subtle rounded-lg capitalize tracking-wide flex items-center gap-1.5">
                       <Calendar className="h-3 w-3" /> Day {activeNote!.day_number}
                     </span>
-                    <span className="px-2.5 py-1 bg-surface border border-border-subtle text-[10px] font-black text-subtle rounded-lg uppercase tracking-widest flex items-center gap-1.5">
+                    <span className="px-2.5 py-1 bg-surface border border-border-subtle/80 text-[11px] font-semibold text-subtle rounded-lg capitalize tracking-wide flex items-center gap-1.5">
                       <Hash className="h-3 w-3" /> {activeNote!.notes_content?.word_count} Words
                     </span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-black text-foreground tracking-tighter uppercase">{activeNote!.topic}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight leading-tight">{activeNote!.topic}</h2>
                 </div>
                 
                 <div className="flex items-center gap-2">
                   {isEditing ? (
                     <>
-                      <button onClick={() => setIsEditing(false)} className="p-2.5 bg-surface text-subtle hover:text-foreground border border-border-subtle rounded-xl transition-colors">
+                      <button onClick={() => setIsEditing(false)} className="p-2.5 bg-surface text-subtle hover:text-foreground border border-border-subtle/80 rounded-lg transition-colors">
                         <X className="h-4 w-4" />
                       </button>
                       <button 
                         onClick={handleSaveEdit} 
                         disabled={isSaving}
-                        className="px-4 py-2.5 bg-[#c9a84c] text-[#1e3a5f] font-black text-[10px] uppercase tracking-widest rounded-xl hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-[#c9a84c]/10"
+                        className="px-4 py-2.5 bg-accent text-primary font-bold text-xs tracking-wide capitalize rounded-lg hover:opacity-90 transition-all flex items-center gap-2"
                       >
                         {isSaving ? <span className="animate-pulse">Syncing...</span> : <><Check className="h-4 w-4" /> Sync Note</>}
                       </button>
@@ -367,7 +371,7 @@ export default function StudyNotesPage() {
                     <>
                       <button 
                         onClick={() => setIsEditing(true)} 
-                        className="px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] font-black text-[10px] uppercase tracking-widest rounded-xl border border-border-subtle hover:bg-background transition-colors flex items-center gap-2 shadow-lg shadow-[#1e3a5f]/10"
+                        className="px-4 py-2.5 bg-primary text-accent font-bold text-xs tracking-wide capitalize rounded-lg border border-transparent hover:bg-background transition-colors flex items-center gap-2"
                       >
                         <Edit3 className="h-4 w-4" /> Edit
                       </button>
@@ -377,11 +381,11 @@ export default function StudyNotesPage() {
               </div>
 
               {activeNote!.notes_content?.generated_from_general_knowledge && (
-                <div className="mb-8 bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-2xl p-5 flex gap-4 items-start shadow-sm">
-                  <AlertCircle className="h-5 w-5 text-[#c9a84c] flex-shrink-0 mt-0.5" />
+                <div className="mb-8 bg-accent/5 border border-accent/20 rounded-xl p-5 flex gap-4 items-start">
+                  <AlertCircle className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="text-[11px] font-black text-[#c9a84c] uppercase tracking-widest">General Knowledge Generation</h4>
-                    <p className="text-[10px] font-black text-subtle uppercase tracking-widest mt-2 leading-relaxed opacity-70">
+                    <h4 className="text-xs font-bold text-accent tracking-wide capitalize">General Knowledge Generation</h4>
+                    <p className="text-xs font-medium text-subtle mt-2 leading-relaxed opacity-85">
                       No uploaded materials found for this topic. These notes were generated using general PSC syllabus knowledge.
                     </p>
                   </div>
@@ -390,36 +394,36 @@ export default function StudyNotesPage() {
 
               {/* AI Expansion Expander Card */}
               {!isEditing && activeNote && (
-                <div className="mb-8 bg-surface border border-border-subtle rounded-2xl p-5 sm:p-6 shadow-sm relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-[40px] -mr-16 -mt-16" />
+                <div className="mb-8 bg-surface border border-border-subtle/60 rounded-xl p-5 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-[40px] -mr-16 -mt-16" />
                   <div className="relative z-10 space-y-4">
                     <div className="flex items-center gap-2">
-                      <div className="h-7 w-7 rounded-lg bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20 flex items-center justify-center">
+                      <div className="h-7 w-7 rounded-lg bg-accent/10 text-accent border border-accent/20 flex items-center justify-center">
                         <Sparkles className="h-4 w-4" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-black text-foreground uppercase tracking-widest">AI Deep-Dive Expander</h4>
-                        <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Generate more detail for any subtopic</p>
+                        <h4 className="text-sm font-bold text-foreground tracking-wide capitalize">AI Deep-Dive Expander</h4>
+                        <p className="text-xs font-medium text-subtle mt-0.5 capitalize">Generate more detail for any subtopic</p>
                       </div>
                     </div>
 
-                    <p className="text-[11px] font-medium text-foreground leading-relaxed">
+                    <p className="text-xs font-medium text-muted leading-relaxed">
                       Need more details? Select an existing subtopic or type a custom concept (e.g., <em>planning</em>, <em>organizing</em>) to have the AI write a comprehensive detailed guide and save it to these notes.
                     </p>
 
                     {/* Prepopulated Subtopics Pills */}
                     {activeNote.notes_content?.subtopics && activeNote.notes_content.subtopics.length > 0 && (
                       <div className="space-y-1.5">
-                        <p className="text-[8px] font-black text-subtle uppercase tracking-widest">Suggested Subtopics</p>
+                        <p className="text-[10px] font-bold text-subtle uppercase tracking-wider">Suggested Subtopics</p>
                         <div className="flex flex-wrap gap-1.5">
                           {activeNote.notes_content.subtopics.map((sub, idx) => (
                             <button
                               key={idx}
                               onClick={() => setExpansionTopic(sub)}
-                              className={`px-2.5 py-1 text-[9px] font-black rounded-lg border transition-all uppercase tracking-widest ${
+                              className={`px-2.5 py-1 text-[10px] font-semibold rounded-lg border transition-all capitalize tracking-wide ${
                                 expansionTopic.toLowerCase() === sub.toLowerCase()
-                                  ? 'bg-[#c9a84c]/20 border-[#c9a84c]/40 text-[#c9a84c]'
-                                  : 'bg-background border-border-subtle text-subtle hover:text-foreground'
+                                  ? 'bg-accent/20 border-accent/40 text-accent'
+                                  : 'bg-background border-border-subtle/80 text-subtle hover:text-foreground'
                               }`}
                             >
                               {sub}
@@ -436,15 +440,15 @@ export default function StudyNotesPage() {
                         value={expansionTopic}
                         onChange={(e) => setExpansionTopic(e.target.value)}
                         placeholder="Enter a concept or subtopic to expand..."
-                        className="flex-1 px-4 py-2.5 bg-background border border-border-subtle rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all placeholder:text-subtle/50 text-foreground"
+                        className="flex-1 px-4 py-2.5 bg-background border border-border-subtle/80 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all placeholder:text-subtle/50 text-foreground"
                       />
                       <button
                         onClick={handleExpandTopic}
                         disabled={isExpanding || !expansionTopic.trim()}
-                        className={`px-6 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-md ${
+                        className={`px-5 py-2.5 rounded-lg font-bold text-xs tracking-wide capitalize transition-all flex items-center justify-center gap-2 ${
                           isExpanding || !expansionTopic.trim()
-                            ? 'bg-background border border-border-subtle text-subtle cursor-not-allowed'
-                            : 'bg-[#1e3a5f] text-[#c9a84c] border border-transparent hover:opacity-90 active:scale-95 shadow-[#1e3a5f]/10'
+                            ? 'bg-background border border-border-subtle/80 text-subtle cursor-not-allowed'
+                            : 'bg-primary text-accent border border-transparent hover:opacity-90 active:scale-95'
                         }`}
                       >
                         {isExpanding ? (

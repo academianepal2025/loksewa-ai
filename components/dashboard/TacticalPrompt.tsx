@@ -34,8 +34,8 @@ export function TacticalPrompt({ id, title, message, type = 'info', delay = 1000
   if (isDismissed) return null;
 
   const styles = {
-    info: 'bg-[#1e3a5f] border-[#c9a84c]/20 text-[#c9a84c]',
-    tactical: 'bg-[#c9a84c] border-[#1e3a5f]/20 text-[#1e3a5f]',
+    info: 'bg-primary border-accent/20 text-accent',
+    tactical: 'bg-accent border-primary/20 text-primary',
     intel: 'bg-emerald-600 border-emerald-400/20 text-white',
   };
 

@@ -122,7 +122,7 @@ export default function SettingsPage() {
     <div className="max-w-6xl mx-auto">
       {/* Header */}
       <div className="mb-8 px-1">
-        <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest">Control Center</span>
+        <span className="text-[10px] font-black text-accent uppercase tracking-widest">Control Center</span>
         <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter mt-1 uppercase">Settings</h1>
         <p className="text-xs text-subtle font-medium mt-1">Manage your profile, security, preferences, and account.</p>
       </div>
@@ -136,13 +136,13 @@ export default function SettingsPage() {
               onClick={() => scrollTo(s.id)}
               className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                 activeSection === s.id
-                  ? 'bg-[#1e3a5f] text-[#c9a84c]'
+                  ? 'bg-primary text-accent'
                   : 'bg-surface border border-border-subtle text-subtle'
               }`}
             >
               <s.icon className="h-3 w-3" />
               {s.label}
-              {dirtySet.has(s.id) && <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c]" />}
+              {dirtySet.has(s.id) && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
             </button>
           ))}
         </div>
@@ -158,13 +158,13 @@ export default function SettingsPage() {
                 onClick={() => scrollTo(s.id)}
                 className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all text-left ${
                   activeSection === s.id
-                    ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/20'
+                    ? 'bg-primary text-accent shadow-lg shadow-primary/20'
                     : 'text-subtle hover:bg-surface hover:text-foreground'
                 } ${s.id === 'danger-zone' && activeSection !== s.id ? 'text-red-500' : ''}`}
               >
                 <s.icon className="h-4 w-4 flex-shrink-0" />
                 <span className="flex-1">{s.label}</span>
-                {dirtySet.has(s.id) && <span className="h-2 w-2 rounded-full bg-[#c9a84c] animate-pulse" />}
+                {dirtySet.has(s.id) && <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />}
               </button>
             ))}
           </div>

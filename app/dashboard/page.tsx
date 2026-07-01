@@ -39,16 +39,16 @@ interface Exam {
 
 function MiniStat({ label, value, icon: Icon, tooltip }: any) {
   return (
-    <div className="bg-surface border border-border-subtle p-5 rounded-2xl flex items-center gap-4 transition-all group hover:border-[#c9a84c]/40 hover:shadow-lg hover:shadow-[#1e3a5f]/5 relative">
-      <div className="h-11 w-11 rounded-xl bg-background border border-border-subtle flex items-center justify-center text-foreground group-hover:bg-[#1e3a5f] group-hover:text-[#c9a84c] group-hover:border-[#c9a84c]/20 transition-all duration-300">
+    <div className="bg-surface border border-border-subtle/60 p-5 rounded-xl flex items-center gap-4 transition-all group hover:border-accent/30 relative">
+      <div className="h-11 w-11 rounded-lg bg-background border border-border-subtle/80 flex items-center justify-center text-foreground group-hover:bg-primary group-hover:text-accent group-hover:border-accent/10 transition-all duration-300">
         <Icon className="h-4.5 w-4.5" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 mb-1.5">
-          <p className="text-[9px] font-black text-subtle uppercase tracking-[0.15em] leading-none">{label}</p>
+          <p className="text-[10px] font-bold text-subtle uppercase tracking-wider leading-none">{label}</p>
           <Tooltip content={tooltip} />
         </div>
-        <p className="text-lg font-black text-[#1e3a5f] dark:text-foreground tracking-tight leading-none truncate">{value}</p>
+        <p className="text-xl font-bold text-foreground tracking-tight leading-none truncate">{value}</p>
       </div>
     </div>
   );
@@ -57,17 +57,17 @@ function MiniStat({ label, value, icon: Icon, tooltip }: any) {
 function OperationalCard({ title, desc, icon: Icon, href, color = 'zinc' }: any) {
   return (
     <Link href={href}>
-      <div className="bg-surface border border-border-subtle p-7 rounded-[2rem] h-full flex flex-col group hover:border-[#c9a84c]/50 transition-all active:scale-[0.99] shadow-sm hover:shadow-xl hover:shadow-[#1e3a5f]/5 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-[40px] translate-x-12 -translate-y-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        <div className="h-11 w-11 rounded-xl bg-background border border-border-subtle flex items-center justify-center text-foreground group-hover:bg-[#1e3a5f] group-hover:text-[#c9a84c] group-hover:border-[#c9a84c]/20 transition-all duration-300 mb-6">
+      <div className="bg-surface border border-border-subtle/60 p-6 rounded-xl h-full flex flex-col group hover:border-accent/30 transition-all active:scale-[0.99] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-[40px] translate-x-12 -translate-y-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="h-11 w-11 rounded-lg bg-background border border-border-subtle/80 flex items-center justify-center text-foreground group-hover:bg-primary group-hover:text-accent group-hover:border-accent/10 transition-all duration-300 mb-6">
           <Icon className="h-5 w-5" />
         </div>
-        <h3 className="text-[11px] font-black text-foreground group-hover:text-[#1e3a5f] dark:group-hover:text-[#c9a84c] uppercase tracking-[0.15em] mb-2.5 flex items-center gap-2 transition-colors">
+        <h3 className="text-sm font-semibold text-foreground group-hover:text-primary tracking-wide mb-2.5 flex items-center gap-2 transition-colors">
           {title}
-          <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all text-[#c9a84c]" />
+          <ArrowUpRight className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all text-accent" />
         </h3>
         <p className="text-xs font-medium text-muted leading-relaxed mb-6">{desc}</p>
-        <div className="mt-auto flex items-center text-[9px] font-black uppercase tracking-[0.2em] text-[#c9a84c] group-hover:gap-2 transition-all">
+        <div className="mt-auto flex items-center text-xs font-semibold tracking-wide text-accent group-hover:gap-2 transition-all">
           Open Module <ChevronRight className="h-3 w-3" />
         </div>
       </div>
@@ -245,7 +245,7 @@ export default function DashboardPage() {
           title="No Active Exam Selected"
           description="You haven't selected an exam yet. Choosing an exam allows our AI to generate a personalized study plan."
           action={
-            <Link href="/dashboard/exams" className="px-8 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px] shadow-lg shadow-[#1e3a5f]/20">
+            <Link href="/dashboard/exams" className="px-8 py-3 bg-primary text-accent rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all flex items-center gap-2 min-h-[44px] shadow-lg shadow-primary/20">
               Choose Your Exam <Target className="h-4 w-4" />
             </Link>
           }
@@ -254,9 +254,9 @@ export default function DashboardPage() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface p-8 sm:p-10 rounded-[2rem] border border-border-subtle relative overflow-hidden group shadow-sm hover:shadow-xl hover:shadow-[#1e3a5f]/5 transition-all duration-300"
+          className="bg-surface p-6 sm:p-8 rounded-xl border border-border-subtle/60 relative overflow-hidden group"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
           
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -265,43 +265,43 @@ export default function DashboardPage() {
                   <button 
                     key={e.id}
                     onClick={() => setActiveExamId(e.id)}
-                    className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-[0.15em] transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-lg text-[10px] font-bold tracking-wider transition-all cursor-pointer ${
                       exam.id === e.id 
-                        ? 'bg-[#1e3a5f] text-[#c9a84c] border border-[#1e3a5f] shadow-md shadow-[#1e3a5f]/15' 
-                        : 'bg-background border border-border-subtle text-subtle hover:text-[#1e3a5f] dark:hover:text-[#c9a84c] hover:border-[#c9a84c]/40'
+                        ? 'bg-primary text-accent border border-transparent' 
+                        : 'bg-background border border-border-subtle text-subtle hover:text-primary hover:border-accent/30'
                     }`}
                   >
                     {e.exam_name}
                   </button>
                 ))}
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tighter text-[#1e3a5f] dark:text-foreground mb-3 leading-tight uppercase">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3 leading-tight">
                 {exam.exam_name}
               </h1>
-              <p className="text-subtle text-[11px] font-black uppercase tracking-[0.15em] max-w-sm mb-8 leading-relaxed">
+              <p className="text-sm font-medium text-muted max-w-sm mb-8 leading-relaxed">
                 {daysRem} day study plan in progress. Stay consistent to reach your goal.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link href="/dashboard/study-plan" className="px-8 py-3.5 bg-[#1e3a5f] text-white rounded-xl text-xs font-black uppercase tracking-[0.15em] hover:opacity-95 transition-all active:scale-95 flex items-center justify-center gap-2 min-h-[44px] min-w-[160px] shadow-lg shadow-[#1e3a5f]/15 border border-[#1e3a5f]">
+                <Link href="/dashboard/study-plan" className="px-8 py-3.5 bg-primary text-white rounded-lg text-xs font-bold tracking-wide hover:opacity-95 transition-all active:scale-95 flex items-center justify-center gap-2 min-h-[44px] min-w-[160px]">
                   {t('continue_study')} <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
-                <div className="px-6 py-3.5 bg-[#f5ebd5]/50 dark:bg-[#f5ebd5]/10 border border-[#c9a84c]/20 rounded-xl text-xs font-black uppercase tracking-[0.15em] text-[#1e3a5f] dark:text-[#c9a84c] flex items-center justify-center gap-2">
+                <div className="px-6 py-3.5 bg-accent/10 border border-accent/20 rounded-lg text-xs font-bold tracking-wide text-accent flex items-center justify-center gap-2">
                    {stats.streak} {t('streak')} 🔥
                 </div>
               </div>
             </div>
  
-            <div className="hidden lg:flex flex-col items-center justify-center text-center p-8 bg-background border border-border-subtle rounded-[1.5rem] hover:border-[#c9a84c]/20 transition-all duration-300">
+            <div className="hidden lg:flex flex-col items-center justify-center text-center p-8 bg-background border border-border-subtle/80 rounded-xl hover:border-accent/20 transition-all duration-300">
                <div className="relative h-28 w-28 mb-4">
                   <svg className="h-full w-full" viewBox="0 0 36 36">
                      <path className="text-border-subtle" strokeWidth="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                     <path className="text-[#c9a84c]" strokeWidth="2.5" strokeDasharray={`${stats.progress}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                     <path className="text-accent" strokeWidth="2.5" strokeDasharray={`${stats.progress}, 100`} strokeLinecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                     <span className="text-xl font-black text-foreground tracking-tighter">{stats.progress}%</span>
+                     <span className="text-xl font-bold text-foreground tracking-tight">{stats.progress}%</span>
                   </div>
                </div>
-               <p className="text-[9px] font-black uppercase tracking-[0.2em] text-subtle">{t('ready_percent')}</p>
+               <p className="text-[10px] font-bold uppercase tracking-wider text-subtle">{t('ready_percent')}</p>
             </div>
           </div>
         </motion.div>
@@ -329,14 +329,14 @@ export default function DashboardPage() {
 
       {/* ── SECTION 2.5: USAGE LIMITS (For Free Users) ────────────── */}
       {!isPro && !isAdmin && (
-        <div className="grid grid-cols-1 gap-4 p-6 bg-surface border border-border-subtle rounded-2xl relative overflow-hidden group">
+        <div className="grid grid-cols-1 gap-4 p-5 bg-surface border border-border-subtle/50 rounded-xl relative overflow-hidden group">
            <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl -mr-16 -mt-16" />
            <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Rocket className="h-4 w-4 text-[#c9a84c]" />
-                <h3 className="text-[10px] font-black text-foreground uppercase tracking-widest">Your Usage Limits</h3>
+                <Rocket className="h-4 w-4 text-accent" />
+                <h3 className="text-xs font-bold text-foreground capitalize tracking-wide">Your Usage Limits</h3>
               </div>
-              <Link href="/dashboard/settings" className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest hover:underline">Manage Plan</Link>
+              <Link href="/dashboard/settings" className="text-xs font-bold text-accent capitalize tracking-wide hover:underline">Manage Plan</Link>
            </div>
            <div className="flex flex-wrap gap-4">
               <UsageIndicator type="documents" />
@@ -381,42 +381,42 @@ export default function DashboardPage() {
 
         {/* ── SECTION 4: SIGNAL INTEL (FEEDBACK PREVIEW) ──────────── */}
         <div className="lg:col-span-4">
-           <div className="bg-surface border border-border-subtle rounded-[2rem] p-7 h-full flex flex-col group overflow-hidden relative shadow-sm hover:shadow-xl hover:shadow-[#1e3a5f]/5 transition-all duration-300">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-[#c9a84c]/5 rounded-full blur-[40px] translate-x-12 -translate-y-12 transition-all duration-300" />
+           <div className="bg-surface border border-border-subtle/60 rounded-xl p-6 h-full flex flex-col group overflow-hidden relative transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-[40px] translate-x-12 -translate-y-12 transition-all duration-300" />
               
               <div className="flex items-center justify-between mb-8 relative z-10">
                  <div className="flex items-center gap-2.5">
-                    <div className="h-9 w-9 rounded-xl bg-[#f5ebd5]/50 border border-[#c9a84c]/20 flex items-center justify-center text-[#c9a84c]">
+                    <div className="h-9 w-9 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center text-accent">
                       <Sparkles className="h-4.5 w-4.5" />
                     </div>
-                    <h3 className="text-[10px] font-black text-foreground uppercase tracking-[0.15em]">{t('coach_report')}</h3>
+                    <h3 className="text-xs font-bold text-foreground uppercase tracking-wider">{t('coach_report')}</h3>
                  </div>
-                 <Link href="/dashboard/performance" className="text-[9px] font-black text-[#c9a84c] flex items-center gap-1 hover:gap-2 transition-all min-h-[44px] uppercase tracking-[0.15em]">
+                 <Link href="/dashboard/performance" className="text-xs font-semibold text-accent flex items-center gap-1 hover:gap-2 transition-all min-h-[44px] capitalize tracking-wide">
                     {t('full_recap')} <ChevronRight className="h-3 w-3" />
                  </Link>
               </div>
 
               <div className="space-y-6 relative z-10 flex-1">
-                 <div className="p-4 bg-background border border-border-subtle rounded-xl shadow-sm hover:border-[#c9a84c]/20 transition-colors">
-                    <p className="text-[9px] font-black text-[#c9a84c] uppercase mb-2 tracking-[0.15em]">{t('strategy_update')}</p>
-                    <p className="text-xs font-black text-muted leading-relaxed line-clamp-3 italic uppercase tracking-[0.1em] opacity-80">
+                 <div className="p-4 bg-background border border-border-subtle/80 rounded-lg hover:border-accent/20 transition-colors">
+                    <p className="text-[10px] font-bold text-accent uppercase mb-2 tracking-wider">{t('strategy_update')}</p>
+                    <p className="text-xs font-medium text-foreground leading-relaxed line-clamp-4">
                       "{stats.feedback}"
                     </p>
                  </div>
 
                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-4 bg-background border border-border-subtle rounded-xl shadow-sm hover:border-[#c9a84c]/20 transition-colors">
-                       <p className="text-[8px] font-black text-[#c9a84c] uppercase mb-1.5 tracking-[0.15em]">{t('stronghold')}</p>
-                       <p className="text-[9px] font-black text-[#1e3a5f] dark:text-foreground truncate uppercase tracking-[0.1em]">{stats.stronghold}</p>
+                    <div className="p-4 bg-background border border-border-subtle/80 rounded-lg hover:border-accent/20 transition-colors">
+                       <p className="text-[10px] font-semibold text-muted uppercase mb-1.5 tracking-wider">{t('stronghold')}</p>
+                       <p className="text-xs font-semibold text-foreground truncate">{stats.stronghold}</p>
                     </div>
-                    <div className="p-4 bg-background border border-border-subtle rounded-xl shadow-sm hover:border-red-500/20 transition-colors">
-                       <p className="text-[8px] font-black text-red-500 uppercase mb-1.5 tracking-[0.15em]">{t('target_area')}</p>
-                       <p className="text-[9px] font-black text-[#1e3a5f] dark:text-foreground truncate uppercase tracking-[0.1em]">{stats.targetArea}</p>
+                    <div className="p-4 bg-background border border-border-subtle/80 rounded-lg hover:border-red-500/20 transition-colors">
+                       <p className="text-[10px] font-semibold text-red-500 uppercase mb-1.5 tracking-wider">{t('target_area')}</p>
+                       <p className="text-xs font-semibold text-foreground truncate">{stats.targetArea}</p>
                     </div>
                  </div>
 
                  <div className="pt-6 border-t border-border-subtle mt-auto">
-                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3.5 bg-[#1e3a5f] text-white rounded-xl text-[10px] font-black uppercase text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center tracking-widest shadow-lg shadow-[#1e3a5f]/15 border border-[#1e3a5f]">
+                    <Link href={`/dashboard/guru?message=Help me improve ${stats.targetArea} topics`} className="w-full py-3 bg-primary text-white rounded-lg text-xs font-bold tracking-wide text-center block hover:opacity-90 transition-opacity min-h-[44px] flex items-center justify-center">
                        {t('brief_guru')}
                     </Link>
                  </div>

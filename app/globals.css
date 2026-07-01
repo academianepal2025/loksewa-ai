@@ -4,9 +4,10 @@
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: #1e3a5f;
-  --color-accent: #c9a84c;
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
   --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
   --color-border-subtle: var(--border-subtle);
   --color-muted: var(--muted);
   --color-subtle: var(--subtle);
@@ -14,19 +15,21 @@
   --color-primary-brand: var(--primary-brand);
   --color-accent-brand: var(--accent-brand);
   
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-inter);
+  --font-sans: var(--font-outfit), system-ui, sans-serif;
+  --font-mono: var(--font-lexend), monospace;
+  --font-reading: var(--font-lexend), sans-serif;
 }
 
 :root {
   --background: #f0f2f5; 
   --foreground: #09090b;
   --primary: #1e3a5f;     /* Deep Blue */
-  --accent: #c9a84c;     /* Gold */
+  --accent: #c9a84c;      /* Gold */
   --surface: #ffffff;
-  --border-subtle: #e4e4e7; /* Zinc-200 */
-  --muted: #71717a;      /* Zinc-500 */
-  --subtle: #a1a1aa;     /* Zinc-400 */
+  --surface-elevated: #f8fafc;
+  --border-subtle: #e2e8f0; /* Slate-200 */
+  --muted: #64748b;       /* Slate-500 */
+  --subtle: #94a3b8;      /* Slate-400 */
   
   --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
 
@@ -42,14 +45,15 @@
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --primary: #1e3a5f;
-  --accent: #c9a84c;
-  --surface: #18181b;
-  --border-subtle: #27272a;
-  --muted: #a1a1aa;
-  --subtle: #71717a;
+  --background: #0f1724;    /* Deep navy */
+  --foreground: #e2e8f0;    /* Slate-200 warm white */
+  --primary: #3b82f6;       /* Brighter blue for dark bg readability */
+  --accent: #c9a84c;        /* Gold (same) */
+  --surface: #1a2332;       /* Card navy */
+  --surface-elevated: #1e293b; /* Slightly lighter navy for popups */
+  --border-subtle: #2a3544; /* Navy border */
+  --muted: #94a3b8;         /* Slate-400 */
+  --subtle: #64748b;        /* Slate-500 */
 }
 
 .light {
@@ -58,9 +62,10 @@
   --primary: #1e3a5f;
   --accent: #c9a84c;
   --surface: #ffffff;
-  --border-subtle: #e4e4e7;
-  --muted: #71717a;
-  --subtle: #a1a1aa;
+  --surface-elevated: #f8fafc;
+  --border-subtle: #e2e8f0;
+  --muted: #64748b;
+  --subtle: #94a3b8;
 }
 
 /* ── Brand Themes ─────────────────────────────────────────────── */
@@ -74,10 +79,14 @@ html.theme-indigo {
   --accent-brand: #4338ca;
 }
 
+html {
+  font-size: 18px;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-outfit), system-ui, -apple-system, sans-serif;
   transition: background-color 0.4s ease, color 0.4s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -115,9 +124,9 @@ a:active,
 .fluid-gap { gap: var(--fluid-gap); }
 
 /* Typography Scale Implementation */
-.fluid-h1 { font-size: var(--fluid-h1); line-height: 1.1; font-weight: 900; letter-spacing: -0.05em; }
-.fluid-h2 { font-size: var(--fluid-h2); line-height: 1.2; font-weight: 900; letter-spacing: -0.03em; }
-.fluid-h3 { font-size: var(--fluid-h3); line-height: 1.3; font-weight: 900; }
+.fluid-h1 { font-size: var(--fluid-h1); line-height: 1.15; font-weight: 800; letter-spacing: -0.03em; }
+.fluid-h2 { font-size: var(--fluid-h2); line-height: 1.25; font-weight: 700; letter-spacing: -0.02em; }
+.fluid-h3 { font-size: var(--fluid-h3); line-height: 1.35; font-weight: 700; }
 
 /* ── Container Queries ─────────────────────────────────────────── */
 .container-inline {
@@ -126,6 +135,7 @@ a:active,
 
 /* Legibility improvements for text reading */
 .parsed-text-container {
+  font-family: var(--font-lexend), sans-serif;
   line-height: 1.8;
   letter-spacing: 0.01em;
   font-size: 1.05rem;
@@ -195,6 +205,7 @@ html.font-scale-lg {
 }
 
 .reading-area {
+  font-family: var(--font-lexend), sans-serif !important;
   font-size: var(--reading-font-size, 1rem) !important;
   line-height: var(--reading-line-height, 1.7) !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

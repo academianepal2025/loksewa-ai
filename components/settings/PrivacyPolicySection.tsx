@@ -33,7 +33,7 @@ export function PrivacyPolicySection() {
           )}
           <button 
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
+            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-accent rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-primary/10"
           >
             {isExpanded ? 'Hide Policy' : 'Read Full Policy'}
           </button>
@@ -42,7 +42,7 @@ export function PrivacyPolicySection() {
 
       {isExpanded && (
         <div ref={printRef} className="reading-area prose prose-sm max-w-none text-foreground/90 animate-in fade-in slide-in-from-top-2 duration-300" style={{ lineHeight: '1.75' }}>
-          <p className="text-[11px] font-black text-[#c9a84c] uppercase tracking-widest mb-6">Loksewa AI Data Protection Protocol</p>
+          <p className="text-[11px] font-black text-accent uppercase tracking-widest mb-6">Loksewa AI Data Protection Protocol</p>
 
           {PRIVACY_POLICY.sections.map((section, idx) => (
             <div key={idx}>

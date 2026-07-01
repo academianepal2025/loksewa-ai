@@ -104,8 +104,8 @@ const DOC_TYPES = [
 
 const STATUS_CONFIG = {
   pending: { color: 'bg-background text-subtle border-border-subtle', icon: Clock },
-  processing: { color: 'bg-[#1e3a5f]/5 text-[#c9a84c] border-[#1e3a5f]/20', icon: Upload },
-  ready: { color: 'bg-[#c9a84c]/5 text-[#c9a84c] border-[#c9a84c]/20', icon: CheckCircle },
+  processing: { color: 'bg-primary/5 text-accent border-primary/20', icon: Upload },
+  ready: { color: 'bg-accent/5 text-accent border-accent/20', icon: CheckCircle },
   failed: { color: 'bg-red-500/5 text-red-600 border-red-500/20', icon: AlertCircle },
 };
 
@@ -143,20 +143,20 @@ function ProcessingBanner({ isProcessing }: { isProcessing: boolean }) {
   if (!isProcessing) return null;
 
   return (
-    <div className="bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-xl p-4 mb-8 flex items-center justify-between animate-fade-in shadow-sm">
+    <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 mb-8 flex items-center justify-between animate-fade-in shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-[#c9a84c]">
+        <div className="h-9 w-9 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-accent">
           <Upload className="h-4 w-4 animate-bounce" />
         </div>
         <div>
-          <p className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest animate-pulse">{rotatingMessage}</p>
+          <p className="text-[10px] font-black text-accent uppercase tracking-widest animate-pulse">{rotatingMessage}</p>
           <p className="text-[9px] text-subtle font-black uppercase tracking-widest mt-0.5">Tactical intelligence extracting</p>
         </div>
       </div>
       <div className="flex gap-1">
-        <span className="h-1 w-1 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '0ms' }} />
-        <span className="h-1 w-1 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '150ms' }} />
-        <span className="h-1 w-1 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '300ms' }} />
+        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
+        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
+        <span className="h-1 w-1 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
       </div>
     </div>
   );
@@ -330,11 +330,11 @@ function UploadZone({
           isLimitReached 
             ? 'border-border-subtle bg-background/50 opacity-60 cursor-not-allowed'
             : isOver 
-              ? 'border-[#c9a84c] bg-[#c9a84c]/5' 
-              : 'border-border-subtle hover:border-[#c9a84c]/40 hover:bg-[#c9a84c]/5 group cursor-pointer'
+              ? 'border-accent bg-accent/5' 
+              : 'border-border-subtle hover:border-accent/40 hover:bg-accent/5 group cursor-pointer'
         }`}
       >
-        <div className={`relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center transition-transform shadow-sm ${isLimitReached ? 'text-red-500' : 'text-[#c9a84c] group-hover:scale-110'}`}>
+        <div className={`relative z-10 h-8 w-8 rounded-lg bg-background border border-border-subtle flex items-center justify-center transition-transform shadow-sm ${isLimitReached ? 'text-red-500' : 'text-accent group-hover:scale-110'}`}>
           {isLimitReached ? <AlertCircle className="h-4 w-4" /> : <FileUp className="h-4 w-4" />}
         </div>
         <div className="relative z-10 mt-2 text-center px-4">
@@ -354,9 +354,9 @@ function UploadZone({
 
       <div className="space-y-2">
         {documents.map((doc) => (
-          <div key={doc.id} className="flex items-center justify-between p-3 bg-background border border-border-subtle rounded-xl hover:border-[#c9a84c]/30 transition-all group">
+          <div key={doc.id} className="flex items-center justify-between p-3 bg-background border border-border-subtle rounded-xl hover:border-accent/30 transition-all group">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="h-9 w-9 rounded-lg bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0 text-subtle group-hover:text-[#c9a84c] transition-colors">
+              <div className="h-9 w-9 rounded-lg bg-surface border border-border-subtle flex items-center justify-center flex-shrink-0 text-subtle group-hover:text-accent transition-colors">
                 <File className="h-4 w-4" />
               </div>
               <div className="overflow-hidden">
@@ -459,15 +459,15 @@ export default function DocumentsPage() {
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 pb-12">
       {/* Header Panel */}
       <div className="bg-surface p-6 sm:p-10 rounded-2xl border border-border-subtle relative overflow-hidden group shadow-sm">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 relative z-10">
           <div className="space-y-4">
              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#c9a84c]" />
-                <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest">Repository</span>
+                <Sparkles className="h-4 w-4 text-accent" />
+                <span className="text-[10px] font-black text-accent uppercase tracking-widest">Repository</span>
              </div>
              <h1 className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter leading-tight uppercase">
-               Study <span className="text-[#c9a84c]">Materials</span>
+               Study <span className="text-accent">Materials</span>
              </h1>
              <p className="text-sm text-subtle font-medium max-w-sm leading-relaxed">
                Securely upload and manage your core syllabus and reference notes.
@@ -484,7 +484,7 @@ export default function DocumentsPage() {
                 onClick={() => setActiveExamId(exam.id)}
                 className={`px-5 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all min-h-[36px] shadow-sm ${
                   activeExamId === exam.id 
-                    ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10' 
+                    ? 'bg-primary text-accent shadow-sm' 
                     : 'bg-background border border-border-subtle text-subtle hover:text-foreground'
                 }`}
               >

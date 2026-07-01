@@ -60,14 +60,14 @@ function ExamCard({ exam }: { exam: Exam }) {
   const daysRemaining = getDaysRemaining(exam.exam_date);
 
   return (
-    <div className="group bg-surface rounded-2xl border border-border-subtle overflow-hidden hover:border-[#c9a84c]/40 transition-all duration-300 shadow-sm">
+    <div className="group bg-surface rounded-2xl border border-border-subtle overflow-hidden hover:border-accent/40 transition-all duration-300 shadow-sm">
       <div className="p-6 sm:p-7 space-y-6">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
             <p className="text-[10px] font-black text-subtle uppercase tracking-widest">MISSION TARGET</p>
-            <h3 className="text-xl font-black text-foreground tracking-tighter leading-tight group-hover:text-[#c9a84c] transition-colors uppercase">{exam.exam_name}</h3>
+            <h3 className="text-xl font-black text-foreground tracking-tighter leading-tight group-hover:text-accent transition-colors uppercase">{exam.exam_name}</h3>
           </div>
-          <span className="text-[9px] font-black px-2 py-0.5 rounded-md bg-[#1e3a5f] text-[#c9a84c] uppercase tracking-widest border border-[#c9a84c]/20 shadow-sm">
+          <span className="text-[9px] font-black px-2 py-0.5 rounded-md bg-primary text-accent uppercase tracking-widest border border-accent/20 shadow-sm">
             {exam.status}
           </span>
         </div>
@@ -83,15 +83,15 @@ function ExamCard({ exam }: { exam: Exam }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-3 p-3 bg-background border border-border-subtle group-hover:border-[#c9a84c]/20 transition-colors shadow-sm rounded-xl">
-            <CalendarDays className="h-4 w-4 text-[#c9a84c]" />
+          <div className="flex items-center gap-3 p-3 bg-background border border-border-subtle group-hover:border-accent/20 transition-colors shadow-sm rounded-xl">
+            <CalendarDays className="h-4 w-4 text-accent" />
              <div className="flex flex-col">
                 <span className="text-[9px] font-black text-subtle uppercase tracking-widest leading-none mb-1">Duration</span>
                 <span className="text-[10px] font-black text-foreground truncate uppercase tracking-widest">{daysRemaining} Day Plan</span>
              </div>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-background border border-border-subtle group-hover:border-[#c9a84c]/20 transition-colors shadow-sm rounded-xl">
-            <Clock className="h-4 w-4 text-[#c9a84c]" />
+          <div className="flex items-center gap-3 p-3 bg-background border border-border-subtle group-hover:border-accent/20 transition-colors shadow-sm rounded-xl">
+            <Clock className="h-4 w-4 text-accent" />
              <div className="flex flex-col">
                 <span className="text-[9px] font-black text-subtle uppercase tracking-widest leading-none mb-1">Intensity</span>
                 <span className="text-[10px] font-black text-foreground uppercase tracking-widest">{exam.daily_study_hours}h Daily</span>
@@ -101,12 +101,12 @@ function ExamCard({ exam }: { exam: Exam }) {
 
         <div className="flex items-center justify-between pt-4 border-t border-border-subtle">
           <div className="flex items-center text-[10px] text-subtle font-black tracking-widest uppercase">
-            <FileText className="h-4 w-4 mr-2 text-[#c9a84c]" />
+            <FileText className="h-4 w-4 mr-2 text-accent" />
             {exam.total_papers} Papers
           </div>
           <Link
             href={`/dashboard/study-plan`}
-            className="flex items-center gap-2 text-[10px] font-black text-[#c9a84c] hover:text-foreground transition-all uppercase tracking-widest group/link"
+            className="flex items-center gap-2 text-[10px] font-black text-accent hover:text-foreground transition-all uppercase tracking-widest group/link"
           >
             Open Plan
             <ArrowRight className="h-3.5 w-3.5 transform group-hover/link:translate-x-1 transition-transform" />
@@ -173,7 +173,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
         <div className="p-6 border-b border-border-subtle flex justify-between items-center relative">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground">
-                <Sparkles className="h-5 w-5 text-[#c9a84c]" />
+                <Sparkles className="h-5 w-5 text-accent" />
             </div>
             <div>
                 <p className="text-[10px] font-black text-subtle uppercase tracking-widest">Configuration</p>
@@ -199,7 +199,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
                 <select
                   value={formData.exam_category}
                   onChange={(e) => setFormData(prev => ({ ...prev, exam_category: e.target.value }))}
-                  className="w-full appearance-none rounded-xl bg-background border border-border-subtle px-4 py-3.5 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all shadow-sm"
+                  className="w-full appearance-none rounded-xl bg-background border border-border-subtle px-4 py-3.5 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-accent/20 focus:border-accent focus:outline-none transition-all shadow-sm"
                 >
                   <option value="">Select Category...</option>
                   {EXAM_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
@@ -217,7 +217,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, total_papers: num }))}
                     className={`flex-1 py-3 text-xs font-black uppercase tracking-widest border rounded-xl transition-all shadow-sm ${
-                      formData.total_papers === num ? 'border-[#c9a84c] bg-[#c9a84c]/5 text-[#c9a84c]' : 'bg-background border-border-subtle text-subtle'
+                      formData.total_papers === num ? 'border-accent bg-accent/5 text-accent' : 'bg-background border-border-subtle text-subtle'
                     }`}
                   >
                     {num}
@@ -234,7 +234,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
               placeholder="e.g. OFFICER LEVEL II"
               value={formData.exam_name}
               onChange={(e) => setFormData(prev => ({ ...prev, exam_name: e.target.value }))}
-              className="w-full rounded-xl bg-background border border-border-subtle px-5 py-4 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all placeholder:text-subtle/50 shadow-sm"
+              className="w-full rounded-xl bg-background border border-border-subtle px-5 py-4 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-accent/20 focus:border-accent focus:outline-none transition-all placeholder:text-subtle/50 shadow-sm"
             />
           </div>
 
@@ -247,7 +247,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, study_days: d, custom_days: '' }))}
                   className={`py-3 text-xs font-black uppercase tracking-widest border rounded-xl transition-all shadow-sm ${
-                    formData.study_days === d && !formData.custom_days ? 'border-[#c9a84c] bg-[#c9a84c]/5 text-[#c9a84c]' : 'bg-background border-border-subtle text-subtle'
+                    formData.study_days === d && !formData.custom_days ? 'border-accent bg-accent/5 text-accent' : 'bg-background border-border-subtle text-subtle'
                   }`}
                 >
                   {d}D
@@ -262,8 +262,8 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
                 placeholder="CUSTOM DAYS"
                 value={formData.custom_days}
                 onChange={(e) => setFormData(prev => ({ ...prev, custom_days: e.target.value, study_days: 0 }))}
-                className={`flex-1 rounded-xl bg-background border px-4 py-3 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all shadow-sm ${
-                  formData.custom_days ? 'border-[#c9a84c]' : 'border-border-subtle'
+                className={`flex-1 rounded-xl bg-background border px-4 py-3 text-xs font-black uppercase tracking-widest focus:ring-2 focus:ring-accent/20 focus:border-accent focus:outline-none transition-all shadow-sm ${
+                  formData.custom_days ? 'border-accent' : 'border-border-subtle'
                 }`}
               />
               <span className="text-[10px] font-black text-subtle uppercase tracking-widest">days</span>
@@ -273,7 +273,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
           <div className="space-y-4">
             <label className="flex justify-between items-center text-[10px] font-black text-subtle uppercase tracking-widest ml-1">
                <span>Study Intensity</span>
-               <span className="text-[#c9a84c]">{formData.daily_study_hours} Hours Daily</span>
+               <span className="text-accent">{formData.daily_study_hours} Hours Daily</span>
             </label>
             <input
               type="range"
@@ -281,7 +281,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
               max="14"
               value={formData.daily_study_hours}
               onChange={(e) => setFormData(prev => ({ ...prev, daily_study_hours: parseInt(e.target.value) }))}
-              className="w-full h-1.5 bg-background border border-border-subtle rounded-full appearance-none cursor-pointer accent-[#c9a84c]"
+              className="w-full h-1.5 bg-background border border-border-subtle rounded-full appearance-none cursor-pointer accent-accent"
             />
           </div>
 
@@ -289,7 +289,7 @@ function AddExamModal({ isOpen, onClose, onSuccess }: { isOpen: boolean; onClose
             <button
               type="submit"
               disabled={saving}
-              className="w-full bg-[#1e3a5f] text-[#c9a84c] font-black text-xs uppercase tracking-widest py-3.5 rounded-xl hover:opacity-90 transition-all disabled:opacity-50 active:scale-[0.99] shadow-lg shadow-[#1e3a5f]/10"
+              className="w-full bg-primary text-accent font-black text-xs uppercase tracking-widest py-3.5 rounded-xl hover:opacity-90 transition-all disabled:opacity-50 active:scale-[0.99] shadow-lg shadow-primary/10"
             >
               {saving ? 'Synchronizing...' : 'Initialize Mission'}
             </button>
@@ -338,15 +338,15 @@ export default function ExamsPage() {
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Visual Header */}
        <div className="bg-surface p-6 sm:p-8 rounded-2xl border border-border-subtle relative overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-[80px] -mr-32 -mt-32" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
           <div className="space-y-4">
              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-[#c9a84c]" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a84c]">Active Missions</span>
+                <Sparkles className="h-4 w-4 text-accent" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-accent">Active Missions</span>
              </div>
              <h1 className="text-3xl font-black text-foreground tracking-tighter leading-tight uppercase">
-                Target <span className="text-[#c9a84c]">Exams</span>
+                Target <span className="text-accent">Exams</span>
              </h1>
              <p className="text-xs text-subtle font-medium max-w-sm leading-relaxed">
                 Strategic tracking of your Public Service Commission objectives and examination timelines.
@@ -354,7 +354,7 @@ export default function ExamsPage() {
           </div>
           <button
             onClick={handleAddClick}
-            className="bg-[#1e3a5f] text-[#c9a84c] px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
+            className="bg-primary text-accent px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-primary/10"
           >
             <Plus className="h-5 w-5" />
             Add Mission
@@ -371,13 +371,13 @@ export default function ExamsPage() {
       ) : exams.length === 0 ? (
         <div className="bg-surface p-16 sm:p-24 rounded-2xl text-center border border-border-subtle border-dashed shadow-sm">
           <div className="h-20 w-20 bg-background border border-border-subtle rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-            <History className="h-10 w-10 text-[#c9a84c] opacity-40" />
+            <History className="h-10 w-10 text-accent opacity-40" />
           </div>
           <h2 className="text-2xl font-black text-foreground mb-3 tracking-tighter uppercase">Command Center Empty</h2>
           <p className="text-[10px] font-black text-subtle max-w-sm mx-auto mb-10 uppercase tracking-widest leading-relaxed">You haven't initialized any exam objectives yet. Your study journey begins with a target.</p>
           <button
             onClick={handleAddClick}
-            className="bg-[#1e3a5f] text-[#c9a84c] px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest inline-flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/10"
+            className="bg-primary text-accent px-10 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest inline-flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-primary/10"
           >
             <Plus className="h-5 w-5" />
             Launch First Mission

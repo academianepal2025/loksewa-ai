@@ -36,7 +36,7 @@ export function PlanBanner() {
   if (daysRemaining <= 7) {
     const isUrgent = daysRemaining <= 3;
     return (
-      <div className={`px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 animate-in slide-in-from-top duration-500 ${isUrgent ? 'bg-[#1e3a5f] text-white' : 'bg-[#c9a84c] text-[#1e3a5f]'}`}>
+      <div className={`px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-3 animate-in slide-in-from-top duration-500 ${isUrgent ? 'bg-primary text-white' : 'bg-accent text-primary'}`}>
         <div className="flex items-center gap-3">
           <AlertCircle className={`h-5 w-5 ${isUrgent ? 'animate-bounce' : ''}`} />
           <p className="text-xs font-black uppercase tracking-widest">
@@ -47,7 +47,7 @@ export function PlanBanner() {
         </div>
         <button 
           onClick={() => showUpgradeModal()}
-          className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center gap-2 ${isUrgent ? 'bg-white text-[#1e3a5f]' : 'bg-[#1e3a5f] text-[#c9a84c]'}`}
+          className={`px-6 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center gap-2 ${isUrgent ? 'bg-white text-primary' : 'bg-primary text-accent'}`}
         >
           Renew Mission Plan <ArrowRight className="h-3.5 w-3.5" />
         </button>

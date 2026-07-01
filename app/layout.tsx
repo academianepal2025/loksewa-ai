@@ -1,9 +1,14 @@
-import { Inter } from "next/font/google";
+import { Outfit, Lexend } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+});
+
+const lexend = Lexend({
+  variable: "--font-lexend",
   subsets: ["latin"],
 });
 
@@ -135,7 +140,7 @@ export default async function RootLayout({
   return (
     <html
       lang={prefs.language}
-      className={`${inter.variable} h-full antialiased theme-${prefs.theme} font-scale-${prefs.fontScale}`}
+      className={`${outfit.variable} ${lexend.variable} h-full antialiased theme-${prefs.theme} font-scale-${prefs.fontScale}`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">

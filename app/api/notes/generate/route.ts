@@ -76,7 +76,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { examId, day_number, topic, subtopics = [], date, force_generate = false, language } = body;
+    const { examId, day_number, topic, subtopics = [], date, force_generate = false, language, study_method, study_tips } = body;
 
     if (!examId || !day_number || !topic) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
@@ -211,6 +211,8 @@ export async function POST(request: Request) {
 
     const userPrompt = `Generate comprehensive PSC exam notes for the topic: ${topic}. 
 The subtopics to cover are: ${subtopics.join(', ')}. 
+${study_method ? `Suggested study method for this session: ${study_method}.` : ''}
+${study_tips ? `Study tip / pedagogical directive: ${study_tips}.` : ''}
 The output language must be: ${userLang === 'np' ? 'NEPALI' : 'ENGLISH'}.
 \nRELEVANT CONTEXT FROM STUDENT DOCUMENTS:\n${contextString}`;
 

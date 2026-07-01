@@ -64,7 +64,7 @@ function GuruAvatar({ size = 'md', type = 'icon' }: { size?: 'sm' | 'md' | 'lg';
   const textDims = size === 'lg' ? 'text-xl' : size === 'md' ? 'text-base' : 'text-sm';
   const iconDims = size === 'lg' ? 'h-6 w-6' : size === 'md' ? 'h-5 w-5' : 'h-4 w-4';
   return (
-    <div className={`${dims} rounded-xl bg-[#f5ebd5]/50 dark:bg-[#f5ebd5]/10 border border-[#c9a84c]/20 text-[#c9a84c] flex items-center justify-center flex-shrink-0 shadow-sm`}>
+    <div className={`${dims} rounded-xl bg-accent/10 border border-accent/20 text-accent flex items-center justify-center flex-shrink-0 shadow-sm`}>
       {type === 'letter' ? (
         <span className={`${textDims} font-black uppercase tracking-normal`}>G</span>
       ) : (
@@ -79,18 +79,72 @@ function ThinkingIndicator({ t }: { t: any }) {
   return (
     <div className="flex items-start gap-3 max-w-3xl mx-auto">
       <GuruAvatar size="sm" type="letter" />
-      <div className="bg-[#f5ebd5]/10 dark:bg-surface border border-[#c9a84c]/20 dark:border-border-subtle rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-sm">
+      <div className="bg-accent/10 border border-accent/20 rounded-2xl rounded-tl-sm px-5 py-3.5 shadow-sm">
         <div className="flex items-center gap-2.5">
           <span className="text-[10px] font-black text-subtle uppercase tracking-widest">{t('guru_processing')}</span>
           <span className="flex gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '0ms' }} />
-            <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '150ms' }} />
-            <span className="h-1.5 w-1.5 rounded-full bg-[#c9a84c] animate-bounce" style={{ animationDelay: '300ms' }} />
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '0ms' }} />
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '150ms' }} />
+            <span className="h-1.5 w-1.5 rounded-full bg-accent animate-bounce" style={{ animationDelay: '300ms' }} />
           </span>
         </div>
       </div>
     </div>
   );
+}
+
+// ── Clean Error Message ───────────────────────────────────────────────
+function cleanErrorMessage(rawMessage: string): string {
+  if (!rawMessage) return 'Failed to get response';
+  
+  let current = rawMessage.trim();
+  for (let i = 0; i < 3; i++) {
+    try {
+      const parsed = JSON.parse(current);
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.error) {
+          if (typeof parsed.error === 'object' && parsed.error.message) {
+            current = parsed.error.message;
+            continue;
+          }
+          if (typeof parsed.error === 'string') {
+            current = parsed.error;
+            continue;
+          }
+        }
+        if (parsed.message && typeof parsed.message === 'string') {
+          current = parsed.message;
+          continue;
+        }
+      }
+    } catch (e) {
+      break;
+    }
+  }
+
+  // Handle Google Gemini Rate Limit / Quota errors
+  if (
+    current.includes('Quota exceeded') || 
+    current.includes('rate-limits') || 
+    current.includes('ResourceExhausted') || 
+    current.includes('429')
+  ) {
+    const retryMatch = current.match(/retry in ([\d\.]+)\s*s/i) || current.match(/Please retry in ([\d\.]+)\s*s/i);
+    const secs = retryMatch ? Math.ceil(parseFloat(retryMatch[1])) : null;
+    if (secs) {
+      return `The AI model is experiencing a high volume of requests. Please wait ${secs} second${secs > 1 ? 's' : ''} and try again.`;
+    }
+    return 'The AI model is currently busy. Please wait a few seconds and try again.';
+  }
+
+  if (current.includes('"message":')) {
+    const match = current.match(/"message"\s*:\s*"([^"]+)"/);
+    if (match && match[1]) {
+      return match[1].replace(/\\n/g, '\n').replace(/\\"/g, '"');
+    }
+  }
+
+  return current;
 }
 
 // ── Message Bubble (Full-width style) ─────────────────────────────────
@@ -99,7 +153,7 @@ function MessageBubble({ message }: { message: ChatMessage }) {
   const sourceTag = !isUser ? detectSource(message.content) : null;
 
   return (
-    <div className={`py-5 ${isUser ? '' : 'bg-[#f5ebd5]/5 dark:bg-surface/30 border-y border-border-subtle/10'}`}>
+    <div className={`py-5 ${isUser ? '' : 'bg-accent/5 border-y border-border-subtle/10'}`}>
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className={`flex items-start gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
           {/* Avatar - only for assistant */}
@@ -112,18 +166,18 @@ function MessageBubble({ message }: { message: ChatMessage }) {
             {/* Source Tag */}
             {sourceTag && (
               <div className="flex items-center gap-1.5 mb-2">
-                <sourceTag.icon className="h-3 w-3 text-[#c9a84c]" />
-                <span className="text-[10px] font-black text-[#c9a84c] uppercase tracking-[0.15em]">{sourceTag.label}</span>
+                <sourceTag.icon className="h-3 w-3 text-accent" />
+                <span className="text-[10px] font-black text-accent uppercase tracking-[0.15em]">{sourceTag.label}</span>
               </div>
             )}
 
             {isUser ? (
-              <div className="inline-block text-left bg-[#1e3a5f] text-white px-5 py-3.5 rounded-2xl rounded-tr-sm shadow-md shadow-[#1e3a5f]/15 border border-[#1e3a5f] text-[15px] font-medium leading-[1.7] whitespace-pre-wrap max-w-[85%]">
+              <div className="inline-block text-left bg-primary text-white px-5 py-3.5 rounded-2xl rounded-tr-sm shadow-md border border-primary text-[15px] font-medium leading-[1.7] whitespace-pre-wrap max-w-[85%]">
                 {message.content}
               </div>
             ) : (
-              <div className="inline-block text-left bg-[#f5ebd5]/10 dark:bg-surface border border-[#c9a84c]/20 dark:border-border-subtle rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm text-[15px] leading-[1.8] font-medium max-w-[90%] md:max-w-full">
-                <span className="block font-black text-[#1e3a5f] dark:text-[#c9a84c] text-[12px] uppercase tracking-wider mb-2">Loksewa Guru:</span>
+              <div className="inline-block text-left bg-accent/10 border border-accent/20 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm text-[15px] leading-[1.8] font-medium max-w-[90%] md:max-w-full">
+                <span className="block font-black text-primary text-[12px] uppercase tracking-wider mb-2">Loksewa Guru:</span>
                 <div className="reading-area prose prose-sm dark:prose-invert max-w-none prose-headings:text-foreground prose-strong:text-foreground prose-p:text-foreground prose-li:text-foreground prose-ol:text-foreground prose-ul:text-foreground">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                 </div>
@@ -169,7 +223,7 @@ function ChatHistoryPanel({
     <div className="absolute inset-0 z-30 bg-background/95 backdrop-blur-xl flex flex-col animate-slide-in-right">
       <div className="flex items-center justify-between p-5 border-b border-border-subtle">
         <h3 className="text-sm font-black text-foreground flex items-center gap-3 uppercase tracking-widest">
-          <History className="h-4 w-4 text-[#c9a84c]" />
+          <History className="h-4 w-4 text-accent" />
           {t('guru_history')}
         </h3>
         <button onClick={onClose} className="p-2 hover:bg-surface rounded-xl transition-colors">
@@ -191,7 +245,7 @@ function ChatHistoryPanel({
               className="w-full text-left p-4 bg-surface border border-border-subtle rounded-xl hover:border-accent/30 transition-all group shadow-sm"
             >
               <p className="text-[9px] font-black text-muted uppercase tracking-widest mb-1">{convo.date}</p>
-              <p className="text-xs font-black text-foreground truncate group-hover:text-[#c9a84c] transition-colors uppercase tracking-widest">{convo.firstMessage}</p>
+              <p className="text-xs font-black text-foreground truncate group-hover:text-accent transition-colors uppercase tracking-widest">{convo.firstMessage}</p>
               <p className="text-[9px] text-muted mt-1 uppercase font-black tracking-widest">{convo.messages.length} {t('guru_transmissions')}</p>
             </button>
           ))
@@ -414,7 +468,7 @@ function GuruContent() {
           setMessages(prev => prev.slice(0, -1)); // Remove the user message
           return;
         }
-        throw new Error(errorData.error || 'Failed to get response');
+        throw new Error(cleanErrorMessage(errorData.error || 'Failed to get response'));
       }
 
       const reader = res.body?.getReader();
@@ -445,14 +499,16 @@ function GuruContent() {
     } catch (error: any) {
       console.error('Chat error:', error);
       
+      let friendlyTitle = 'Tactical Link Failed';
       let friendlyMessage = `⚠️ Error: ${error.message}. Please try again.`;
       
       const errorStr = error.message?.toLowerCase() || '';
       if (errorStr.includes('503') || errorStr.includes('429') || errorStr.includes('high demand') || errorStr.includes('quota') || errorStr.includes('unavailable')) {
-        friendlyMessage = "Server Busy: नमस्ते! Loksewa AI is currently at full capacity helping other students. Please try again in a few moments! 🙏";
+        friendlyTitle = 'Guru Service Busy';
+        friendlyMessage = 'Server Busy: नमस्ते! Loksewa AI is currently experiencing high demand. Please try again in a few moments! 🙏';
       }
 
-      toast.error('Tactical Link Failed', { description: error.message });
+      toast.error(friendlyTitle, { description: error.message });
 
       setMessages(prev => [
         ...prev,
@@ -528,10 +584,10 @@ function GuruContent() {
           <GuruAvatar size="md" type="icon" />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-black text-[#1e3a5f] dark:text-[#c9a84c] tracking-tight uppercase leading-none">
+              <h1 className="text-base font-black text-primary tracking-tight uppercase leading-none">
                 {t('guru_title')}
               </h1>
-              <span className="inline-block px-2.5 py-0.5 bg-[#f5ebd5]/50 dark:bg-[#f5ebd5]/10 border border-[#c9a84c]/20 text-[#1e3a5f] dark:text-[#c9a84c] text-[8px] font-black tracking-widest rounded-full uppercase">
+              <span className="inline-block px-2.5 py-0.5 bg-accent/10 border border-accent/20 text-primary text-[8px] font-black tracking-widest rounded-full uppercase">
                 SMART AI ASSISTANT
               </span>
             </div>
@@ -544,28 +600,28 @@ function GuruContent() {
         <div className="flex items-center gap-2 self-end sm:self-center">
           {/* Exam Selector */}
           {exams.length > 1 && (
-            <div className="relative">
+            <div className="relative min-w-[160px]">
               <select
                 value={activeExamId || ''}
                 onChange={(e) => { setActiveExamId(e.target.value); setMessages([]); }}
-                className="appearance-none bg-surface text-foreground border border-border-subtle rounded-lg px-3 py-2 pr-8 text-[10px] font-black uppercase tracking-widest focus:ring-1 focus:ring-accent/40 focus:outline-none cursor-pointer min-h-[36px] shadow-sm"
+                className="appearance-none w-full bg-primary text-accent border-2 border-accent/20 rounded-xl px-5 py-3 pr-10 text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-accent/20 focus:outline-none cursor-pointer min-h-[44px] shadow-md transition-all hover:scale-[1.01]"
               >
-                {exams.map(e => <option key={e.id} value={e.id}>{e.exam_name}</option>)}
+                {exams.map(e => <option key={e.id} value={e.id} className="bg-surface text-foreground">{e.exam_name}</option>)}
               </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-subtle pointer-events-none" />
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-accent pointer-events-none" />
             </div>
           )}
 
           <button
             onClick={() => setShowHistory(true)}
-            className="p-2 rounded-lg bg-surface border border-border-subtle text-subtle hover:text-[#c9a84c] hover:border-[#c9a84c]/20 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center shadow-sm"
+            className="p-2 rounded-lg bg-surface border border-border-subtle text-subtle hover:text-accent hover:border-accent/20 transition-all min-h-[36px] min-w-[36px] flex items-center justify-center shadow-sm"
           >
             <History className="h-4 w-4" />
           </button>
 
           <button
             onClick={startNewChat}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#1e3a5f] text-white text-[10px] font-black hover:opacity-90 transition-all min-h-[36px] shadow-sm shadow-[#1e3a5f]/10"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary text-white text-[10px] font-black hover:opacity-90 transition-all min-h-[36px] shadow-sm"
           >
             <Plus className="h-3.5 w-3.5" />
             <span className="hidden sm:inline uppercase tracking-widest">{t('guru_new_chat')}</span>
@@ -609,7 +665,7 @@ function GuruContent() {
                   disabled={isStreaming}
                   className="flex items-start gap-3 p-4 bg-surface border border-border-subtle rounded-xl text-left hover:border-accent/40 transition-all group active:scale-[0.99] disabled:opacity-50 min-h-[64px]"
                 >
-                  <div className="p-2 bg-background border border-border-subtle rounded-lg group-hover:bg-[#1e3a5f] group-hover:text-[#c9a84c] group-hover:border-[#c9a84c]/30 transition-colors flex-shrink-0">
+                  <div className="p-2 bg-background border border-border-subtle rounded-lg group-hover:bg-primary group-hover:text-accent group-hover:border-accent/30 transition-colors flex-shrink-0">
                     <q.icon className="h-4 w-4 text-subtle group-hover:text-current" />
                   </div>
                   <span className="text-[11px] font-black text-subtle group-hover:text-foreground leading-snug mt-1 uppercase tracking-widest">{q.text}</span>
@@ -638,7 +694,7 @@ function GuruContent() {
         {showScrollBtn && hasMessages && (
           <button
             onClick={scrollToBottom}
-            className="sticky bottom-4 left-1/2 -translate-x-1/2 z-20 p-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-full shadow-lg hover:scale-110 transition-transform shadow-[#1e3a5f]/20"
+            className="sticky bottom-4 left-1/2 -translate-x-1/2 z-20 p-2.5 bg-primary text-accent rounded-full shadow-lg hover:scale-110 transition-transform"
           >
             <ArrowDown className="h-4 w-4" />
           </button>
@@ -651,7 +707,7 @@ function GuruContent() {
           <div className="mb-2 px-1">
              <UsageIndicator type="chat" />
           </div>
-          <div className="flex items-end gap-2 bg-surface border border-border-subtle rounded-2xl p-2 focus-within:border-[#c9a84c]/40 transition-all shadow-sm">
+          <div className="flex items-end gap-2 bg-surface border border-border-subtle rounded-2xl p-2 focus-within:border-accent/40 transition-all shadow-sm">
             <textarea
               ref={inputRef}
               value={input}
@@ -665,7 +721,7 @@ function GuruContent() {
             <button
               onClick={() => sendMessage(input)}
               disabled={isStreaming || !input.trim() || isLimitReached}
-              className="p-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl hover:opacity-90 transition-all active:scale-90 flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 shadow-lg shadow-[#1e3a5f]/10"
+              className="p-3 bg-primary text-accent rounded-xl hover:opacity-90 transition-all active:scale-90 flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-40 shadow-lg"
             >
               <Send className="h-5 w-5" />
             </button>

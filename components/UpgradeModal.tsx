@@ -84,9 +84,9 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
           >
             {/* Header */}
             <div className="p-6 sm:p-8 border-b border-border-subtle flex justify-between items-start shrink-0 relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-[#c9a84c]/5 rounded-full blur-3xl -mr-32 -mt-32" />
+               <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -mr-32 -mt-32" />
                <div className="relative z-10 flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-xl bg-[#1e3a5f] flex items-center justify-center text-[#c9a84c] shadow-lg shadow-primary/20">
+                  <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center text-accent shadow-lg shadow-primary/20">
                     <Sparkles className="h-6 w-6" />
                   </div>
                   <div>
@@ -116,7 +116,7 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
                         <tr className="bg-surface/50 border-b border-border-subtle">
                           <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-subtle">Core Abilities</th>
                           <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-subtle text-center">Free Tier</th>
-                          <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-[#c9a84c] text-center">Pro Intelligence</th>
+                          <th className="px-4 sm:px-6 py-3 sm:py-4 text-xs font-bold uppercase tracking-wider text-accent text-center">Pro Intelligence</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border-subtle">
@@ -125,7 +125,7 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
                             <td className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-bold text-foreground">{f.name}</td>
                             <td className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-medium text-subtle text-center">{f.free}</td>
                             <td className="px-4 sm:px-6 py-3 text-xs sm:text-sm font-bold text-foreground text-center">
-                              <span className="inline-flex items-center gap-1.5 text-[#c9a84c]">
+                              <span className="inline-flex items-center gap-1.5 text-accent">
                                 {f.pro === 'Unlimited' && <Zap className="h-3.5 w-3.5" />}
                                 {f.pro}
                               </span>
@@ -181,7 +181,7 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
                         <div className="space-y-3 mb-10 flex-1">
                            {p.features.map((feat, idx) => (
                              <div key={idx} className="flex items-center gap-3">
-                                <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 ${p.popular ? 'bg-blue-600/10 text-blue-600' : 'bg-[#c9a84c]/10 text-[#c9a84c]'}`}>
+                                <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 ${p.popular ? 'bg-blue-600/10 text-blue-600' : 'bg-accent/10 text-accent'}`}>
                                    <Check className="h-3 w-3" />
                                 </div>
                                 <span className="text-xs font-bold text-foreground/80">{feat}</span>
@@ -197,7 +197,7 @@ export function UpgradeModal({ onSelectPlan }: { onSelectPlan: (plan: any) => vo
                           className={`w-full py-4 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-2 min-h-[52px] ${
                             p.popular 
                               ? 'bg-blue-600 text-background shadow-lg shadow-blue-600/20 hover:bg-blue-700' 
-                              : 'bg-[#1e3a5f] text-[#c9a84c] shadow-lg shadow-primary/20 hover:opacity-90'
+                              : 'bg-primary text-accent shadow-lg shadow-primary/20 hover:opacity-90'
                           }`}
                         >
                           Pay Now <Rocket className="h-4 w-4" />

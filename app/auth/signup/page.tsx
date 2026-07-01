@@ -52,7 +52,7 @@ export default function SignUp() {
     if (error) {
       toast.error('Initialization Failed', { description: error.message });
     } else {
-      toast.success('Mission Protocol Initialized', { description: 'Please verify your email to activate your workspace.' });
+      toast.success('Account Initialized', { description: 'Please verify your email to activate your workspace.' });
       router.push('/onboarding');
     }
   };
@@ -73,8 +73,8 @@ export default function SignUp() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#c9a84c]/10 rounded-full blur-[100px] -mr-48 -mt-48" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#1e3a5f]/5 rounded-full blur-[100px] -ml-48 -mb-48" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[100px] -mr-48 -mt-48" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -ml-48 -mb-48" />
 
       <div className="w-full max-w-md relative z-10">
         <div className="bg-surface border border-border-subtle p-6 sm:p-10 rounded-[2.5rem] shadow-2xl shadow-primary/5 space-y-8">
@@ -82,14 +82,14 @@ export default function SignUp() {
             <div className="h-14 w-14 bg-primary text-accent rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl shadow-primary/10 relative group transition-transform hover:scale-110">
               <Sparkles className="h-7 w-7 relative z-10" />
             </div>
-            <h1 className="text-3xl font-black text-primary tracking-tighter uppercase">Join Loksewa AI</h1>
-            <p className="text-[10px] font-black text-subtle uppercase tracking-[0.2em]">Start your preparation mission today</p>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">Join Loksewa AI</h1>
+            <p className="text-xs text-muted">Start your study roadmap today</p>
           </div>
 
           <div className="space-y-4">
             <button
               onClick={handleGoogleSignIn}
-              className="w-full bg-white border border-gray-100 py-3 rounded-xl font-bold text-xs hover:bg-gray-50 transition-all flex items-center justify-center gap-3 shadow-sm active:scale-[0.98] min-h-[44px] text-[#1e3a5f]"
+              className="w-full bg-white border border-gray-100 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-3 shadow-sm active:scale-[0.98] min-h-[44px] text-gray-800"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -104,8 +104,8 @@ export default function SignUp() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border-subtle"></span>
               </div>
-              <div className="relative flex justify-center text-[9px] uppercase tracking-[0.3em] font-black">
-                <span className="bg-surface px-4 text-subtle">Registration</span>
+              <div className="relative flex justify-center text-xs font-semibold">
+                <span className="bg-surface px-4 text-muted">Registration</span>
               </div>
             </div>
 
@@ -113,23 +113,23 @@ export default function SignUp() {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Full Name</label>
+                    <label className="text-xs font-semibold text-muted ml-1">Full Name</label>
                     <div className="relative">
                       <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                       <input
                         {...register('fullName')}
-                        className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.fullName ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                        className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-sm transition-all outline-none min-h-[44px] text-foreground ${errors.fullName ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
                         placeholder="John Doe"
                       />
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Phone Number (Optional)</label>
+                    <label className="text-xs font-semibold text-muted ml-1">Phone Number (Optional)</label>
                     <div className="relative">
                       <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                       <input
                         {...register('phone')}
-                        className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.phone ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                        className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-sm transition-all outline-none min-h-[44px] text-foreground ${errors.phone ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
                         placeholder="98XXXXXXXX"
                       />
                     </div>
@@ -137,26 +137,26 @@ export default function SignUp() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-xs font-semibold text-muted ml-1">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('email')}
                       type="email"
-                      className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                      className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-sm transition-all outline-none min-h-[44px] text-foreground ${errors.email ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
                       placeholder="you@example.com"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-black text-subtle uppercase tracking-widest ml-1">Password</label>
+                  <label className="text-xs font-semibold text-muted ml-1">Password</label>
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle/50" />
                     <input
                       {...register('password')}
                       type="password"
-                      className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-xs font-bold transition-all outline-none min-h-[44px] text-primary ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
+                      className={`w-full bg-background/30 border rounded-xl pl-10 pr-4 py-3 text-sm transition-all outline-none min-h-[44px] text-foreground ${errors.password ? 'border-red-500/50 focus:border-red-500' : 'border-border-subtle focus:border-primary'}`}
                       placeholder="Min. 8 characters"
                     />
                   </div>
@@ -165,7 +165,7 @@ export default function SignUp() {
 
               <button
                 disabled={isSubmitting}
-                className="w-full bg-accent text-primary py-4 rounded-xl font-black text-xs hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/10 active:scale-[0.98] min-h-[52px] disabled:opacity-50 uppercase tracking-[0.2em]"
+                className="w-full bg-primary text-accent py-4 rounded-xl font-semibold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/10 active:scale-[0.98] min-h-[52px] disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -177,7 +177,7 @@ export default function SignUp() {
           </div>
 
           <div className="text-center pt-6 border-t border-border-subtle">
-            <Link href="/auth/signin" className="text-[10px] font-black text-subtle hover:text-primary transition-colors uppercase tracking-[0.2em]">
+            <Link href="/auth/signin" className="text-xs font-semibold text-muted hover:text-foreground transition-colors">
               Already have an account? <span className="text-primary underline underline-offset-8 ml-2">Login Now</span>
             </Link>
           </div>

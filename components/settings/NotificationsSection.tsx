@@ -43,8 +43,8 @@ export function NotificationsSection({ profile, markDirty, clearDirty }: any) {
         <p className="text-[11px] font-black text-foreground uppercase tracking-widest">{label}</p>
         {description && <p className="text-[10px] text-subtle font-black uppercase tracking-widest mt-1 opacity-60">{description}</p>}
       </div>
-      <button onClick={() => onChange(!checked)} className={`relative w-11 h-6 rounded-full transition-colors border-2 ${checked ? 'bg-[#1e3a5f] border-[#c9a84c]' : 'bg-surface border-border-subtle'}`}>
-        <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full transition-all shadow-sm ${checked ? 'translate-x-5 bg-[#c9a84c]' : 'bg-subtle'}`} />
+      <button onClick={() => onChange(!checked)} className={`relative w-11 h-6 rounded-full transition-colors border-2 ${checked ? 'bg-primary border-accent' : 'bg-surface border-border-subtle'}`}>
+        <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full transition-all shadow-sm ${checked ? 'translate-x-5 bg-accent' : 'bg-subtle'}`} />
       </button>
     </div>
   );
@@ -57,7 +57,7 @@ export function NotificationsSection({ profile, markDirty, clearDirty }: any) {
       <div className="divide-y divide-border-subtle">
         <Toggle checked={dailyReminder} onChange={setDailyReminder} label="Daily Study Reminder" description="Get reminded to study every day" />
         {dailyReminder && (
-          <div className="py-3 pl-4 border-l-2 border-[#c9a84c]/20 ml-2">
+          <div className="py-3 pl-4 border-l-2 border-accent/20 ml-2">
             <label className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1.5 block ml-1">Reminder Time</label>
             <input type="time" value={reminderTime} onChange={e => setReminderTime(e.target.value)} className="bg-background border border-border-subtle rounded-xl px-4 py-2.5 text-[13px] font-black text-foreground uppercase tracking-widest outline-none focus:border-accent/50 shadow-sm" />
           </div>
@@ -67,12 +67,12 @@ export function NotificationsSection({ profile, markDirty, clearDirty }: any) {
         <Toggle checked={docComplete} onChange={setDocComplete} label="Document Processing Complete" description="Notify when uploaded documents are ready" />
       </div>
 
-      <div className="mt-4 p-3 bg-[#c9a84c]/5 border border-[#c9a84c]/20 rounded-xl text-[10px] font-black text-[#c9a84c] uppercase tracking-widest flex items-start gap-2 shadow-sm">
+      <div className="mt-4 p-3 bg-accent/5 border border-accent/20 rounded-xl text-[10px] font-black text-accent uppercase tracking-widest flex items-start gap-2 shadow-sm">
         <Bell className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
         Push notifications coming soon — preferences cached for deployment.
       </div>
 
-      <button onClick={handleSave} disabled={saving || !isDirty} className="mt-4 flex items-center gap-2 px-6 py-3 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#1e3a5f]/10">
+      <button onClick={handleSave} disabled={saving || !isDirty} className="mt-4 flex items-center gap-2 px-6 py-3 bg-primary text-accent rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-primary/10">
         {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />} Sync Notifications
       </button>
     </div>

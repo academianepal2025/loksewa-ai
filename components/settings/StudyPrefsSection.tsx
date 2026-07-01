@@ -117,12 +117,12 @@ export function StudyPrefsSection({ profile, markDirty, clearDirty }: any) {
               <select 
                 value={flashcardMode} 
                 onChange={e => setFlashcardMode(e.target.value)} 
-                className="w-full appearance-none bg-background border border-border-subtle rounded-xl px-4 py-3 text-[11px] font-black uppercase tracking-widest outline-none focus:border-[#c9a84c]/50 shadow-sm"
+                className="w-full appearance-none bg-background border border-border-subtle rounded-xl px-4 py-3 text-[11px] font-black uppercase tracking-widest outline-none focus:border-accent/50 shadow-sm"
               >
                 <option value="manual">Manual Review</option>
                 <option value="spaced">Spaced Repetition (AI)</option>
               </select>
-              <ChevronDown className="absolute right-4 top-10 h-4 w-4 text-[#c9a84c] pointer-events-none" />
+              <ChevronDown className="absolute right-4 top-10 h-4 w-4 text-accent pointer-events-none" />
             </div>
           </div>
         </div>
@@ -130,7 +130,7 @@ export function StudyPrefsSection({ profile, markDirty, clearDirty }: any) {
         <button 
           onClick={handleSave} 
           disabled={saving || !isDirty} 
-          className="mt-10 flex items-center gap-2 px-6 py-3.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-[#1e3a5f]/10"
+          className="mt-10 flex items-center gap-2 px-6 py-3.5 bg-primary text-accent rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-primary/10"
         >
           {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />} Sync Strategy Preferences
         </button>

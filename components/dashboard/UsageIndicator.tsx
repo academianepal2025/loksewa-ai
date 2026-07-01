@@ -63,12 +63,12 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
         ? 'bg-red-500/10 border-red-500/30 text-red-600' 
         : isNearLimit 
           ? 'bg-amber-500/10 border-amber-500/30 text-amber-600' 
-          : 'bg-[#c9a84c]/5 border-[#c9a84c]/20 text-[#c9a84c]'
+          : 'bg-accent/5 border-accent/20 text-accent'
     }`}>
       <div className="flex flex-col">
          <div className="flex items-center justify-between gap-4 mb-1.5">
             <div className="flex items-center gap-2">
-               <Zap className={`h-3 w-3 ${isExceeded ? 'text-red-500' : isNearLimit ? 'text-amber-500 animate-pulse' : 'text-[#c9a84c]'}`} />
+               <Zap className={`h-3 w-3 ${isExceeded ? 'text-red-500' : isNearLimit ? 'text-amber-500 animate-pulse' : 'text-accent'}`} />
                <span className="text-[9px] font-black uppercase tracking-widest leading-none">
                   {type === 'documents' ? 'Storage' : type === 'exams' ? 'Missions' : type === 'chat' ? 'Daily Guru' : type === 'quizzes' ? 'Daily Quizzes' : type === 'notes' ? 'Study Notes' : 'Daily Usage'}: {usage.used}/{usage.max}
                </span>
@@ -85,7 +85,7 @@ export function UsageIndicator({ type }: UsageIndicatorProps) {
          <div className="h-1.5 w-full bg-background/50 rounded-full overflow-hidden border border-border-subtle/50">
             <div 
               className={`h-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(0,0,0,0.1)] ${
-                isExceeded ? 'bg-red-500' : isNearLimit ? 'bg-amber-500' : 'bg-[#c9a84c]'
+                isExceeded ? 'bg-red-500' : isNearLimit ? 'bg-amber-500' : 'bg-accent'
               }`} 
               style={{ width: `${pct}%` }} 
             />

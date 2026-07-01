@@ -101,10 +101,10 @@ interface StudyProgress {
 
 // ── Day Type Styling ──────────────────────────────────────────────────
 const DAY_TYPE_CONFIG = {
-  study: { bg: 'bg-[#1e3a5f]/5', border: 'border-border-subtle', text: 'text-[#c9a84c]', icon: BookOpen, label: 'Study' },
-  revision: { bg: 'bg-[#c9a84c]/5', border: 'border-[#c9a84c]/20', text: 'text-[#c9a84c]', icon: BookMarked, label: 'Revision' },
-  rest: { bg: 'bg-background', border: 'border-border-subtle', text: 'text-subtle', icon: Coffee, label: 'Rest' },
-  mock_test: { bg: 'bg-[#1e3a5f]/10', border: 'border-[#1e3a5f]/20', text: 'text-[#1e3a5f]', icon: PenTool, label: 'Mock Test' },
+  study: { bg: 'bg-primary/5', border: 'border-border-subtle/60', text: 'text-accent', icon: BookOpen, label: 'Study' },
+  revision: { bg: 'bg-accent/5', border: 'border-accent/20', text: 'text-accent', icon: BookMarked, label: 'Revision' },
+  rest: { bg: 'bg-background', border: 'border-border-subtle/60', text: 'text-subtle', icon: Coffee, label: 'Rest' },
+  mock_test: { bg: 'bg-primary/10', border: 'border-primary/20', text: 'text-primary', icon: PenTool, label: 'Mock Test' },
 };
 
 // ── Generation Steps Animation (Compact) ─────────────────────────────
@@ -125,19 +125,19 @@ function GenerationOverlay({ step }: { step: number }) {
 
   return (
     <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-xl flex items-center justify-center p-4">
-      <div className="bg-surface rounded-2xl shadow-2xl max-w-sm w-full p-8 border border-border-subtle overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-[#c9a84c]/5 rounded-full -mr-12 -mt-12" />
+      <div className="bg-surface rounded-2xl max-w-sm w-full p-8 border border-border-subtle overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full -mr-12 -mt-12" />
         
         <div className="text-center mb-8 relative z-10">
           <div className="relative w-16 h-16 mx-auto mb-6">
             <div className="absolute inset-0 rounded-xl border-2 border-border-subtle" />
-            <div className="absolute inset-0 rounded-xl border-2 border-[#c9a84c] border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-xl border-2 border-accent border-t-transparent animate-spin" />
             <div className="absolute inset-2.5 rounded-lg bg-background flex items-center justify-center">
-              <Sparkles className="h-5 w-5 text-[#c9a84c] animate-pulse" />
+              <Sparkles className="h-5 w-5 text-accent animate-pulse" />
             </div>
           </div>
-          <h3 className="text-xl font-black text-foreground tracking-tighter uppercase">AI Strategy Engine</h3>
-          <p className="text-[10px] font-black text-[#c9a84c] uppercase tracking-widest mt-3 animate-pulse">{rotatingMessage}</p>
+          <h3 className="text-xl font-bold text-foreground tracking-tight">Generating Study Plan</h3>
+          <p className="text-[10px] font-black text-accent uppercase tracking-widest mt-3 animate-pulse">{rotatingMessage}</p>
         </div>
 
         <div className="space-y-4 relative z-10">
@@ -149,7 +149,7 @@ function GenerationOverlay({ step }: { step: number }) {
               }`}
             >
               <div className={`mt-0.5 w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 border ${
-                i < step ? 'bg-[#1e3a5f] border-[#1e3a5f] text-[#c9a84c]' : i === step ? 'border-[#c9a84c] text-[#c9a84c] animate-pulse' : 'border-border-subtle text-subtle'
+                i < step ? 'bg-primary border-primary text-accent' : i === step ? 'border-accent text-accent animate-pulse' : 'border-border-subtle text-subtle'
               }`}>
                 {i < step ? <Check className="h-3 w-3" /> : <span className="text-[10px] font-black">{i + 1}</span>}
               </div>
@@ -185,29 +185,29 @@ function GenerateNotesButton({
 }) {
   if (isGeneratingLocal || status === 'generating') {
     return (
-      <button disabled className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-background border border-border-subtle rounded-lg flex items-center justify-center gap-2 text-subtle shadow-sm">
-        <RefreshCw className="h-4 w-4 animate-spin" /> Analyzing...
+      <button disabled className="w-full sm:w-auto py-2 px-4 text-xs font-medium bg-background border border-border-subtle rounded-lg flex items-center justify-center gap-2 text-muted">
+        <RefreshCw className="h-3.5 w-3.5 animate-spin" /> Generating...
       </button>
     );
   }
   if (status === 'ready') {
     return (
-      <button onClick={onView} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/20 rounded-lg flex items-center justify-center gap-2 hover:bg-[#c9a84c]/20 transition-all shadow-sm">
-        <FileText className="h-4 w-4" /> View Intelligence
+      <button onClick={onView} className="w-full sm:w-auto py-2 px-4 text-xs font-medium bg-accent/10 text-accent border border-accent/20 rounded-lg flex items-center justify-center gap-2 hover:bg-accent/20 transition-all">
+        <FileText className="h-3.5 w-3.5" /> View Notes
       </button>
     );
   }
   if (status === 'no_content') {
     return (
-      <button onClick={() => onGenerate(true)} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-red-500/5 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/10 transition-all text-left sm:text-center leading-tight shadow-sm">
-        <AlertCircle className="h-4 w-4 flex-shrink-0" /> <span className="hidden sm:inline">Force Intel</span><span className="sm:hidden">Force</span>
+      <button onClick={() => onGenerate(true)} className="w-full sm:w-auto py-2 px-4 text-xs font-medium bg-red-500/5 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/10 transition-all">
+        <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" /> Force Generate
       </button>
     );
   }
   if (status === 'failed') {
     return (
-      <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest bg-red-500/5 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/10 transition-all shadow-sm">
-        <RefreshCw className="h-4 w-4" /> Retry Intel
+      <button onClick={() => onGenerate(false)} className="w-full sm:w-auto py-2 px-4 text-xs font-medium bg-red-500/5 text-red-600 border border-red-500/20 rounded-lg flex items-center justify-center gap-2 hover:bg-red-500/10 transition-all">
+        <RefreshCw className="h-3.5 w-3.5" /> Retry
       </button>
     );
   }
@@ -215,21 +215,30 @@ function GenerateNotesButton({
     <button 
       onClick={() => onGenerate(false)} 
       disabled={isNotesLimitReached}
-      className={`w-full sm:w-auto py-2.5 px-4 text-[9px] font-black uppercase tracking-widest border rounded-lg flex items-center justify-center gap-2 transition-all shadow-sm ${
+      className={`w-full sm:w-auto py-2 px-4 text-xs font-medium border rounded-lg flex items-center justify-center gap-2 transition-all ${
         isNotesLimitReached 
-          ? 'bg-background border-border-subtle text-subtle cursor-not-allowed' 
-          : 'bg-background border-[#c9a84c]/40 text-[#c9a84c] hover:bg-[#c9a84c]/5'
+          ? 'bg-background border-border-subtle/60 text-muted cursor-not-allowed' 
+          : 'bg-background border-accent/40 text-accent hover:bg-accent/5'
       }`}
     >
-      <FileText className="h-4 w-4" /> {isNotesLimitReached ? 'Limit Reached' : 'Generate Intel'}
+      <FileText className="h-3.5 w-3.5" /> {isNotesLimitReached ? 'Limit Reached' : 'Generate Notes'}
     </button>
   );
 }
 
-// ── Day Detail Modal (Compact) ────────────────────────────────────────
-function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, noteStatusMap, generatingNotesForTopic, onGenerateNote, onViewNote, isNotesLimitReached }: { 
+// ── Day Detail Content (Inline Expansion) ─────────────────────────────
+function DayDetailsContent({ 
+  day, 
+  progress, 
+  onToggleSubtopic, 
+  onMarkComplete, 
+  noteStatusMap, 
+  generatingNotesForTopic, 
+  onGenerateNote, 
+  onViewNote, 
+  isNotesLimitReached 
+}: { 
   day: DailyPlan; 
-  onClose: () => void; 
   progress: StudyProgress | null; 
   onToggleSubtopic: (subtopic: string) => void; 
   onMarkComplete: (feedback: { status: 'finished' | 'need_revisit', difficulty: 'easy' | 'medium' | 'hard', notes: string }) => void;
@@ -244,262 +253,229 @@ function DayModal({ day, onClose, progress, onToggleSubtopic, onMarkComplete, no
   const [notes, setNotes] = useState(progress?.user_notes || '');
 
   const config = DAY_TYPE_CONFIG[day.day_type] || DAY_TYPE_CONFIG.study;
-  const Icon = config.icon;
   const completedSubs = progress?.completed_subtopics || [];
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
-      <div className="bg-surface rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto border border-border-subtle animate-zoom-in" onClick={e => e.stopPropagation()}>
-        {/* Header */}
-        <div className="p-6 border-b border-border-subtle">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-lg bg-background border border-border-subtle flex items-center justify-center text-foreground">
-                <Icon className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1">MISSION DAY {day.day_number}</p>
-                <h3 className="text-lg font-black text-foreground tracking-tighter leading-tight uppercase">{day.primary_topic || config.label}</h3>
-                {day.study_method && (
-                  <span className="inline-block px-2 py-0.5 mt-2 bg-[#1e3a5f]/10 text-[#1e3a5f] border border-[#1e3a5f]/20 rounded text-[9px] font-black uppercase tracking-widest">Method: {day.study_method}</span>
-                )}
-              </div>
-            </div>
-            <button onClick={onClose} className="p-2 hover:bg-background rounded-xl transition-all text-muted">
-              <X className="h-5 w-5" />
-            </button>
+    <div className="mt-3 p-5 rounded-xl bg-background/50 border border-border-subtle/80 space-y-5 animate-slide-in-top" onClick={e => e.stopPropagation()}>
+      {/* Learning Objective */}
+      {day.learning_objective && (
+        <div className="bg-blue-500/[0.04] border border-blue-500/15 border-l-4 border-l-primary p-3 rounded-r-lg shadow-sm">
+           <p className="text-xs font-semibold text-primary mb-1">Learning Objective</p>
+           <p className="text-xs text-foreground/90 leading-relaxed">{day.learning_objective}</p>
+        </div>
+      )}
+
+      {/* Target stats details */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+         <div className="bg-purple-500/[0.04] border border-purple-500/15 p-2.5 rounded-lg">
+            <p className="text-[10px] text-purple-600 font-semibold">Duration</p>
+            <p className="text-xs font-bold text-purple-700 mt-0.5">{day.estimated_hours} Hours</p>
+         </div>
+         <div className="bg-emerald-500/[0.04] border border-emerald-500/15 p-2.5 rounded-lg">
+            <p className="text-[10px] text-emerald-600 font-semibold">Target Date</p>
+            <p className="text-xs font-bold text-emerald-700 mt-0.5">{new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</p>
+         </div>
+         {day.study_method && (
+           <div className="bg-blue-500/[0.04] border border-blue-500/15 p-2.5 rounded-lg">
+              <p className="text-[10px] text-blue-600 font-semibold">Method</p>
+              <p className="text-xs font-bold text-blue-700 mt-0.5">{day.study_method}</p>
+           </div>
+         )}
+      </div>
+
+      {/* Subtopics Checklist & Study tips */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Objectives */}
+        <div className="space-y-2.5">
+          <h4 className="text-xs font-bold text-foreground">Subtopics to Cover</h4>
+          <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+            {day.subtopics_to_cover.map((sub, i) => {
+              const done = completedSubs.includes(sub);
+              return (
+                <label key={i} className={`flex items-start gap-2.5 p-2 rounded-lg border transition-all cursor-pointer group ${
+                  done 
+                    ? 'bg-emerald-500/[0.02] border-emerald-500/10 opacity-70' 
+                    : 'bg-amber-500/[0.02] border-amber-500/10 hover:border-amber-500/30'
+                }`}>
+                  <div className="mt-0.5">
+                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center transition-all ${
+                      done ? 'bg-emerald-500 border-emerald-500' : 'border-amber-500/30 group-hover:border-amber-500'
+                    }`}>
+                        {done && <Check className="h-2 w-2 text-white" />}
+                    </div>
+                    <input type="checkbox" hidden checked={done} onChange={() => onToggleSubtopic(sub)} />
+                  </div>
+                  <span className={`text-[11px] font-medium leading-relaxed ${done ? 'line-through text-muted' : 'text-foreground'}`}>{sub}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
-        <div className="p-5 space-y-5">
-          {day.learning_objective && (
-            <div className="bg-[#1e3a5f]/5 border-l-2 border-[#1e3a5f] p-4 rounded-r-xl shadow-sm">
-               <p className="text-[10px] font-black text-[#1e3a5f] uppercase tracking-widest mb-1">Learning Objective</p>
-               <p className="text-xs font-medium text-foreground leading-relaxed">{day.learning_objective}</p>
-            </div>
-          )}
-
-          <div className="flex flex-wrap items-center gap-6">
-             <div className="flex items-center gap-3">
-                <Clock className="h-4 w-4 text-[#c9a84c]" />
-                <div>
-                   <p className="text-[9px] font-black text-subtle uppercase tracking-widest">Duration</p>
-                   <p className="text-sm font-black text-foreground">{day.estimated_hours} Hours</p>
-                </div>
-             </div>
-             <div className="flex items-center gap-3">
-                <Calendar className="h-4 w-4 text-[#c9a84c]" />
-                <div>
-                   <p className="text-[9px] font-black text-subtle uppercase tracking-widest">Target Date</p>
-                   <p className="text-sm font-black text-foreground">{new Date(day.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</p>
-                </div>
-             </div>
-          </div>
-
-          <div className="space-y-4">
-            <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest">Daily Objectives</h4>
-            <div className="space-y-1.5">
-              {day.subtopics_to_cover.map((sub, i) => {
-                const done = completedSubs.includes(sub);
-                return (
-                  <label key={i} className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer group shadow-sm ${done ? 'bg-background border-transparent opacity-60' : 'bg-background border-border-subtle hover:border-[#c9a84c]/40'}`}>
-                    <div className="mt-0.5">
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${done ? 'bg-[#c9a84c] border-[#c9a84c]' : 'border-border-subtle group-hover:border-[#c9a84c]/40'}`}>
-                          {done && <Check className="h-2.5 w-2.5 text-[#1e3a5f]" />}
-                      </div>
-                      <input type="checkbox" hidden checked={done} onChange={() => onToggleSubtopic(sub)} />
-                    </div>
-                    <span className={`reading-area text-[11px] font-black uppercase tracking-widest leading-relaxed ${done ? 'line-through text-subtle' : 'text-foreground'}`}>{sub}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          {day.focus_points && day.focus_points.length > 0 && (
-            <div className="space-y-3">
-              <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest">Focus Points</h4>
-              <ul className="list-decimal list-inside space-y-1.5 pl-1">
-                {day.focus_points.map((pt, i) => (
-                  <li key={i} className="text-[11px] font-medium text-foreground leading-relaxed">{pt}</li>
-                ))}
-              </ul>
+        {/* Tips & Study notes triggers */}
+        <div className="space-y-3">
+          {day.study_tips && (
+            <div className="bg-accent/[0.04] rounded-lg p-3 border border-accent/15">
+               <div className="flex items-center gap-1.5 mb-1">
+                 <Zap className="h-3 w-3 text-accent" />
+                 <span className="text-[10px] font-bold text-accent">Study Tip</span>
+               </div>
+               <p className="text-xs text-foreground/80 font-medium italic leading-relaxed">"{day.study_tips}"</p>
             </div>
           )}
 
           {day.avoid_mistakes && (
-            <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl shadow-sm">
-               <div className="flex items-center gap-2 mb-2">
-                 <AlertTriangle className="h-3 w-3 text-yellow-600" />
-                 <span className="text-[9px] font-black text-yellow-600 uppercase tracking-widest">Avoid Mistakes</span>
+            <div className="bg-yellow-500/[0.04] border border-yellow-500/15 p-3 rounded-lg">
+               <div className="flex items-center gap-1.5 mb-1">
+                 <AlertTriangle className="h-3.5 w-3.5 text-yellow-600" />
+                 <span className="text-[10px] font-bold text-yellow-600">Avoid Mistakes</span>
                </div>
-               <p className="text-[11px] font-medium text-foreground leading-relaxed">{day.avoid_mistakes}</p>
+               <p className="text-xs text-foreground/80 leading-relaxed">{day.avoid_mistakes}</p>
             </div>
           )}
 
           {day.exam_connection && (
-            <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl shadow-sm">
-               <div className="flex items-center gap-2 mb-2">
-                 <Target className="h-3 w-3 text-blue-600" />
-                 <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest">Previous Exam Pattern</span>
+            <div className="bg-blue-500/[0.04] border border-blue-500/15 p-3 rounded-lg">
+               <div className="flex items-center gap-1.5 mb-1">
+                 <Target className="h-3.5 w-3.5 text-blue-600" />
+                 <span className="text-[10px] font-bold text-blue-600">Previous Exam Pattern</span>
                </div>
-               <p className="text-[11px] font-medium text-foreground leading-relaxed">{day.exam_connection}</p>
+               <p className="text-xs text-foreground/80 leading-relaxed">{day.exam_connection}</p>
             </div>
           )}
+        </div>
+      </div>
 
-          {day.study_tips && (
-            <div className="bg-[#c9a84c]/5 rounded-xl p-4 border border-[#c9a84c]/20 shadow-sm">
-               <div className="flex items-center gap-2 mb-2">
-                 <Zap className="h-3 w-3 text-[#c9a84c]" />
-                 <span className="text-[9px] font-black text-[#c9a84c] uppercase tracking-widest">Efficiency Tip</span>
-               </div>
-               <p className="reading-area text-[12px] text-foreground font-medium italic opacity-90 leading-relaxed">{day.study_tips}</p>
+      {/* Generated Notes Button Row */}
+      <div className="pt-3 border-t border-border-subtle/40 space-y-2">
+        <h4 className="text-xs font-bold text-foreground">Study Material & Notes</h4>
+        {(() => {
+          const noteTopicKey = day.subtopics_to_cover && day.subtopics_to_cover.length > 0 
+            ? day.subtopics_to_cover[0] 
+            : day.primary_topic;
+          const displayLabel = day.subtopics_to_cover && day.subtopics_to_cover.length > 0 
+            ? day.subtopics_to_cover.join(', ') 
+            : day.primary_topic;
+          return (
+            <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 rounded-lg bg-surface border border-border-subtle/50">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-foreground">{displayLabel}</p>
+                <p className="text-[10px] text-muted">Generate notes for these specific topics</p>
+              </div>
+              <GenerateNotesButton 
+                dayNumber={day.day_number}
+                status={noteStatusMap.get(`${day.day_number}-${noteTopicKey}`)}
+                isGeneratingLocal={generatingNotesForTopic === noteTopicKey}
+                onGenerate={(force) => onGenerateNote(day, noteTopicKey, day.subtopics_to_cover, force)}
+                onView={() => onViewNote(day.day_number, noteTopicKey)}
+                isNotesLimitReached={isNotesLimitReached}
+              />
             </div>
-          )}
+          );
+        })()}
 
-          {day.resources_hint && (
-            <p className="text-[10px] font-medium text-subtle italic text-center pt-2">{day.resources_hint}</p>
-          )}
+        {day.secondary_topic && (
+          <div className="flex flex-wrap items-center justify-between gap-3 p-2.5 rounded-lg bg-surface border border-border-subtle/50">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-foreground">{day.secondary_topic}</p>
+              <p className="text-[10px] text-muted">Generate notes for this secondary topic</p>
+            </div>
+            <GenerateNotesButton 
+              dayNumber={day.day_number}
+              status={noteStatusMap.get(`${day.day_number}-${day.secondary_topic}`)}
+              isGeneratingLocal={generatingNotesForTopic === day.secondary_topic}
+              onGenerate={(force) => onGenerateNote(day, day.secondary_topic!, [], force)}
+              onView={() => onViewNote(day.day_number, day.secondary_topic!)}
+              isNotesLimitReached={isNotesLimitReached}
+            />
+          </div>
+        )}
+      </div>
 
-          {!progress?.is_completed && (
-            <div className="bg-background p-4 rounded-xl border border-border-subtle space-y-4 shadow-sm">
-              <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest flex items-center gap-2">
-                <Sparkles className="h-3 w-3 text-[#c9a84c]" /> Session Feedback
-              </h4>
-              
-              <div className="space-y-3">
-                <p className="text-[8px] font-black text-subtle uppercase tracking-widest">Completion Status</p>
+      {/* Feedback & Done Actions */}
+      <div className="pt-3 border-t border-border-subtle/40">
+        {!progress?.is_completed ? (
+          <div className="bg-surface/50 p-3 rounded-lg border border-border-subtle/50 space-y-3">
+            <h4 className="text-xs font-bold text-foreground">Log Session Status</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <p className="text-[10px] text-muted font-medium">Did you complete all topics?</p>
                 <div className="flex gap-2">
                   <button 
                     onClick={() => setFeedbackStatus('finished')}
-                    className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${feedbackStatus === 'finished' ? 'bg-[#1e3a5f] text-[#c9a84c] border-[#1e3a5f]' : 'bg-surface text-subtle border-border-subtle'}`}
+                    className={`flex-1 py-1.5 rounded-md text-xs font-medium border transition-all ${feedbackStatus === 'finished' ? 'bg-primary text-accent border-primary' : 'bg-background text-muted border-border-subtle'}`}
                   >
                     Fully Finished
                   </button>
                   <button 
                     onClick={() => setFeedbackStatus('need_revisit')}
-                    className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all shadow-sm ${feedbackStatus === 'need_revisit' ? 'bg-[#c9a84c] text-[#1e3a5f] border-[#c9a84c]' : 'bg-surface text-subtle border-border-subtle'}`}
+                    className={`flex-1 py-1.5 rounded-md text-xs font-medium border transition-all ${feedbackStatus === 'need_revisit' ? 'bg-accent text-background border-accent' : 'bg-background text-muted border-border-subtle'}`}
                   >
                     Need Revisit
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <p className="text-[8px] font-black text-subtle uppercase tracking-widest">Topic Difficulty</p>
+              <div className="space-y-1">
+                <p className="text-[10px] text-muted font-medium">How difficult was it?</p>
                 <div className="flex gap-2">
-                  {[
-                    { id: 'easy', label: 'Easy' },
-                    { id: 'medium', label: 'Medium' },
-                    { id: 'hard', label: 'Hard' }
-                  ].map((d) => (
+                  {['easy', 'medium', 'hard'].map((lvl) => (
                     <button 
-                      key={d.id}
-                      onClick={() => setDifficulty(d.id as any)}
-                      className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all ${
-                        difficulty === d.id 
-                          ? 'bg-[#1e3a5f] text-[#c9a84c] border-[#1e3a5f]' 
-                          : 'bg-surface text-subtle border-border-subtle hover:border-muted'
+                      key={lvl}
+                      onClick={() => setDifficulty(lvl as any)}
+                      className={`flex-1 py-1.5 rounded-md text-xs font-medium border transition-all capitalize ${
+                        difficulty === lvl 
+                          ? 'bg-primary text-accent border-primary' 
+                          : 'bg-background text-muted border-border-subtle'
                       }`}
                     >
-                      {d.label}
+                      {lvl}
                     </button>
                   ))}
                 </div>
               </div>
-
-              <div className="space-y-3">
-                <p className="text-[9px] font-black text-muted uppercase">Self-Reflection / Notes</p>
-                <textarea 
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="OBSERVATIONS FROM THIS SESSION..."
-                  className="w-full bg-background border border-border-subtle rounded-xl p-3 text-[11px] font-black uppercase tracking-widest text-foreground focus:ring-2 focus:ring-[#c9a84c]/20 focus:border-[#c9a84c] focus:outline-none transition-all resize-none h-16 shadow-sm placeholder:text-subtle/30"
-                />
-              </div>
             </div>
-          )}
 
-          {progress?.is_completed && (
-            <div className="p-4 rounded-xl bg-[#c9a84c]/5 border border-[#c9a84c]/10 space-y-3">
-              <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-widest">
-                <span className="text-[#c9a84c]">Reflection Logged</span>
-                <span className="text-subtle">{new Date(progress.completed_at!).toLocaleDateString()}</span>
-              </div>
-              <div className="flex gap-6 py-3 border-y border-border-subtle">
-                <div>
-                   <p className="text-[7px] font-black text-subtle uppercase">Status</p>
-                   <p className="text-[10px] font-black text-foreground capitalize">{progress.feedback_status?.replace('_', ' ') || 'N/A'}</p>
-                </div>
-                <div>
-                   <p className="text-[7px] font-black text-subtle uppercase">Difficulty</p>
-                   <p className="text-[10px] font-black text-foreground capitalize">{progress.difficulty || 'N/A'}</p>
-                </div>
-              </div>
-              {progress.user_notes && (
-                <p className="text-[10px] font-black text-muted uppercase tracking-widest leading-relaxed">"{progress.user_notes}"</p>
-              )}
+            <div className="space-y-1">
+              <p className="text-[10px] text-muted font-medium">Self-Reflection / Quick Notes</p>
+              <textarea 
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Write observations, difficulty notes..."
+                className="w-full bg-background border border-border-subtle rounded-md p-2 text-xs text-foreground focus:ring-1 focus:ring-accent focus:outline-none resize-none h-12"
+              />
             </div>
-          )}
 
-          <button
-            onClick={() => onMarkComplete({ status: feedbackStatus, difficulty, notes })}
-            disabled={progress?.is_completed}
-            className={`w-full py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
-              progress?.is_completed ? 'bg-background border border-border-subtle text-[#c9a84c]' : 'bg-[#1e3a5f] text-[#c9a84c] hover:opacity-90 active:scale-[0.99] shadow-lg shadow-[#1e3a5f]/10'
-            }`}
-          >
-            {progress?.is_completed ? (
-              <><CheckCircle2 className="h-4 w-4" /> SECURED</>
-            ) : (
-              <><Check className="h-4 w-4" /> Mark Day Complete</>
-            )}
-          </button>
-          
-          <div className="space-y-3 pt-4 border-t border-border-subtle mt-4">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-black text-subtle uppercase tracking-widest">Primary Topic</span>
-                  <GenerateNotesButton 
-                    dayNumber={day.day_number}
-                    status={noteStatusMap.get(`${day.day_number}-${day.primary_topic}`)}
-                    isGeneratingLocal={generatingNotesForTopic === day.primary_topic}
-                    onGenerate={(force) => onGenerateNote(day, day.primary_topic, [], force)}
-                    onView={() => onViewNote(day.day_number, day.primary_topic)}
-                    isNotesLimitReached={isNotesLimitReached}
-                  />
-              </div>
-              
-              {day.secondary_topic && (
-                <div className="flex items-center justify-between pt-1 border-t border-border-subtle/50">
-                  <span className="text-[9px] font-black text-subtle uppercase tracking-widest line-clamp-1 flex-1 mr-4">{day.secondary_topic}</span>
-                  <GenerateNotesButton 
-                    dayNumber={day.day_number}
-                    status={noteStatusMap.get(`${day.day_number}-${day.secondary_topic}`)}
-                    isGeneratingLocal={generatingNotesForTopic === day.secondary_topic}
-                    onGenerate={(force) => onGenerateNote(day, day.secondary_topic!, [], force)}
-                    onView={() => onViewNote(day.day_number, day.secondary_topic!)}
-                    isNotesLimitReached={isNotesLimitReached}
-                  />
-                </div>
-              )}
-
-              {day.revision_topics && day.revision_topics.length > 0 && day.revision_topics.map((revTopic, idx) => (
-                <div key={idx} className="flex items-center justify-between pt-1 border-t border-border-subtle/50">
-                  <span className="text-[9px] font-black text-subtle uppercase tracking-widest line-clamp-1 flex-1 mr-4">Revision: {revTopic}</span>
-                  <GenerateNotesButton 
-                    dayNumber={day.day_number}
-                    status={noteStatusMap.get(`${day.day_number}-${revTopic}`)}
-                    isGeneratingLocal={generatingNotesForTopic === revTopic}
-                    onGenerate={(force) => onGenerateNote(day, revTopic, [], force)}
-                    onView={() => onViewNote(day.day_number, revTopic)}
-                    isNotesLimitReached={isNotesLimitReached}
-                  />
-                </div>
-              ))}
-            </div>
+            <button
+              onClick={() => onMarkComplete({ status: feedbackStatus, difficulty, notes })}
+              className="w-full py-2 rounded-lg font-semibold text-xs bg-primary text-accent hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+            >
+              <Check className="h-3 w-3" /> Mark Day Complete
+            </button>
           </div>
-        </div>
+        ) : (
+          <div className="p-3 rounded-lg bg-emerald-500/[0.02] border border-emerald-500/10 space-y-2">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-emerald-500 font-semibold flex items-center gap-1">
+                <CheckCircle2 className="h-4 w-4" /> Completed
+              </span>
+              <span className="text-muted">{new Date(progress.completed_at!).toLocaleDateString()}</span>
+            </div>
+            <div className="flex gap-4 py-1.5 border-y border-border-subtle/20 text-[10px]">
+              <div>
+                 <span className="text-muted">Status: </span>
+                 <span className="font-semibold text-foreground capitalize">{progress.feedback_status?.replace('_', ' ') || 'N/A'}</span>
+              </div>
+              <div>
+                 <span className="text-muted">Difficulty: </span>
+                 <span className="font-semibold text-foreground capitalize">{progress.difficulty || 'N/A'}</span>
+              </div>
+            </div>
+            {progress.user_notes && (
+              <p className="text-xs text-muted italic leading-relaxed">"{progress.user_notes}"</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -680,7 +656,9 @@ export default function StudyPlanPage() {
           subtopics: subtopicsToGen,
           date: day.date,
           force_generate: force,
-          language
+          language,
+          study_method: day.study_method,
+          study_tips: day.study_tips
         })
       });
       
@@ -753,7 +731,7 @@ export default function StudyPlanPage() {
         if (!aRes.ok) {
           const aData = await aRes.json().catch(() => ({}));
           if (aRes.status === 404) { 
-            toast.error('Mission Blocked', { description: 'Missing Syllabus! Upload your syllabus in Documents to proceed.' });
+            toast.error('Missing Syllabus', { description: 'Please upload your syllabus in Documents to proceed.' });
             router.push('/dashboard/documents');
           } else { 
             setErrorType('api'); 
@@ -789,7 +767,7 @@ export default function StudyPlanPage() {
       setGenStep(2);
       const planResult = pData;
       if (planResult && planResult.success && planResult.plan) {
-        toast.success('Roadmap Deployed', { description: 'Your tactical study plan is ready for action.' });
+        toast.success('Study plan created!', { description: 'Your personalized study schedule is ready.' });
           setPlan({
             id: planResult.id,
             plan_data: planResult.plan,
@@ -803,7 +781,7 @@ export default function StudyPlanPage() {
       await new Promise(r => setTimeout(r, 500));
     } catch (e: any) { 
       console.error('Generation flow error:', e);
-      toast.error('Engine Malfunction', { description: 'Roadmap generation failed. Our team has been notified.' });
+      toast.error('Something went wrong', { description: 'Study plan generation failed. Please try again.' });
       setErrorMsg('Unexpected error occurred during roadmap generation.'); 
     } finally { 
       setGenerating(false); 
@@ -878,18 +856,7 @@ export default function StudyPlanPage() {
   return (
     <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8 pb-12">
       {generating && <GenerationOverlay step={genStep} />}
-      {selectedDay && plan && <DayModal 
-        day={selectedDay} 
-        onClose={() => setSelectedDay(null)} 
-        progress={getProgressForDay(selectedDay.day_number)} 
-        onToggleSubtopic={s => toggleSubtopic(selectedDay, s)} 
-        onMarkComplete={f => markDayComplete(selectedDay, f)} 
-        noteStatusMap={noteStatusMap}
-        generatingNotesForTopic={generatingNotesForTopic}
-        onGenerateNote={(d, topic, subtopics, force) => handleGenerateNote(d, topic, subtopics, force)}
-        onViewNote={(day, topic) => router.push(`/dashboard/study-notes?day=${day}&topic=${encodeURIComponent(topic)}`)}
-        isNotesLimitReached={isNotesLimitReached}
-      />}
+
 
       <StudyPlanRegenModal
         isOpen={confirmRegen}
@@ -909,7 +876,7 @@ export default function StudyPlanPage() {
               <div className="h-12 w-12 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center mx-auto mb-2">
                 <AlertCircle className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-black text-foreground uppercase tracking-tighter">Missing Intel</h3>
+              <h3 className="text-xl font-black text-foreground uppercase tracking-tighter">Missing Notes</h3>
               <p className="text-[11px] font-medium text-subtle leading-relaxed">
                 We couldn&apos;t find any content for <strong className="text-foreground">{missingContentPrompt.topic}</strong> in your uploaded documents. 
                 Do you want to upload study materials for this topic, or force the AI to generate notes using its general knowledge?
@@ -918,7 +885,7 @@ export default function StudyPlanPage() {
             <div className="p-4 bg-background border-t border-border-subtle flex flex-col gap-3">
               <button
                 onClick={() => router.push('/dashboard/documents')}
-                className="w-full py-3 rounded-xl bg-[#1e3a5f] text-[#c9a84c] border border-[#1e3a5f] text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center gap-2"
+                className="w-full py-3 rounded-xl bg-primary text-accent border border-primary text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all flex justify-center items-center gap-2"
               >
                 <BookMarked className="h-4 w-4" /> Upload Study Materials
               </button>
@@ -930,229 +897,352 @@ export default function StudyPlanPage() {
                 }}
                 className="w-full py-3 rounded-xl bg-red-500/5 text-red-600 border border-red-500/20 text-[10px] font-black uppercase tracking-widest hover:bg-red-500/10 transition-all flex justify-center items-center gap-2"
               >
-                <Zap className="h-4 w-4" /> Force Generate with AI
+                <Zap className="h-4 w-4" /> Force Notes
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Header (Minimalist) */}
-      <div className="bg-surface p-6 rounded-2xl border border-border-subtle relative overflow-hidden group">
-         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-[80px] -mr-32 -mt-32" />
-         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
-            <div className="space-y-4">
-               <h1 className="text-3xl font-black text-foreground tracking-tighter leading-tight">
-                  STUDY <span className="text-[#c9a84c]">ROADMAP</span>
-               </h1>
-               <div className="flex flex-wrap gap-2 mb-6">
-                  {exams.map((e: Exam) => (
-                    <button 
-                      key={e.id} onClick={() => { setActiveExamId(e.id); setPlan(null); }} className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all min-h-[36px] shadow-sm ${activeExamId === e.id ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10' : 'bg-background border border-border-subtle text-subtle hover:text-foreground'}`}>
-                      {e.exam_name}
-                    </button>
-                  ))}
-               </div>
-            </div>
 
-            {planData && (
-              <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
-                  <div className="bg-background border border-border-subtle p-4 rounded-xl">
-                     <p className="text-[8px] font-black text-subtle uppercase tracking-widest mb-2">{t('timeline')}</p>
-                     <p className="text-2xl font-black text-foreground">{daysRem} <span className="text-[9px] text-subtle font-black uppercase tracking-widest ml-1">{t('days_left')}</span></p>
-                  </div>
-                 <div className="bg-background border border-border-subtle p-4 rounded-xl">
-                    <p className="text-[8px] font-black text-subtle uppercase tracking-widest mb-2">{t('milestones')}</p>
-                    <div className="flex items-end gap-2 mb-2">
-                       <p className="text-2xl font-black text-foreground leading-none">{completionPct}%</p>
-                    </div>
-                    <div className="h-1 bg-border-subtle rounded-full overflow-hidden"><div className="h-full bg-[#c9a84c]" style={{width: `${completionPct}%` }} /></div>
-                 </div>
+      {/* ── Header ──────────────────────────────────────────────── */}
+      <div className="space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">
+              Study Roadmap
+            </h1>
+            <p className="text-base text-muted mt-1">Your personalized daily study schedule</p>
+          </div>
+          {planData && (
+            <button 
+              onClick={() => setConfirmRegen(true)} 
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-muted border border-border-subtle rounded-xl hover:text-foreground hover:border-accent/30 transition-all"
+            >
+              <RefreshCw className="h-3.5 w-3.5" /> Regenerate Plan
+            </button>
+          )}
+        </div>
+
+        {/* Exam selector tabs */}
+        {exams.length > 0 && (
+          <div className="flex flex-wrap gap-3">
+            {exams.map((e: Exam) => (
+              <button 
+                key={e.id} 
+                onClick={() => { setActiveExamId(e.id); setPlan(null); }} 
+                className={`px-5 py-3 rounded-xl text-sm font-semibold transition-all border-2 ${
+                  activeExamId === e.id 
+                    ? 'bg-primary text-accent border-primary shadow-lg shadow-primary/15' 
+                    : 'bg-surface border-border-subtle text-foreground/70 hover:text-foreground hover:border-accent/30'
+                }`}
+              >
+                🎯 {e.exam_name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Stats pills */}
+        {planData && (
+          <div className="flex flex-wrap gap-3">
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-500/[0.06] border border-blue-500/15 rounded-xl">
+              <Calendar className="h-4 w-4 text-blue-500" />
+              <span className="text-sm font-semibold text-foreground">{daysRem}</span>
+              <span className="text-xs text-muted">days left</span>
+            </div>
+            <div className="flex items-center gap-3 px-4 py-2.5 bg-accent/[0.06] border border-accent/15 rounded-xl">
+              <TrendingUp className="h-4 w-4 text-accent" />
+              <span className="text-sm font-semibold text-foreground">{completionPct}%</span>
+              <div className="w-16 h-1.5 bg-border-subtle rounded-full overflow-hidden">
+                <div className="h-full bg-accent rounded-full transition-all" style={{width: `${completionPct}%`}} />
               </div>
-            )}
-         </div>
+              <span className="text-xs text-muted">complete</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/[0.06] border border-emerald-500/15 rounded-xl">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <span className="text-sm font-semibold text-foreground">{completedDays}/{totalStudyDays}</span>
+              <span className="text-xs text-muted">days done</span>
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* ── Content ─────────────────────────────────────────────── */}
       {!planData ? (
-        <div className="bg-surface p-12 rounded-2xl text-center border border-border-subtle shadow-sm">
-           <div className="h-12 w-12 rounded-lg bg-background border border-border-subtle flex items-center justify-center mx-auto mb-6">
-              <Sparkles className="h-5 w-5 text-accent" />
-           </div>
-           <h2 className="text-2xl font-black text-foreground tracking-tighter mb-3">AI ROADMAP GENERATION</h2>
-           <p className="text-xs text-subtle font-medium max-w-sm mx-auto mb-10 leading-relaxed">
-             Loksewa AI will analyze your syllabus and past performance to build a high-efficiency study timeline.
-           </p>
-           
-           {errorMsg && (
-             <div className="mb-8 p-4 rounded-xl bg-background border border-border-subtle text-subtle text-[10px] font-black max-w-md mx-auto flex flex-col items-center gap-2 shadow-sm">
-               <AlertTriangle className="h-4 w-4 text-[#c9a84c]" />
-               <p className="text-center uppercase tracking-widest">{errorMsg}</p>
-             </div>
-           )}
+        <div className="bg-surface rounded-2xl border border-border-subtle p-12 text-center">
+          <div className="h-14 w-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto mb-6">
+            <Sparkles className="h-6 w-6 text-accent" />
+          </div>
+          <h2 className="text-xl font-bold text-foreground mb-2">Get Started with Your Study Plan</h2>
+          <p className="text-sm text-muted max-w-md mx-auto mb-8 leading-relaxed">
+            Our AI will analyze your syllabus and create a personalized daily study schedule tailored to your exam timeline.
+          </p>
+          
+          {errorMsg && (
+            <div className="mb-6 p-4 rounded-xl bg-red-500/5 border border-red-500/15 text-sm text-red-600 max-w-md mx-auto flex items-center gap-3">
+              <AlertTriangle className="h-4 w-4 flex-shrink-0" />
+              <p>{errorMsg}</p>
+            </div>
+          )}
 
-            <button onClick={() => handleGenerate()} className="w-full sm:w-auto bg-[#1e3a5f] text-[#c9a84c] px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 min-h-[44px] shadow-xl shadow-[#1e3a5f]/10">
-              <Zap className="h-4 w-4" /> Build My Roadmap
-           </button>
+          <button 
+            onClick={() => handleGenerate()} 
+            className="bg-primary text-accent px-8 py-3.5 rounded-xl text-sm font-semibold hover:opacity-90 active:scale-[0.98] transition-all inline-flex items-center gap-2 shadow-lg shadow-primary/15"
+          >
+            <Sparkles className="h-4 w-4" /> Generate My Study Plan
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-           {/* Timeline */}
-           <div className="lg:col-span-8 space-y-6">
-              {todayPlan && (
-                <div className="bg-surface border border-border-subtle rounded-2xl p-6 shadow-sm relative overflow-hidden group">
-                   <div className="flex flex-col sm:flex-row justify-between items-start gap-5 relative z-10">
-                      <div className="flex-1 space-y-2.5">
-                         <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 bg-accent/10 text-accent text-[8px] font-black tracking-widest uppercase rounded">MISSION: DAY {todayPlan.day_number}</span>
-                            <span className="text-[8px] font-black text-subtle uppercase flex items-center gap-1 tracking-widest"><Flame className="h-2.5 w-2.5 text-accent" /> {todayPlan.estimated_hours}H Load</span>
-                         </div>
-                         <h2 className="text-3xl font-black text-foreground leading-tight tracking-tighter">{todayPlan.primary_topic}</h2>
-                      </div>
-                      <div className="w-full sm:w-32 space-y-2">
-                         <button onClick={() => setSelectedDay(todayPlan)} className="w-full py-2 text-[9px] font-black uppercase tracking-widest bg-background border border-border-subtle rounded-lg min-h-[40px] hover:bg-surface transition-all">Details</button>
-                         <button onClick={() => markDayComplete(todayPlan, { status: 'finished', difficulty: 'medium', notes: 'Quick complete' })} disabled={getProgressForDay(todayPlan.day_number)?.is_completed} className={`w-full py-2 text-[9px] font-black uppercase tracking-widest rounded-lg min-h-[40px] shadow-sm transition-all ${getProgressForDay(todayPlan.day_number)?.is_completed ? 'bg-[#c9a84c]/10 text-[#c9a84c]' : 'bg-[#1e3a5f] text-[#c9a84c] shadow-[#1e3a5f]/10'}`}>
-                            {getProgressForDay(todayPlan.day_number)?.is_completed ? 'SECURED' : 'COMPLETE'}
-                         </button>
-                         <div className="space-y-3 pt-2">
-                           <div className="flex items-center justify-between gap-4">
-                             <span className="text-[8px] font-black text-subtle uppercase truncate max-w-[100px]">{todayPlan.primary_topic}</span>
-                             <GenerateNotesButton 
-                                dayNumber={todayPlan.day_number}
-                                status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.primary_topic}`)}
-                                isGeneratingLocal={generatingNotesForTopic === todayPlan.primary_topic}
-                                onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.primary_topic, todayPlan.subtopics_to_cover, force)}
-                                onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.primary_topic)}`)}
-                                isNotesLimitReached={isNotesLimitReached}
-                             />
-                           </div>
-                           {todayPlan.secondary_topic && (
-                             <div className="flex items-center justify-between gap-4 pt-1 border-t border-border-subtle/30">
-                               <span className="text-[8px] font-black text-subtle uppercase truncate max-w-[100px]">{todayPlan.secondary_topic}</span>
-                               <GenerateNotesButton 
-                                  dayNumber={todayPlan.day_number}
-                                  status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.secondary_topic}`)}
-                                  isGeneratingLocal={generatingNotesForTopic === todayPlan.secondary_topic}
-                                  onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.secondary_topic!, [], force)}
-                                  onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.secondary_topic!)}`)}
-                                  isNotesLimitReached={isNotesLimitReached}
-                               />
-                             </div>
-                           )}
-                           
-                           {todayPlan.revision_topics && todayPlan.revision_topics.length > 0 && todayPlan.revision_topics.slice(0, 2).map((revTopic, idx) => (
-                             <div key={idx} className="flex items-center justify-between gap-4 pt-1 border-t border-border-subtle/30">
-                               <span className="text-[8px] font-black text-subtle uppercase truncate max-w-[100px]">Rev: {revTopic}</span>
-                               <GenerateNotesButton 
-                                  dayNumber={todayPlan.day_number}
-                                  status={noteStatusMap.get(`${todayPlan.day_number}-${revTopic}`)}
-                                  isGeneratingLocal={generatingNotesForTopic === revTopic}
-                                  onGenerate={(force) => handleGenerateNote(todayPlan, revTopic, [], force)}
-                                  onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(revTopic)}`)}
-                                  isNotesLimitReached={isNotesLimitReached}
-                               />
-                             </div>
-                           ))}
-                         </div>
-                      </div>
-                   </div>
-                </div>
-               )}
-
-               <div className="space-y-4">
-                  <div className="flex items-center justify-between px-2">
-                     <h3 className="text-[10px] font-black text-subtle uppercase tracking-widest">WEEKLY SCHEDULE</h3>
-                     <button onClick={() => setConfirmRegen(true)} className="text-[8px] font-black text-subtle hover:text-accent uppercase tracking-widest flex items-center gap-1.5 p-2"><RefreshCw className="h-2.5 w-2.5" /> Reset</button>
+        <div className="space-y-6">
+          {/* ── Today's Focus ──────────────────────────────────────── */}
+          {todayPlan && (() => {
+            const isTodayPlanExpanded = selectedDay?.day_number === todayPlan.day_number;
+            return (
+              <div className="rounded-2xl border-2 border-accent/20 bg-gradient-to-r from-accent/[0.04] to-transparent p-6 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-accent/5 rounded-full blur-[60px] -mr-20 -mt-20" />
+                <div className="relative z-10">
+                  <div className="flex flex-wrap items-center gap-3 mb-3">
+                    <div className="flex items-center gap-1.5 px-3.5 py-1 bg-accent/10 rounded-full">
+                      <Flame className="h-3.5 w-3.5 text-accent" />
+                      <span className="text-sm font-semibold text-accent">Today&apos;s Focus</span>
+                    </div>
+                    <span className="text-sm text-muted">Day {todayPlan.day_number}</span>
+                    <span className="text-sm text-muted">&middot; {todayPlan.estimated_hours}h study</span>
+                    {todayPlan.study_method && (
+                      <span className="px-2.5 py-0.5 bg-primary/10 text-primary border border-primary/15 rounded-md text-xs font-medium">{todayPlan.study_method}</span>
+                    )}
                   </div>
-                  <div className="space-y-3">
-                     {Object.entries(weeklyGroups).map(([wk, ds]) => {
-                        const weekNum = parseInt(wk);
-                        const open = expandedWeeks.has(weekNum);
-                        const target = planData.weekly_targets.find(w => w.week_number === weekNum);
-                        const done = ds.filter(d => getProgressForDay(d.day_number)?.is_completed).length;
+                  <h2 className="text-2xl font-bold text-foreground tracking-tight mb-1">{todayPlan.primary_topic}</h2>
+                  {todayPlan.secondary_topic && (
+                    <p className="text-base text-muted">{todayPlan.secondary_topic}</p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-3 mt-5">
+                    <button 
+                      onClick={() => setSelectedDay(isTodayPlanExpanded ? null : todayPlan)} 
+                      className="px-4 py-2 text-sm font-semibold bg-surface border border-border-subtle rounded-lg hover:bg-background transition-all"
+                    >
+                      {isTodayPlanExpanded ? 'Collapse' : 'View Details'}
+                    </button>
+                    <GenerateNotesButton 
+                      dayNumber={todayPlan.day_number}
+                      status={noteStatusMap.get(`${todayPlan.day_number}-${todayPlan.primary_topic}`)}
+                      isGeneratingLocal={generatingNotesForTopic === todayPlan.primary_topic}
+                      onGenerate={(force) => handleGenerateNote(todayPlan, todayPlan.primary_topic, todayPlan.subtopics_to_cover, force)}
+                      onView={() => router.push(`/dashboard/study-notes?day=${todayPlan.day_number}&topic=${encodeURIComponent(todayPlan.primary_topic)}`)}
+                      isNotesLimitReached={isNotesLimitReached}
+                    />
+                    <button 
+                      onClick={() => markDayComplete(todayPlan, { status: 'finished', difficulty: 'medium', notes: 'Quick complete' })} 
+                      disabled={getProgressForDay(todayPlan.day_number)?.is_completed}
+                      className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all inline-flex items-center gap-1.5 ${
+                        getProgressForDay(todayPlan.day_number)?.is_completed 
+                          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' 
+                          : 'bg-primary text-white hover:opacity-90'
+                      }`}
+                    >
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      {getProgressForDay(todayPlan.day_number)?.is_completed ? 'Completed' : 'Mark Done'}
+                    </button>
+                  </div>
+
+                  {/* Inline Expansion for Today's Focus */}
+                  {isTodayPlanExpanded && (
+                    <div className="mt-5">
+                      <DayDetailsContent
+                        day={todayPlan}
+                        progress={getProgressForDay(todayPlan.day_number)}
+                        onToggleSubtopic={s => toggleSubtopic(todayPlan, s)}
+                        onMarkComplete={f => markDayComplete(todayPlan, f)}
+                        noteStatusMap={noteStatusMap}
+                        generatingNotesForTopic={generatingNotesForTopic}
+                        onGenerateNote={(dayObj, topic, subtopics, force) => handleGenerateNote(dayObj, topic, subtopics, force)}
+                        onViewNote={(dayNum, topic) => router.push(`/dashboard/study-notes?day=${dayNum}&topic=${encodeURIComponent(topic)}`)}
+                        isNotesLimitReached={isNotesLimitReached}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ── Weekly Schedule ─────────────────────────────────────── */}
+          <div className="space-y-3">
+            <h3 className="text-base font-semibold text-foreground px-1">Weekly Schedule</h3>
+            {Object.entries(weeklyGroups).map(([wk, ds]) => {
+              const weekNum = parseInt(wk);
+              const open = expandedWeeks.has(weekNum);
+              const target = planData.weekly_targets.find((w: WeeklyTarget) => w.week_number === weekNum);
+              const done = ds.filter((d: DailyPlan) => getProgressForDay(d.day_number)?.is_completed).length;
+              return (
+                <div key={wk} className="rounded-xl border border-border-subtle overflow-hidden bg-surface">
+                  {/* Week header */}
+                  <button 
+                    onClick={() => toggleWeek(weekNum)} 
+                    className="w-full px-5 py-4 flex items-center justify-between hover:bg-background/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`h-9 w-9 rounded-full flex items-center justify-center text-base font-bold flex-shrink-0 transition-colors ${
+                        open ? 'bg-primary/10 text-primary' : 'bg-background border border-border-subtle text-muted'
+                      }`}>{wk}</div>
+                      <div className="text-left">
+                        <p className="text-base font-semibold text-foreground">Week {wk}</p>
+                        {target?.weekly_goal && (
+                          <p className="text-sm text-muted truncate max-w-[180px] sm:max-w-xs">{target.weekly_goal}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm text-muted font-medium hidden sm:block">{done}/{ds.length}</span>
+                      <div className="w-20 h-1.5 bg-border-subtle rounded-full overflow-hidden hidden sm:block">
+                        <div className="h-full bg-accent rounded-full transition-all duration-500" style={{width: `${ds.length > 0 ? (done / ds.length) * 100 : 0}%`}} />
+                      </div>
+                      <ChevronDown className={`h-4 w-4 text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+                    </div>
+                  </button>
+
+                  {/* Day rows */}
+                  {open && (
+                    <div className="border-t border-border-subtle/60">
+                      {ds.map((d: DailyPlan, idx: number) => {
+                        const cfg = DAY_TYPE_CONFIG[d.day_type] || DAY_TYPE_CONFIG.study;
+                        const fin = getProgressForDay(d.day_number)?.is_completed;
+                        const isT = d.date === todayStr;
+                        const isExpanded = selectedDay?.day_number === d.day_number;
+                        
+                        // Color scheme per day type
+                        let stripeColor = 'bg-blue-500';
+                        let badgeBg = 'bg-blue-500/10 text-blue-600 border-blue-500/20';
+                        let cardBg = 'bg-blue-500/[0.04] hover:bg-blue-500/[0.06] border-blue-500/10';
+                        
+                        if (d.day_type === 'revision') { 
+                          stripeColor = 'bg-amber-500'; 
+                          badgeBg = 'bg-amber-500/10 text-amber-600 border-amber-500/20'; 
+                          cardBg = 'bg-amber-500/[0.04] hover:bg-amber-500/[0.06] border-amber-500/10';
+                        }
+                        else if (d.day_type === 'mock_test') { 
+                          stripeColor = 'bg-purple-500'; 
+                          badgeBg = 'bg-purple-500/10 text-purple-600 border-purple-500/20'; 
+                          cardBg = 'bg-purple-500/[0.04] hover:bg-purple-500/[0.06] border-purple-500/10';
+                        }
+                        else if (d.day_type === 'rest') { 
+                          stripeColor = 'bg-zinc-400'; 
+                          badgeBg = 'bg-zinc-400/10 text-zinc-500 border-zinc-400/20'; 
+                          cardBg = 'bg-zinc-500/[0.04] hover:bg-zinc-500/[0.06] border-zinc-500/10';
+                        }
+                        
+                        if (fin) {
+                          stripeColor = 'bg-emerald-500';
+                          cardBg = 'bg-emerald-500/[0.04] hover:bg-emerald-500/[0.06] border-emerald-500/10';
+                        }
+                        if (isT) {
+                          stripeColor = 'bg-accent';
+                          cardBg = 'bg-accent/[0.06] hover:bg-accent/[0.08] border-accent/20';
+                        }
+
                         return (
-                          <div key={wk} className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
-                             <button onClick={() => toggleWeek(weekNum)} className="w-full p-3 flex items-center justify-between hover:bg-background transition-colors min-h-[56px]">
-                                <div className="flex items-center gap-4 flex-1">
-                                   <div className={`h-8 w-8 rounded-lg flex items-center justify-center font-black text-sm flex-shrink-0 ${open ? 'bg-[#1e3a5f] text-[#c9a84c] shadow-md shadow-[#1e3a5f]/20' : 'bg-background border border-border-subtle text-subtle'}`}>{wk}</div>
-                                   <div className="text-left"><h4 className="text-[10px] font-black uppercase tracking-widest">Week {wk}</h4><p className="text-[9px] text-subtle font-medium truncate max-w-[120px] sm:max-w-xs">{target?.weekly_goal}</p></div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                   <div className="w-16 h-1 bg-border-subtle rounded-full hidden sm:block"><div className="h-full bg-[#c9a84c]" style={{width: `${(done / ds.length) * 100}%` }} /></div>
-                                   <ChevronDown className={`h-4 w-4 text-subtle transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
-                                </div>
-                             </button>
-                             {open && (
-                                <div className="px-3 pb-4 grid grid-cols-2 lg:grid-cols-4 gap-2 animate-slide-in-top">
-                                   {ds.map(d => {
-                                      const cfg = DAY_TYPE_CONFIG[d.day_type] || DAY_TYPE_CONFIG.study;
-                                      const fin = getProgressForDay(d.day_number)?.is_completed;
-                                      const isT = d.date === todayStr;
-                                      return (
-                                        <div key={d.day_number} onClick={() => setSelectedDay(d)} className={`cursor-pointer p-3 rounded-xl border transition-all flex flex-col justify-between text-left h-auto min-h-[7rem] relative ${isT ? 'border-accent bg-background' : fin ? 'bg-background opacity-50' : 'bg-background border-border-subtle hover:border-accent/40'}`}>
-                                           <div className="flex justify-between items-start">
-                                              <div className="space-y-0.5"><p className="text-[8px] font-black text-subtle uppercase tracking-widest">{new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}</p><p className="text-xs font-black leading-none">Day {d.day_number}</p></div>
-                                              <cfg.icon className="h-3 w-3 text-subtle opacity-40" />
-                                           </div>
-                                           <p className="text-[10px] font-black uppercase leading-tight line-clamp-2 mt-2 mb-3">{d.primary_topic || cfg.label}</p>
-                                           <div className="mt-auto w-full space-y-1" onClick={e => e.stopPropagation()}>
-                                               <div className="flex gap-1">
-                                                  <div className={`h-1 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.primary_topic}`) === 'ready' ? 'bg-[#c9a84c]' : 'bg-border-subtle'}`} />
-                                                  {d.secondary_topic && (
-                                                    <div className={`h-1 flex-1 rounded-full ${noteStatusMap.get(`${d.day_number}-${d.secondary_topic}`) === 'ready' ? 'bg-[#c9a84c]' : 'bg-border-subtle'}`} />
-                                                  )}
-                                               </div>
-                                            </div>
-                                           {fin && <CheckCircle2 className="absolute top-1 right-1 h-3 w-3 text-[#c9a84c]" />}
-                                        </div>
-                                      );
-                                   })}
-                                </div>
-                             )}
+                          <div 
+                            key={d.day_number}
+                            className={`border-b border-border-subtle/40 last:border-0 transition-colors duration-200 ${
+                              isExpanded ? 'bg-surface/50' : ''
+                            }`}
+                          >
+                            {/* Main Day Header Card */}
+                            <div 
+                              onClick={() => setSelectedDay(isExpanded ? null : d)}
+                              className={`flex items-center gap-4 px-5 py-3.5 cursor-pointer transition-colors group ${cardBg}`}
+                            >
+                              {/* Color stripe */}
+                              <div className={`w-1 h-8 rounded-full flex-shrink-0 ${stripeColor}`} />
+                              
+                              {/* Day info */}
+                              <div className="w-20 flex-shrink-0">
+                                <p className="text-sm font-semibold text-foreground">Day {d.day_number}</p>
+                                <p className="text-xs text-muted">{new Date(d.date).toLocaleDateString(undefined, { weekday: 'short' })}</p>
+                              </div>
+                              
+                              {/* Type badge */}
+                              <span className={`px-2.5 py-1 rounded-md text-xs font-semibold border flex-shrink-0 hidden sm:inline-block ${badgeBg}`}>
+                                {cfg.label}
+                              </span>
+                              
+                              {/* Topic */}
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-base truncate font-semibold ${fin ? 'text-muted line-through' : 'text-foreground'}`}>
+                                  {d.primary_topic || cfg.label}
+                                </p>
+                                {d.subtopics_to_cover && d.subtopics_to_cover.length > 0 && (
+                                  <p className="text-xs text-muted/80 mt-0.5 truncate max-w-[200px] sm:max-w-lg">
+                                    📋 {d.subtopics_to_cover.join(', ')}
+                                  </p>
+                                )}
+                              </div>
+                              
+                              {/* Status indicators */}
+                              {isT && (
+                                <span className="px-2 py-0.5 bg-accent/10 text-accent text-xs font-semibold rounded-md flex-shrink-0">Today</span>
+                              )}
+                              {fin && !isT && (
+                                <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+                              )}
+                              
+                              {/* Actions */}
+                              <div className="flex items-center gap-2 flex-shrink-0 opacity-60 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+                                <button 
+                                  onClick={() => setSelectedDay(isExpanded ? null : d)} 
+                                  className="px-3 py-1.5 text-sm font-medium text-muted bg-background border border-border-subtle rounded-lg hover:text-foreground hover:border-accent/30 transition-all"
+                                >
+                                  {isExpanded ? 'Collapse' : 'Details'}
+                                </button>
+                                {!fin && d.day_type !== 'rest' && (
+                                  <button 
+                                    onClick={() => markDayComplete(d, { status: 'finished', difficulty: 'medium', notes: 'Quick complete' })} 
+                                    className="px-3 py-1.5 text-sm font-medium text-white bg-primary rounded-lg hover:opacity-90 transition-all"
+                                  >
+                                    Done
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Inline Expansion Drawer */}
+                            {isExpanded && (
+                              <div className="px-5 pb-5">
+                                <DayDetailsContent
+                                  day={d}
+                                  progress={getProgressForDay(d.day_number)}
+                                  onToggleSubtopic={s => toggleSubtopic(d, s)}
+                                  onMarkComplete={f => markDayComplete(d, f)}
+                                  noteStatusMap={noteStatusMap}
+                                  generatingNotesForTopic={generatingNotesForTopic}
+                                  onGenerateNote={(dayObj, topic, subtopics, force) => handleGenerateNote(dayObj, topic, subtopics, force)}
+                                  onViewNote={(dayNum, topic) => router.push(`/dashboard/study-notes?day=${dayNum}&topic=${encodeURIComponent(topic)}`)}
+                                  isNotesLimitReached={isNotesLimitReached}
+                                />
+                              </div>
+                            )}
                           </div>
                         );
-                     })}
-                  </div>
-               </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-4 space-y-4">
-               <div className="bg-surface border border-border-subtle rounded-2xl p-6 space-y-6 sticky top-24">
-                  <div className="space-y-4">
-                     <h2 className="text-[10px] font-black text-subtle tracking-widest flex items-center gap-2 uppercase">
-                        <Clock className="h-3.5 w-3.5 text-accent" /> Active Focus
-                     </h2>
-                     <p className="text-xs font-medium text-foreground bg-background p-4 rounded-lg border border-border-subtle leading-relaxed">
-                        {currentWeekTarget?.weekly_goal || 'Stay consistent with your targets.'}
-                     </p>
-                  </div>
-                  <div className="space-y-4">
-                     <h4 className="text-[9px] font-black text-subtle uppercase tracking-widest flex items-center gap-2"><Zap className="h-3 w-3 text-accent" /> Methodology</h4>
-                      <ul className="space-y-3">
-                         <li className="flex gap-3 items-center"><Sparkles className="h-4 w-4 text-[#c9a84c]" /><p className="text-[10px] font-black uppercase tracking-widest text-muted">Priority Weighting</p></li>
-                         <li className="flex gap-3 items-center"><BookMarked className="h-4 w-4 text-[#c9a84c]" /><p className="text-[10px] font-black uppercase tracking-widest text-muted">Spaced Repetition</p></li>
-                      </ul>
-                  </div>
-                  <div className="pt-4 border-t border-border-subtle">
-                      <div className="bg-[#1e3a5f] p-4 rounded-xl text-[#c9a84c] shadow-lg shadow-[#1e3a5f]/10">
-                         <p className="text-[9px] font-black uppercase tracking-widest mb-2 opacity-70">Phase Intensity</p>
-                         <p className="text-xl font-black italic">Deep Focus</p>
-                         <div className="mt-3 h-1 bg-background/20 rounded-full overflow-hidden"><div className="h-full bg-[#c9a84c] w-3/4 shadow-[0_0_8px_rgba(201,168,76,0.5)]" /></div>
-                      </div>
-                  </div>
-                  
-               </div>
-            </div>
-         </div>
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       )}
+
       {/* Contextual Guidance */}
       <TacticalPrompt 
         id="study_plan_analyze_tip"
         title="Create Your Study Plan"
-        message="Your study plan is empty. Click 'Analyze Syllabus' to generate a daily study schedule based on your uploaded documents."
+        message="Your study plan is empty. Click 'Generate My Study Plan' to create a daily study schedule based on your uploaded documents."
         type="tactical"
         delay={4000}
       />
+
     </div>
   );
 }

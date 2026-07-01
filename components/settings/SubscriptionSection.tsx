@@ -5,9 +5,9 @@ import { Loader2, AlertTriangle, Crown } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PLAN_COLORS: Record<string, string> = {
-  pro_monthly: 'text-[#c9a84c] bg-[#1e3a5f] border-[#c9a84c]/20',
-  pro_quarterly: 'text-[#c9a84c] bg-[#1e3a5f] border-[#c9a84c]/20',
-  cycle_pack: 'text-[#c9a84c] bg-[#1e3a5f] border-[#c9a84c]/20',
+  pro_monthly: 'text-accent bg-primary border-accent/20',
+  pro_quarterly: 'text-accent bg-primary border-accent/20',
+  cycle_pack: 'text-accent bg-primary border-accent/20',
 };
 
 const PLAN_NAMES: Record<string, string> = {
@@ -57,7 +57,7 @@ export function SubscriptionSection({ showUpgradeModal, dashboard }: any) {
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-subtle mb-1">Active Plan</p>
             <h3 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-2">
-              {isPro && <Crown className="h-5 w-5 text-[#c9a84c]" />}
+              {isPro && <Crown className="h-5 w-5 text-accent" />}
               {isPro ? PLAN_NAMES[sub.plan] || sub.plan : 'Free Tier'}
             </h3>
             {isPro && sub.expires_at && (
@@ -67,7 +67,7 @@ export function SubscriptionSection({ showUpgradeModal, dashboard }: any) {
                   <span className="text-foreground">{daysLeft} days remaining</span>
                 </div>
                 <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/5">
-                  <div className="h-full bg-[#c9a84c] rounded-full transition-all duration-500 shadow-sm" style={{ width: `${progress}%` }} />
+                  <div className="h-full bg-accent rounded-full transition-all duration-500 shadow-sm" style={{ width: `${progress}%` }} />
                 </div>
                 <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-1">Expires {new Date(sub.expires_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
               </div>
@@ -77,7 +77,7 @@ export function SubscriptionSection({ showUpgradeModal, dashboard }: any) {
             {hasPending ? (
               <span className="px-4 py-2.5 bg-background/50 border border-border-subtle text-subtle rounded-xl text-[10px] font-black uppercase tracking-widest cursor-not-allowed">Awaiting Verification</span>
             ) : (
-            <button onClick={() => showUpgradeModal()} className="px-6 py-2.5 bg-[#c9a84c] text-[#1e3a5f] rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#c9a84c]/10">
+            <button onClick={() => showUpgradeModal()} className="px-6 py-2.5 bg-accent text-primary rounded-xl text-[10px] font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-accent/10">
                 {isPro ? (daysLeft <= 7 ? 'Renew Mission' : 'Extend Mission') : 'Upgrade Mission'}
               </button>
             )}
@@ -86,7 +86,7 @@ export function SubscriptionSection({ showUpgradeModal, dashboard }: any) {
 
         {/* Warnings */}
         {isPro && daysLeft <= 7 && daysLeft > 3 && (
-          <div className="mt-4 flex items-center gap-2 px-4 py-2.5 bg-[#c9a84c]/10 border border-[#c9a84c]/20 rounded-xl text-[10px] font-black text-[#c9a84c] uppercase tracking-widest">
+          <div className="mt-4 flex items-center gap-2 px-4 py-2.5 bg-accent/10 border border-accent/20 rounded-xl text-[10px] font-black text-accent uppercase tracking-widest">
             <AlertTriangle className="h-4 w-4" /> Your plan expires in {daysLeft} days. Renew now.
           </div>
         )}
