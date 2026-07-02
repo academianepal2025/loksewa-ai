@@ -20,6 +20,7 @@ import {
   Sparkles,
   RefreshCw,
   ChevronLeft,
+  ChevronRight,
   ChevronDown
 } from 'lucide-react';
 
@@ -63,6 +64,9 @@ export default function StudyNotesPage() {
   // Expansion Mode
   const [expansionTopic, setExpansionTopic] = useState('');
   const [isExpanding, setIsExpanding] = useState(false);
+
+  // Sidebar collapse state
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
 
   useEffect(() => {
@@ -227,93 +231,113 @@ export default function StudyNotesPage() {
     <div className="flex flex-col h-[calc(100vh-2rem)] md:h-[calc(100vh-4rem)] bg-background">
       {/* Header */}
       <div className="flex-none p-5 border-b border-border-subtle/60 bg-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 z-10">
-        <div>
-          <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-accent" /> AI Study Notes
-          </h1>
-          <p className="text-xs font-semibold text-subtle mt-1 capitalize tracking-wide">Unified Tactical Intelligence</p>
+        <div className="flex items-center gap-3">
+          {activeNote && (
+            <button
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+              className="hidden md:flex items-center justify-center p-2 rounded-lg bg-background border border-border-subtle/80 hover:bg-accent/10 hover:border-accent/30 text-subtle hover:text-accent transition-all duration-200"
+              title={isSidebarCollapsed ? "Expand Notes List" : "Collapse Notes List"}
+            >
+              {isSidebarCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <ChevronLeft className="h-4 w-4" />
+              )}
+            </button>
+          )}
+          <div>
+            <h1 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+              <BookOpen className="h-6 w-6 text-accent" /> AI Study Notes
+            </h1>
+            <p className="text-xs font-semibold text-subtle mt-1 capitalize tracking-wide">Unified Tactical Intelligence</p>
+          </div>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Note List */}
-        <div className={`w-full md:w-80 border-r border-border-subtle/60 bg-surface/30 flex flex-col flex-none transition-all ${activeNote ? 'hidden md:flex' : 'flex'}`}>
-          <div className="p-4 border-b border-border-subtle/50 bg-surface sticky top-0 z-10 space-y-3">
-            {exams.length > 0 && (
-              <div className="relative w-full">
-                <select
-                  value={selectedExamId}
-                  onChange={(e) => setSelectedExamId(e.target.value)}
-                  className="w-full px-5 py-3.5 bg-primary text-accent border-2 border-accent/20 rounded-xl text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all appearance-none cursor-pointer shadow-md"
-                >
-                  <option value="all" className="bg-surface text-foreground">All Exams</option>
-                  {exams.map(ex => (
-                    <option key={ex.id} value={ex.id} className="bg-surface text-foreground">{ex.exam_name}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-accent pointer-events-none" />
+        <div className={`w-full bg-surface/30 flex flex-col flex-none overflow-hidden transition-all duration-300 ease-in-out ${
+          activeNote ? 'hidden md:flex' : 'flex'
+        } ${
+          isSidebarCollapsed ? 'md:w-0 md:opacity-0 md:pointer-events-none md:border-r-0' : 'md:w-80 border-r border-border-subtle/60'
+        }`}>
+          <div className="w-80 flex flex-col h-full flex-shrink-0">
+            <div className="p-4 border-b border-border-subtle/50 bg-surface sticky top-0 z-10 space-y-3">
+              {exams.length > 0 && (
+                <div className="relative w-full">
+                  <select
+                    value={selectedExamId}
+                    onChange={(e) => setSelectedExamId(e.target.value)}
+                    className="w-full px-5 py-3.5 bg-primary text-accent border-2 border-accent/20 rounded-xl text-xs font-bold uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all appearance-none cursor-pointer shadow-md"
+                  >
+                    <option value="all" className="bg-surface text-foreground">All Exams</option>
+                    {exams.map(ex => (
+                      <option key={ex.id} value={ex.id} className="bg-surface text-foreground">{ex.exam_name}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-accent pointer-events-none" />
+                </div>
+              )}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
+                <input
+                  type="text"
+                  placeholder="Search notes..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2.5 bg-background border border-border-subtle/80 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
+                />
               </div>
-            )}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
-              <input
-                type="text"
-                placeholder="Search notes..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 bg-background border border-border-subtle/80 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all"
-              />
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-3 space-y-6">
+              {Object.keys(groupedNotes).length === 0 ? (
+                <div className="text-center py-10 px-4">
+                  <FileText className="h-8 w-8 text-border-subtle/60 mx-auto mb-3" />
+                  <p className="text-sm font-bold text-subtle">No notes found.</p>
+                  <p className="text-[11px] text-muted mt-1">Generate them from your Study Plan.</p>
+                </div>
+              ) : (
+                Object.entries(groupedNotes).map(([week, weekNotes]) => (
+                  <div key={week} className="space-y-2">
+                    <h3 className="text-xs font-semibold text-subtle capitalize tracking-wide px-2 flex items-center gap-2">
+                      <Calendar className="h-3 w-3" /> Week {week}
+                    </h3>
+                    <div className="space-y-1">
+                      {weekNotes.map(note => (
+                        <button
+                          key={note.id}
+                          onClick={() => {
+                            setActiveNote(note);
+                            setEditContent(note.notes_content!.full_markdown);
+                            setIsEditing(false);
+                            if (window.innerWidth < 768) {
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                          }}
+                          className={`w-full text-left p-3 rounded-lg transition-all group ${
+                            activeNote?.id === note.id 
+                              ? 'bg-accent/10 border-accent/25' 
+                              : 'hover:bg-background border-transparent'
+                          } border`}
+                        >
+                          <div className="flex justify-between items-start">
+                            <span className="text-[10px] font-bold text-subtle bg-background px-1.5 py-0.5 rounded-md border border-border-subtle/80 tracking-wide capitalize">Day {note.day_number}</span>
+                            {note.notes_content?.has_pyq_content && (
+                              <span className="text-[9px] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded tracking-wider">PYQ INC</span>
+                            )}
+                          </div>
+                          <p className={`text-sm font-semibold mt-2 line-clamp-2 leading-tight tracking-tight ${activeNote?.id === note.id ? 'text-accent' : 'text-foreground'}`}>
+                            {note.topic}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
-          
-          <div className="flex-1 overflow-y-auto p-3 space-y-6">
-            {Object.keys(groupedNotes).length === 0 ? (
-              <div className="text-center py-10 px-4">
-                <FileText className="h-8 w-8 text-border-subtle/60 mx-auto mb-3" />
-                <p className="text-sm font-bold text-subtle">No notes found.</p>
-                <p className="text-[11px] text-muted mt-1">Generate them from your Study Plan.</p>
-              </div>
-            ) : (
-              Object.entries(groupedNotes).map(([week, weekNotes]) => (
-                <div key={week} className="space-y-2">
-                  <h3 className="text-xs font-semibold text-subtle capitalize tracking-wide px-2 flex items-center gap-2">
-                    <Calendar className="h-3 w-3" /> Week {week}
-                  </h3>
-                  <div className="space-y-1">
-                    {weekNotes.map(note => (
-                      <button
-                        key={note.id}
-                        onClick={() => {
-                          setActiveNote(note);
-                          setEditContent(note.notes_content!.full_markdown);
-                          setIsEditing(false);
-                          if (window.innerWidth < 768) {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }
-                        }}
-                        className={`w-full text-left p-3 rounded-lg transition-all group ${
-                          activeNote?.id === note.id 
-                            ? 'bg-accent/10 border-accent/25' 
-                            : 'hover:bg-background border-transparent'
-                        } border`}
-                      >
-                        <div className="flex justify-between items-start">
-                          <span className="text-[10px] font-bold text-subtle bg-background px-1.5 py-0.5 rounded-md border border-border-subtle/80 tracking-wide capitalize">Day {note.day_number}</span>
-                          {note.notes_content?.has_pyq_content && (
-                            <span className="text-[9px] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded tracking-wider">PYQ INC</span>
-                          )}
-                        </div>
-                        <p className={`text-sm font-semibold mt-2 line-clamp-2 leading-tight tracking-tight ${activeNote?.id === note.id ? 'text-accent' : 'text-foreground'}`}>
-                          {note.topic}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
         </div>
 
         {/* Right Content Area */}
