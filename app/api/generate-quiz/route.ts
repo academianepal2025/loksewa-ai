@@ -90,13 +90,14 @@ export async function POST(request: Request) {
       const { generateQueryEmbedding } = await import('@/lib/ai');
       const topicEmbedding = await generateQueryEmbedding(topic, { userId });
 
-      const { data: chunks, error: searchError } = await supabase.rpc(
-        'search_documents',
+       const { data: chunks, error: searchError } = await supabase.rpc(
+        'match_document_chunks',
         {
           query_embedding: topicEmbedding,
+          match_threshold: 0.35,
           match_count: 6,
-          filter_user_id: userId,
-          filter_exam_id: examId,
+          p_user_id: userId,
+          p_exam_id: examId,
         }
       );
 

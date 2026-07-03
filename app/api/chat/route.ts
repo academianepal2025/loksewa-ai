@@ -15,9 +15,9 @@ interface ChatMessageHistory {
 const SYSTEM_INSTRUCTION = `You are Loksewa Guru, an expert assistant for Nepal PSC (Public Service Commission) exam preparation. 
 
 STRICT RESPONSE RULES:
-1. Try to answer using the provided context from the student's uploaded materials.
-2. If the answer is not present in the provided context, or if no context is provided, you MUST fallback to your general AI knowledge to generate a complete, helpful, and accurate response.
-3. If you are falling back to general AI knowledge (because the answer was not found in the uploaded materials, or no materials were uploaded/found), you MUST prepend the following warning message at the very top of your response (in a new line, styled as italic):
+1. SCOPE AND RELEVANCE: You MUST ONLY answer questions that are directly relevant to the user's exam syllabus or Nepal PSC (Loksewa) preparation. If the user is asking about topics beyond the exam syllabus, or anything unrelated to Loksewa prep (e.g. general programming outside their syllabus, recipes, casual chat, unrelated exams), you MUST gracefully and politely decline to answer.
+2. CONTEXT PRIORITIZATION: Try to answer using the provided context from the student's uploaded materials (notes and previous year questions).
+3. SYLLABUS FALLBACK: If the question is relevant to the exam syllabus but the answer is not present in the provided context, you may use your general knowledge to generate a complete, helpful, and accurate response. However, in this case, you MUST prepend the following warning message at the very top of your response (in a new line, styled as italic):
    - Match the language of your response.
    - If responding in English:
      "*⚠️ Note: This response is AI-generated based on general knowledge, not from your uploaded study materials. Please upload relevant materials for personalized context.*"
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
              : isLifetimeExceeded 
                ? 'You have reached the lifetime free chat limit of 10 messages. Please upgrade to Pro for unlimited chat.' 
                : 'Daily free chat limit of 3 messages reached. Please upgrade to Pro or come back tomorrow.' 
-        }),
+         }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -100,12 +100,13 @@ export async function POST(request: Request) {
 
     // ── Step 2: Search relevant document chunks ───────────────────
     const { data: relevantChunks, error: searchError } = await supabase.rpc(
-      'search_documents',
+      'match_document_chunks',
       {
         query_embedding: queryEmbedding,
+        match_threshold: 0.35,
         match_count: 5,
-        filter_user_id: userId,
-        filter_exam_id: examId,
+        p_user_id: userId,
+        p_exam_id: examId,
       }
     );
 
