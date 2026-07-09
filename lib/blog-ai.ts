@@ -131,7 +131,6 @@ Return ONLY the raw JSON. Do not include markdown code fences or backticks.`;
       model: GENERATION_MODEL,
       config: {
         systemInstruction,
-        responseMimeType: 'application/json',
         temperature: 0.7,
         tools: [{ googleSearch: {} }] // Enable Google Search grounding for real data fetching
       },
@@ -139,7 +138,15 @@ Return ONLY the raw JSON. Do not include markdown code fences or backticks.`;
     });
 
     let text = response.text || '';
-    text = text.replace(/```json\n?/, '').replace(/\n?```/, '').trim();
+    
+    // Extract the JSON object from the response text
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      text = jsonMatch[0];
+    } else {
+      text = text.replace(/```json\n?/, '').replace(/\n?```/, '').trim();
+    }
+    
     return JSON.parse(text);
   } catch (error) {
     console.error('[AI Generation Error] Failed to generate blog post:', error);
