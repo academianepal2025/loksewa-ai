@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { ArrowRight, BookOpen, Clock, Calendar, Sparkles, GraduationCap } from "lucide-react";
 import { Metadata } from 'next';
+import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: "Loksewa AI Blog | PSC Exam Preparation Tips & AI Study Strategies",
@@ -36,7 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
-const blogPosts = [
+// Fallback static posts in case database is empty or connection fails
+const fallbackBlogPosts = [
   {
     title: "The Ultimate Guide to Loksewa AI: Mastering Every Feature",
     slug: "how-to-use-loksewa-ai",
@@ -45,7 +47,7 @@ const blogPosts = [
     author: "Loksewa AI Team",
     category: "Tutorial",
     readTime: "8 min read",
-    image: "/blog/guide.jpg",
+    image_url: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&auto=format&fit=crop",
     icon: Sparkles
   },
   {
@@ -56,7 +58,7 @@ const blogPosts = [
     author: "Education Specialist",
     category: "Strategy",
     readTime: "12 min read",
-    image: "/blog/prepare.jpg",
+    image_url: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop",
     icon: GraduationCap
   },
   {
@@ -67,28 +69,69 @@ const blogPosts = [
     author: "Career Coach",
     category: "Insights",
     readTime: "6 min read",
-    image: "/blog/mistakes.jpg",
+    image_url: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&auto=format&fit=crop",
     icon: Clock
   }
 ];
 
-export default function BlogPage() {
+const categoryIcons: Record<string, any> = {
+  Tutorial: Sparkles,
+  Strategy: GraduationCap,
+  Insights: Clock,
+  Vacancy: BookOpen,
+  News: Calendar
+};
+
+export default async function BlogPage() {
+  let dbPosts: any[] = [];
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('*')
+      .eq('is_published', true)
+      .order('published_at', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false });
+    dbPosts = data || [];
+  } catch (err) {
+    console.error('Failed to load blog posts from Supabase:', err);
+  }
+
+  // Format dynamic posts to match render shape
+  const activePosts = dbPosts.length > 0 
+    ? dbPosts.map(post => ({
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        date: new Date(post.published_at || post.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        }),
+        author: post.author,
+        category: post.category,
+        readTime: post.read_time,
+        image_url: post.image_url,
+        icon: categoryIcons[post.category] || BookOpen
+      }))
+    : fallbackBlogPosts;
+
   return (
-    <div className="light flex flex-col min-h-screen bg-background font-sans selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
+    <div className="flex flex-col min-h-screen bg-background text-foreground font-sans selection:bg-indigo-100 selection:text-indigo-900 scroll-smooth">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-gray-100">
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="h-10 w-10 bg-[#1e3a5f] rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
+              <div className="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-600/20">
                 <GraduationCap className="h-6 w-6 text-[#c9a84c]" />
               </div>
-              <span className="text-2xl font-black text-[#1e3a5f] tracking-tight">Loksewa <span className="text-[#c9a84c]">AI</span></span>
+              <span className="text-2xl font-black text-foreground tracking-tight">Loksewa <span className="text-[#c9a84c]">AI</span></span>
             </Link>
             <div className="hidden md:flex items-center space-x-10">
-              <Link href="/" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Home</Link>
-              <Link href="/#features" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Features</Link>
-              <Link href="/auth/signin" className="text-sm font-bold text-[#1e3a5f] hover:opacity-70 transition-all">Sign In</Link>
+              <Link href="/" className="text-sm font-bold text-subtle hover:text-foreground transition-all">Home</Link>
+              <Link href="/#features" className="text-sm font-bold text-subtle hover:text-foreground transition-all">Features</Link>
+              <Link href="/auth/signin" className="text-sm font-bold text-foreground hover:opacity-70 transition-all">Sign In</Link>
               <Link href="/auth/signup" className="px-7 py-3 text-sm font-black text-[#1e3a5f] bg-[#c9a84c] rounded-2xl hover:scale-105 transition-all shadow-xl shadow-[#c9a84c]/20 uppercase tracking-widest">
                 Get Started
               </Link>
@@ -99,15 +142,15 @@ export default function BlogPage() {
 
       <main className="flex-1 pb-28">
         {/* Hero Section */}
-        <section className="pt-20 pb-16 bg-gradient-to-b from-background to-gray-50/50">
+        <section className="pt-20 pb-16 bg-gradient-to-b from-background to-surface-elevated/50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-50 text-[#1e3a5f] text-[10px] font-black uppercase tracking-[0.2em] mb-6 border border-indigo-100">
+            <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6 border border-indigo-500/20">
               Preparation Intelligence
             </div>
-            <h1 className="text-5xl md:text-7xl font-black text-[#1e3a5f] tracking-tighter mb-6 uppercase">
+            <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tighter mb-6 uppercase">
               The <span className="text-[#c9a84c]">Loksewa</span> Blog
             </h1>
-            <p className="text-xl text-gray-500 max-w-2xl mx-auto font-medium leading-relaxed">
+            <p className="text-xl text-subtle max-w-2xl mx-auto font-medium leading-relaxed">
               Strategies, tutorials, and updates to help you dominate the Nepal PSC examinations.
             </p>
           </div>
@@ -116,24 +159,30 @@ export default function BlogPage() {
         {/* Blog Grid */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {blogPosts.map((post) => (
+            {activePosts.map((post) => (
               <Link key={post.slug} href={`/blog/${post.slug}`}>
-                <article className="group bg-white rounded-[3rem] border border-gray-100 overflow-hidden hover:border-[#c9a84c]/30 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl hover:shadow-[#1e3a5f]/5 h-full flex flex-col">
-                  <div className="aspect-[16/9] bg-gray-100 relative overflow-hidden flex items-center justify-center p-12">
-                     <div className="absolute inset-0 bg-[#1e3a5f] opacity-90 transition-opacity group-hover:opacity-100"></div>
-                     <post.icon className="h-32 w-32 text-[#c9a84c] relative z-10 transition-transform group-hover:scale-110" />
+                <article className="group bg-surface rounded-[3rem] border border-border-subtle overflow-hidden hover:border-[#c9a84c]/30 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 h-full flex flex-col">
+                  <div className="aspect-[16/9] bg-background/50 relative overflow-hidden flex items-center justify-center p-12">
+                     {post.image_url ? (
+                       <img src={post.image_url} alt={post.title} className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105" />
+                     ) : (
+                       <>
+                         <div className="absolute inset-0 bg-[#1e3a5f] opacity-90 transition-opacity group-hover:opacity-100"></div>
+                         <post.icon className="h-32 w-32 text-[#c9a84c] relative z-10 transition-transform group-hover:scale-110" />
+                       </>
+                     )}
                      <div className="absolute top-8 left-8">
                         <span className="px-4 py-1.5 bg-[#c9a84c] text-[#1e3a5f] text-[10px] font-black uppercase tracking-widest rounded-full">{post.category}</span>
                      </div>
                   </div>
                   <div className="p-10 flex-1 flex flex-col">
-                    <div className="flex items-center gap-6 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">
+                    <div className="flex items-center gap-6 text-[10px] font-black text-subtle uppercase tracking-widest mb-6">
                       <div className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5" /> {post.date}</div>
                       <div className="flex items-center gap-2"><Clock className="h-3.5 w-3.5" /> {post.readTime}</div>
                     </div>
-                    <h2 className="text-3xl font-black text-[#1e3a5f] mb-6 leading-tight group-hover:text-[#c9a84c] transition-colors">{post.title}</h2>
-                    <p className="text-gray-500 font-medium leading-relaxed mb-8 flex-1">{post.excerpt}</p>
-                    <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-[#1e3a5f] group-hover:gap-2 transition-all">
+                    <h2 className="text-3xl font-black text-foreground mb-6 leading-tight group-hover:text-[#c9a84c] transition-colors">{post.title}</h2>
+                    <p className="text-subtle font-medium leading-relaxed mb-8 flex-1">{post.excerpt}</p>
+                    <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-foreground group-hover:gap-2 transition-all">
                       Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
                     </div>
                   </div>

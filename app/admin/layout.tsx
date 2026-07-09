@@ -14,7 +14,8 @@ import {
   Bell,
   BarChart3,
   Sun,
-  Moon
+  Moon,
+  BookOpen
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -22,6 +23,7 @@ const navItems = [
   { label: 'Overview', href: '/admin', icon: LayoutDashboard },
   { label: 'Payments', href: '/admin/payments', icon: CreditCard },
   { label: 'Users', href: '/admin/users', icon: Users },
+  { label: 'Blogs', href: '/admin/blogs', icon: BookOpen },
   { label: 'Stats', href: '/admin/stats', icon: BarChart3 },
 ];
 
