@@ -3,6 +3,7 @@ import { LandingFooter } from "@/components/landing/LandingFooter";
 import { ArrowRight, BookOpen, Clock, Calendar, Sparkles, GraduationCap } from "lucide-react";
 import { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
+import { BlogContainer } from '@/components/landing/BlogContainer';
 
 export const metadata: Metadata = {
   title: "Loksewa AI Blog | PSC Exam Preparation Tips & AI Study Strategies",
@@ -155,41 +156,9 @@ export default async function BlogPage() {
             </p>
           </div>
         </section>
-
-        {/* Blog Grid */}
+        {/* Blog Content Section */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {activePosts.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`}>
-                <article className="group bg-surface rounded-[3rem] border border-border-subtle overflow-hidden hover:border-[#c9a84c]/30 transition-all hover:-translate-y-2 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5 h-full flex flex-col">
-                  <div className="aspect-[16/9] bg-background/50 relative overflow-hidden flex items-center justify-center p-12">
-                     {post.image_url ? (
-                       <img src={post.image_url} alt={post.title} className="absolute inset-0 h-full w-full object-cover transition-transform group-hover:scale-105" />
-                     ) : (
-                       <>
-                         <div className="absolute inset-0 bg-[#1e3a5f] opacity-90 transition-opacity group-hover:opacity-100"></div>
-                         <post.icon className="h-32 w-32 text-[#c9a84c] relative z-10 transition-transform group-hover:scale-110" />
-                       </>
-                     )}
-                     <div className="absolute top-8 left-8">
-                        <span className="px-4 py-1.5 bg-[#c9a84c] text-[#1e3a5f] text-[10px] font-black uppercase tracking-widest rounded-full">{post.category}</span>
-                     </div>
-                  </div>
-                  <div className="p-10 flex-1 flex flex-col">
-                    <div className="flex items-center gap-6 text-[10px] font-black text-subtle uppercase tracking-widest mb-6">
-                      <div className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5" /> {post.date}</div>
-                      <div className="flex items-center gap-2"><Clock className="h-3.5 w-3.5" /> {post.readTime}</div>
-                    </div>
-                    <h2 className="text-3xl font-black text-foreground mb-6 leading-tight group-hover:text-[#c9a84c] transition-colors">{post.title}</h2>
-                    <p className="text-subtle font-medium leading-relaxed mb-8 flex-1">{post.excerpt}</p>
-                    <div className="flex items-center text-[10px] font-black uppercase tracking-widest text-foreground group-hover:gap-2 transition-all">
-                      Read Full Article <ArrowRight className="ml-2 h-4 w-4" />
-                    </div>
-                  </div>
-                </article>
-              </Link>
-            ))}
-          </div>
+          <BlogContainer posts={activePosts} />
         </section>
 
         {/* Newsletter / CTA */}
