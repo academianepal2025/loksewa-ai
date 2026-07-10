@@ -48,8 +48,7 @@ const fallbackBlogPosts = [
     author: "Loksewa AI Team",
     category: "Tutorial",
     readTime: "8 min read",
-    image_url: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&auto=format&fit=crop",
-    icon: Sparkles
+    image_url: "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&auto=format&fit=crop"
   },
   {
     title: "How to Prepare for Loksewa Ayog Exams Using Artificial Intelligence",
@@ -59,8 +58,7 @@ const fallbackBlogPosts = [
     author: "Education Specialist",
     category: "Strategy",
     readTime: "12 min read",
-    image_url: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop",
-    icon: GraduationCap
+    image_url: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&auto=format&fit=crop"
   },
   {
     title: "5 Common Mistakes Loksewa Aspirants Make (And How AI Fixes Them)",
@@ -70,18 +68,9 @@ const fallbackBlogPosts = [
     author: "Career Coach",
     category: "Insights",
     readTime: "6 min read",
-    image_url: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&auto=format&fit=crop",
-    icon: Clock
+    image_url: "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800&auto=format&fit=crop"
   }
 ];
-
-const categoryIcons: Record<string, any> = {
-  Tutorial: Sparkles,
-  Strategy: GraduationCap,
-  Insights: Clock,
-  Vacancy: BookOpen,
-  News: Calendar
-};
 
 export default async function BlogPage() {
   let dbPosts: any[] = [];
@@ -112,8 +101,7 @@ export default async function BlogPage() {
         author: post.author,
         category: post.category,
         readTime: post.read_time,
-        image_url: post.image_url,
-        icon: categoryIcons[post.category] || BookOpen
+        image_url: post.image_url
       }))
     : fallbackBlogPosts;
 
