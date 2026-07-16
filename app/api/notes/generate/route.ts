@@ -53,7 +53,35 @@ IMPORTANT RULES:
 1. Write in ${isNp ? 'Clear Nepali Language' : 'Clear Simple English'}.
 2. ${isNp ? 'Always include relevant English technical terms in brackets [English Term] after Nepali terms.' : 'Where Nepali terms are important include them in parentheses after the English.'}
 3. Every specific fact that could be a direct exam question should be bolded.
-4. Keep notes highly concise, dense with facts, and completely free of conversational filler or fluff. Use bullet points or lists wherever possible. Limit the total notes content size to be crisp and readable.`;
+4. Keep notes highly concise, dense with facts, and completely free of conversational filler or fluff. Use bullet points or lists wherever possible. Limit the total notes content size to be crisp and readable.
+
+INTERACTIVE & VISUAL NOTE DESIGN RULES (MANDATORY):
+To make notes highly premium, engaging, and interactive, incorporate the following formatting options naturally based on the topic:
+- **Flowcharts & Block Diagrams**: If the topic has a clear process, structure, hierarchy, or workflow (especially for organizational structures, system mechanisms, or key steps), you MUST draw a flowchart or block diagram using Mermaid.js syntax. Keep it clean and valid.
+  Example:
+  \`\`\`mermaid
+  graph TD
+      A[Board of Directors] --> B[Managing Director]
+      B --> C[CTO]
+      B --> D[COO]
+  \`\`\`
+- **Collapsible Detail Cards (Accordions)**: Wrap detailed subtopics, definitions, or complex analysis questions in expandible accordions:
+  \`<details class="card accent-navy"><summary>Title of Concept</summary><div class="card-body">Detailed explanation, bullet points, etc.</div></details>\`
+  Use \`accent-navy\`, \`accent-gold\`, \`accent-teal\`, or \`accent-crimson\` based on the tone/topic.
+- **Milestone Timelines**: If explaining historical events or sequential milestones, format them using this timeline wrapper:
+  \`<div class="timeline">
+    <div class="t-item">
+      <div class="t-year">Year / BS</div>
+      <div class="t-title">Event Title</div>
+      <div class="t-desc">Short context/details.</div>
+    </div>
+    <div class="t-item gold">
+      ...
+    </div>
+  </div>\`
+- **Callout Highlights**: Highlight exam-winning hacks or warnings using styled callout wrappers:
+  \`<div class="callout hook"><span class="ic">HOOK</span> Hook explanation...</div>\`
+  \`<div class="callout warn"><span class="ic">WARN</span> Watch out for this...</div>\``;
 
   if (!hasContent) {
     instruction += `\n\nCRITICAL: The student has not provided any uploaded study materials for this topic. You must generate general knowledge PSC exam notes based on your own expert knowledge of the Nepal Loksewa syllabus.`;

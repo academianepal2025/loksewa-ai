@@ -278,3 +278,244 @@ html.font-scale-lg {
   color: #60a5fa !important;
 }
 
+/* ── Interactive Note Styling Elements ────────────────────────────── */
+:root {
+  --navy: #1B2A4A;
+  --navy-light: #2C4270;
+  --navy-pale: #E9EDF5;
+  --gold: #B8873D;
+  --gold-pale: #F5EBD8;
+  --paper: #F6F4EE;
+  --card: #FFFFFF;
+  --ink: #23262B;
+  --muted-text: #686C74;
+  --line: #E4E0D3;
+  --crimson: #A32D3A;
+  --crimson-pale: #F5E4E4;
+  --teal: #1F6F5C;
+  --teal-pale: #E1EEE8;
+}
+
+.dark {
+  --navy: #3b82f6;
+  --navy-light: #60a5fa;
+  --navy-pale: #1e293b;
+  --gold: #c9a84c;
+  --gold-pale: #2a2415;
+  --paper: #0f1724;
+  --card: #1a2332;
+  --ink: #e2e8f0;
+  --muted-text: #94a3b8;
+  --line: #2a3544;
+  --crimson: #ef4444;
+  --crimson-pale: #2c1a1d;
+  --teal: #10b981;
+  --teal-pale: #132a22;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  margin: 24px 0;
+  padding-left: 28px;
+}
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: linear-gradient(var(--navy), var(--gold));
+}
+.t-item {
+  position: relative;
+  padding-bottom: 22px;
+}
+.t-item:last-child {
+  padding-bottom: 0;
+}
+.t-item::before {
+  content: "";
+  position: absolute;
+  left: -28px;
+  top: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--navy);
+}
+.t-item.gold::before {
+  border-color: var(--gold);
+}
+.t-year {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.t-title {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: var(--foreground);
+}
+.t-desc {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Org Chart (tree structure) */
+.org-tier {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.org-node {
+  background: var(--navy-pale);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  text-align: center;
+  min-width: 95px;
+  color: var(--foreground);
+}
+.org-node b {
+  display: block;
+  font-size: 13.5px;
+  margin-bottom: 1px;
+  color: var(--primary);
+}
+.dark .org-node b {
+  color: #fff;
+}
+.org-node.field {
+  background: var(--teal-pale);
+}
+.org-connector {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin: 4px 0;
+}
+
+/* Callouts */
+.callout {
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+  margin: 18px 0;
+  display: flex;
+  gap: 12px;
+  border: 1px solid transparent;
+}
+.callout .ic {
+  font-family: monospace;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.callout.hook {
+  background: var(--gold-pale);
+  color: var(--foreground);
+  border-color: rgba(184, 135, 61, 0.25);
+}
+.callout.hook .ic {
+  color: var(--gold);
+}
+.callout.warn {
+  background: var(--crimson-pale);
+  color: var(--foreground);
+  border-color: rgba(163, 45, 58, 0.25);
+}
+.callout.warn .ic {
+  color: var(--crimson);
+}
+
+/* Accordion cards */
+details.card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+details.card summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 16px 20px;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: var(--foreground);
+  user-select: none;
+}
+details.card summary::-webkit-details-marker {
+  display: none;
+}
+details.card summary::after {
+  content: "▾";
+  font-family: monospace;
+  font-size: 14px;
+  color: var(--muted);
+  transition: transform 0.25s ease;
+}
+details[open].card summary::after {
+  transform: rotate(180deg);
+}
+details.card .card-body {
+  padding: 0 20px 20px;
+  font-size: 15px;
+  color: var(--foreground);
+  border-top: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+}
+
+.accent-navy {
+  border-left: 4px solid var(--navy) !important;
+}
+.accent-gold {
+  border-left: 4px solid var(--gold) !important;
+}
+.accent-teal {
+  border-left: 4px solid var(--teal) !important;
+}
+.accent-crimson {
+  border-left: 4px solid var(--crimson) !important;
+}
+
+/* Vault section */
+.vault {
+  background: var(--navy-pale);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 24px;
+  margin: 18px 0 24px;
+}
+.vault-tag {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.vault h3 {
+  font-size: 18px;
+  margin: 0 0 14px;
+  font-weight: 700;
+  color: var(--primary) !important;
+}
+.vault details.card {
+  background: var(--surface);
+}
+
+

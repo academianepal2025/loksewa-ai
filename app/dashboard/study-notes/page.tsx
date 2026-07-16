@@ -6,7 +6,84 @@ import { useDashboard } from '@/components/dashboard/DashboardProvider';
 
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import { useRef } from 'react';
 import { toast } from 'sonner';
+
+// Client-side Mermaid rendering component
+const Mermaid = ({ chart }: { chart: string }) => {
+  const [svg, setSvg] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const idRef = useRef(`mermaid-${Math.floor(Math.random() * 100000)}`);
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const initAndRender = async () => {
+      try {
+        const mermaidModule = await import('mermaid');
+        const mermaid = mermaidModule.default;
+        
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+          securityLevel: 'loose',
+          fontFamily: 'var(--font-sans)',
+          themeVariables: {
+            primaryColor: '#1e3a5f',
+            primaryTextColor: '#ffffff',
+            lineColor: '#c9a84c',
+          }
+        });
+
+        const { svg: renderedSvg } = await mermaid.render(idRef.current, chart.trim());
+        if (isMounted) {
+          setSvg(renderedSvg);
+        }
+      } catch (err) {
+        console.error('Mermaid render error:', err);
+        const badElement = document.getElementById(idRef.current);
+        if (badElement) {
+          badElement.remove();
+        }
+        if (isMounted) {
+          setError('Failed to render flowchart');
+        }
+      }
+    };
+
+    initAndRender();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [chart]);
+
+  if (error) {
+    return (
+      <div className="p-4 my-4 bg-red-500/10 border border-red-500/20 text-red-500 text-xs rounded-xl font-mono whitespace-pre overflow-x-auto">
+        ⚠️ {error}
+        <div className="mt-2 opacity-80">{chart}</div>
+      </div>
+    );
+  }
+
+  if (!svg) {
+    return (
+      <div className="flex items-center justify-center p-8 my-4 border border-border-subtle/50 rounded-xl bg-surface-elevated/40 animate-pulse">
+        <span className="text-xs text-subtle font-medium">Drawing diagram...</span>
+      </div>
+    );
+  }
+
+  return (
+    <div 
+      className="flex justify-center p-6 my-6 border border-border-subtle/60 rounded-xl bg-surface-elevated overflow-x-auto shadow-sm"
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
+};
+
 import {
   FileText,
   Search,
@@ -507,7 +584,26 @@ export default function StudyNotesPage() {
                     prose-table:text-foreground/90 prose-th:text-foreground
                     prose-hr:border-border-subtle"
                   >
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]}
+                      rehypePlugins={[rehypeRaw]}
+                      components={{
+                        code({ className, children, ...props }) {
+                          const match = /language-(\w+)/.exec(className || '');
+                          const isMermaid = match && match[1] === 'mermaid';
+                          
+                          if (isMermaid) {
+                            return <Mermaid chart={String(children).replace(/\n$/, '')} />;
+                          }
+                          
+                          return (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          );
+                        }
+                      }}
+                    >
                       {activeNote!.notes_content!.full_markdown}
                     </ReactMarkdown>
                   </div>
