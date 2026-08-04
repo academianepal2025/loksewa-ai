@@ -9,7 +9,7 @@ export default function BlogLayout({
     <>
       <Script
         async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6459284699461464"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4955309343592445"
         crossOrigin="anonymous"
         strategy="afterInteractive"
       />
