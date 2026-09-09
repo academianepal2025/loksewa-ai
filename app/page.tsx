@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, CheckCircle2, Globe, GraduationCap, ShieldCheck } from "lucide-react";
@@ -77,7 +78,17 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  if (params?.code) {
+    const code = Array.isArray(params.code) ? params.code[0] : params.code;
+    redirect(`/auth/callback?code=${code}`);
+  }
+
   const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();
 
