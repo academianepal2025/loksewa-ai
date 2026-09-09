@@ -164,11 +164,11 @@ Rules:
       }
     }
 
-    // 7. Clean extracted text: remove excessive whitespace, normalize line breaks
+    // 7. Clean and compress extracted text: normalize line breaks, remove duplicate spaces & excessive padding
     let cleanedText = extractedText
-      .replace(/[\t ]+/g, ' ') 
       .replace(/\r\n/g, '\n')
-      .replace(/\n{3,}/g, '\n\n')
+      .replace(/[\t ]+/g, ' ')
+      .replace(/\n\s*\n\s*\n+/g, '\n\n')
       .trim();
 
     console.log(`[DEBUG] Final cleaned text length: ${cleanedText.length}`);

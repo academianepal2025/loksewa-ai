@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateEmbedding } from '@/lib/ai';
 
-// Simple text chunker: 400 words max, 50 word overlap
+// Simple text chunker with compressed whitespace: 400 words max, 50 word overlap
 function createChunks(text: string, maxWords = 400, overlap = 50) {
-  const words = text.trim().split(/\s+/);
+  const compressedText = text.replace(/[\r\n]+/g, '\n').replace(/[ \t]+/g, ' ').trim();
+  const words = compressedText.split(/\s+/);
   const chunks: string[] = [];
   
   if (words.length === 0 || text === '') return chunks;
