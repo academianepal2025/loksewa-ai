@@ -47,5 +47,8 @@ scratch/
 scratch*.js
 fix-study-notes.js
 apply-trigger.js
+apply-master-rls.js
+test-api-rls.js
+
 
 
