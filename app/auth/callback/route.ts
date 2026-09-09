@@ -3,20 +3,25 @@ import { NextResponse } from 'next/server';
 import { getURL } from '@/lib/utils';
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get('code');
-  const type = requestUrl.searchParams.get('type');
+  const { searchParams } = new URL(request.url);
+  const code = searchParams.get('code');
+  const type = searchParams.get('type');
+  const next = searchParams.get('next') ?? '/dashboard';
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    
+    if (!error) {
+      if (type === 'recovery') {
+        return NextResponse.redirect(`${getURL()}auth/reset-password`);
+      }
+      const redirectPath = next.startsWith('/') ? next.slice(1) : next;
+      return NextResponse.redirect(`${getURL()}${redirectPath}`);
+    }
+    
+    console.error('Exchange code error:', error.message);
   }
 
-  // If this is a password recovery flow, redirect to the reset password page
-  if (type === 'recovery') {
-    return NextResponse.redirect(`${getURL()}auth/reset-password`);
-  }
-
-  // Default: redirect to dashboard after sign in
-  return NextResponse.redirect(`${getURL()}dashboard`);
+  return NextResponse.redirect(`${getURL()}auth/signin?error=oauth_callback_failed`);
 }

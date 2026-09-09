@@ -46,4 +46,6 @@ next-env.d.ts
 scratch/
 scratch*.js
 fix-study-notes.js
+apply-trigger.js
+
 
