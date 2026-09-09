@@ -32,7 +32,7 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
   const supabase = createClient();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [qrUrl, setQrUrl] = useState<string>('https://bgvezddpaxxqtaskueuw.supabase.co/storage/v1/object/public/system/esewa_qr.jpg');
+  const [qrUrl, setQrUrl] = useState<string>(`${process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://kzhysjqdwgoamatpmcwb.supabase.co'}/storage/v1/object/public/system/esewa_qr.jpg`);
   const [qrLoading, setQrLoading] = useState(true);
   const [formData, setFormData] = useState({
     fullName: '',
