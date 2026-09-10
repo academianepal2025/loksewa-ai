@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { LandingFooter } from "@/components/landing/LandingFooter";
+import { ShareArticleButton } from "@/components/landing/ShareArticleButton";
 import { ArrowLeft, Clock, Calendar, User, Share2, GraduationCap, Sparkles, BookOpen } from "lucide-react";
 import { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
@@ -318,6 +319,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                        <p className="text-sm font-bold text-foreground">{post.readTime}</p>
                     </div>
                  </div>
+                 <div className="ml-auto">
+                    <ShareArticleButton title={post.title} slug={slug} variant="icon" />
+                 </div>
               </div>
            </header>
 
@@ -345,9 +349,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <Link href="/blog" className="flex items-center gap-2 text-sm font-black text-foreground uppercase tracking-widest hover:text-[#c9a84c] transition-colors">
                  <ArrowLeft className="h-4 w-4" /> Other Articles
               </Link>
-              <button className="flex items-center gap-2 px-6 py-3 bg-surface border border-border-subtle rounded-2xl text-[10px] font-black text-subtle uppercase tracking-widest hover:bg-surface-elevated transition-all">
-                 <Share2 className="h-4 w-4" /> Share Article
-              </button>
+              <ShareArticleButton title={post.title} slug={slug} />
            </footer>
         </article>
       </main>
