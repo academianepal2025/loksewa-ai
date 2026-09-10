@@ -92,6 +92,15 @@ const faqs: FAQItem[] = [
         No. Loksewa AI does not use automatic subscription renewal. Your plan is active for the period you paid for and then returns to the free tier. To continue with a paid plan, you simply make a new payment and submit the confirmation screenshot. This means you are always in complete control of your spending.
       </span>
     )
+  },
+  {
+    question: "How does the Refer & Earn program work?",
+    rawAnswer: "You can find your unique referral code or link in your Dashboard Settings. When a friend signs up using your referral link, they receive a 15% discount on Pro plans at checkout. Once their payment is approved, your active Pro subscription is automatically extended by +7 days!",
+    answer: (
+      <span>
+        You can find your unique referral code or link in your <Link href="/dashboard/settings" className="text-indigo-600 hover:underline font-semibold">Dashboard Settings</Link> under <strong>Refer & Earn</strong>. When a friend signs up using your link, they receive an instant <strong>15% discount</strong> on Pro plans. Once their payment is verified, your Pro subscription is automatically extended by <strong>+7 days for free</strong>! There is no limit on how many friends you can refer.
+      </span>
+    )
   }
 ];
 

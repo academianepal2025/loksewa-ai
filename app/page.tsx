@@ -9,6 +9,7 @@ import { FAQ } from "@/components/landing/FAQ";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import { CompanionAppScreenshots } from "@/components/landing/CompanionAppScreenshots";
 import { HeroFeatureCards } from "@/components/landing/HeroFeatureCards";
+import { ReferralProgramSection } from "@/components/landing/ReferralProgramSection";
 import { Metadata } from "next";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/landing/ScrollReveal";
 
@@ -113,6 +114,7 @@ export default async function Home({
             </div>
             <div className="hidden md:flex items-center space-x-10">
               <Link href="#features" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Features</Link>
+              <Link href="#referral-program" className="text-sm font-bold text-[#c9a84c] hover:text-[#1e3a5f] transition-all flex items-center gap-1">Refer & Earn</Link>
               <Link href="#testimonials" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Testimonials</Link>
               <Link href="#pricing" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">Pricing</Link>
               <Link href="#faq" className="text-sm font-bold text-gray-500 hover:text-[#1e3a5f] transition-all">FAQ</Link>
@@ -387,6 +389,9 @@ export default async function Home({
             </div>
           </div>
         </section>
+
+        {/* Refer & Earn Program */}
+        <ReferralProgramSection />
 
         {/* Testimonials */}
         <ScrollReveal>

@@ -10,6 +10,10 @@ import { toast } from 'sonner';
 import { Sparkles, ArrowRight, Mail, Lock, User, Phone, Loader2 } from 'lucide-react';
 import { getURL } from '@/lib/utils';
 
+import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Gift } from 'lucide-react';
+
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
@@ -25,8 +29,10 @@ const signupSchema = z.object({
 
 type SignupValues = z.infer<typeof signupSchema>;
 
-export default function SignUp() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refParam = searchParams.get('ref') || searchParams.get('referral') || '';
   const supabase = createClient();
 
   const {
@@ -45,6 +51,7 @@ export default function SignUp() {
         data: {
           full_name: data.fullName,
           phone_number: data.phone || null,
+          referral_code: refParam ? refParam.trim().toUpperCase() : null,
         },
       },
     });
@@ -62,6 +69,7 @@ export default function SignUp() {
       provider: 'google',
       options: {
         redirectTo: `${getURL()}auth/callback`,
+        queryParams: refParam ? { referral_code: refParam.trim().toUpperCase() } : undefined,
       },
     });
 
@@ -84,6 +92,12 @@ export default function SignUp() {
             </div>
             <h1 className="text-3xl font-bold text-foreground tracking-tight">Join Loksewa AI</h1>
             <p className="text-xs text-muted">Start your study roadmap today</p>
+            {refParam && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-xs font-medium mt-2">
+                <Gift className="h-3.5 w-3.5" />
+                Referral code applied ({refParam.toUpperCase()})
+              </div>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -184,5 +198,13 @@ export default function SignUp() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-muted">Loading...</div>}>
+      <SignUpForm />
+    </Suspense>
   );
 }

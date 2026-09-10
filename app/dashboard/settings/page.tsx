@@ -18,10 +18,12 @@ import { PrivacyPolicySection } from '@/components/settings/PrivacyPolicySection
 import { DangerZoneSection } from '@/components/settings/DangerZoneSection';
 import { HelpSection } from '@/components/settings/HelpSection';
 
+import { ReferralWidget } from '@/components/dashboard/ReferralWidget';
+
 import {
   User, ShieldCheck, BookOpen, CreditCard, Bell,
   Settings2, Database, FileText, AlertTriangle,
-  HelpCircle
+  HelpCircle, Gift
 } from 'lucide-react';
 
 const SECTIONS = [
@@ -29,6 +31,7 @@ const SECTIONS = [
   { id: 'security', label: 'Account & Security', icon: ShieldCheck },
   { id: 'exams', label: 'My Exams', icon: BookOpen },
   { id: 'subscription', label: 'Subscription & Billing', icon: CreditCard },
+  { id: 'referral', label: 'Refer & Earn', icon: Gift },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'study-prefs', label: 'Study Preferences', icon: Settings2 },
   { id: 'data-privacy', label: 'Data & Privacy', icon: Database },
@@ -183,6 +186,9 @@ export default function SettingsPage() {
           </div>
           <div ref={el => { sectionRefs.current['subscription'] = el; }} id="subscription">
             <SubscriptionSection {...sharedProps} />
+          </div>
+          <div ref={el => { sectionRefs.current['referral'] = el; }} id="referral">
+            <ReferralWidget />
           </div>
           <div ref={el => { sectionRefs.current['notifications'] = el; }} id="notifications">
             <NotificationsSection {...sharedProps} />

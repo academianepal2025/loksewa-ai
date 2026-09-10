@@ -39,11 +39,16 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
     phone: '',
   });
   const [requestId, setRequestId] = useState<string | null>(null);
+  const [referralCodeInput, setReferralCodeInput] = useState('');
+  const [discountApplied, setDiscountApplied] = useState(false);
+  const [verifyingCode, setVerifyingCode] = useState(false);
+  const [referralMessage, setReferralMessage] = useState('');
 
   React.useEffect(() => {
     if (isOpen) {
-      const fetchQR = async () => {
+      const fetchQRAndReferral = async () => {
         try {
+          // Fetch QR
           const { data, error } = await supabase
             .from('app_settings')
             .select('value')
@@ -53,15 +58,56 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
           if (data?.value) {
             setQrUrl(`${data.value}?t=${Date.now()}`);
           }
+
+          // Auto-check if user was referred
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const { data: refRecord } = await supabase
+              .from('referrals')
+              .select('referral_code')
+              .eq('referee_id', user.id)
+              .maybeSingle();
+
+            if (refRecord?.referral_code) {
+              setReferralCodeInput(refRecord.referral_code);
+              setDiscountApplied(true);
+              setReferralMessage(`15% referral discount automatically applied (${refRecord.referral_code})`);
+            }
+          }
         } catch (err) {
-          console.error('Error fetching QR:', err);
+          console.error('Error fetching QR/referral:', err);
         } finally {
           setQrLoading(false);
         }
       };
-      fetchQR();
+      fetchQRAndReferral();
     }
   }, [isOpen, supabase]);
+
+  const verifyReferralCode = async () => {
+    const code = referralCodeInput.trim().toUpperCase();
+    if (!code) return;
+    setVerifyingCode(true);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('referral_code', code)
+        .maybeSingle();
+
+      if (data) {
+        setDiscountApplied(true);
+        setReferralMessage(`15% discount applied with referral code ${code}`);
+        toast.success('Referral Code Applied!', { description: '15% discount applied to plan.' });
+      } else {
+        toast.error('Invalid Referral Code', { description: 'Please check the code and try again.' });
+      }
+    } catch (err) {
+      toast.error('Error checking code');
+    } finally {
+      setVerifyingCode(false);
+    }
+  };
 
   if (!selectedPlan) return null;
 
@@ -163,82 +209,125 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
                </div>
 
                {/* STEP 1: QR & INSTRUCTIONS */}
-               {step === 1 && (
-                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div className="text-center">
-                       <h4 className="text-xl font-bold text-foreground mb-1">Complete Your Payment</h4>
-                       <p className="text-xs font-medium text-subtle">Plan: <span className="text-foreground font-bold">{selectedPlan.name}</span> • Amount: <span className="text-accent font-bold">NPR {selectedPlan.price}</span></p>
-                    </div>
+               {step === 1 && (() => {
+                 const basePrice = parseInt(selectedPlan.price.replace(/,/g, ''), 10) || 0;
+                 const finalPrice = discountApplied ? Math.round(basePrice * 0.85) : basePrice;
+                 return (
+                  <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                     <div className="text-center">
+                        <h4 className="text-xl font-bold text-foreground mb-1">Complete Your Payment</h4>
+                        <p className="text-xs font-medium text-subtle">
+                          Plan: <span className="text-foreground font-bold">{selectedPlan.name}</span> • Amount: {' '}
+                          {discountApplied ? (
+                            <span>
+                              <span className="line-through text-muted mr-1.5">NPR {selectedPlan.price}</span>
+                              <span className="text-emerald-500 font-bold">NPR {finalPrice} (15% OFF)</span>
+                            </span>
+                          ) : (
+                            <span className="text-accent font-bold">NPR {selectedPlan.price}</span>
+                          )}
+                        </p>
+                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Khalti Card */}
-                      <div className="flex flex-col items-center p-4 bg-white dark:bg-background border border-border-subtle rounded-2xl shadow-inner group/khalti relative overflow-hidden transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/[0.02]">
-                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-600" />
-                         <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-1.5">
-                           <Smartphone className="h-3.5 w-3.5" /> Khalti QR
-                         </span>
-                         {qrLoading ? (
-                           <div className="flex flex-col items-center justify-center h-40 w-40 bg-gray-100 dark:bg-surface/50 animate-pulse rounded-xl">
-                             <p className="text-[9px] font-black text-subtle uppercase animate-pulse">Loading...</p>
-                           </div>
-                         ) : (
-                           <div className="relative h-40 w-40">
-                              <img 
-                                src={qrUrl} 
-                                alt="Khalti Payment QR" 
-                                className="h-full w-full object-contain rounded-lg"
-                                onError={(e) => {
-                                  (e.target as any).src = "https://placehold.co/400x400/5c2d91/ffffff?text=KHALTI+QR";
-                                }}
-                              />
-                           </div>
-                         )}
-                         <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-3">Scan to Pay via Khalti</p>
-                      </div>
-
-                      {/* eSewa Card */}
-                      <div className="flex flex-col items-center p-4 bg-white dark:bg-background border border-border-subtle rounded-2xl shadow-inner group/esewa relative overflow-hidden transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/[0.02]">
-                         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600" />
-                         <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-1.5">
-                           <Smartphone className="h-3.5 w-3.5" /> eSewa QR
-                         </span>
-                         <div className="relative h-40 w-40">
-                            <img 
-                              src="/esewa_qr.jpg" 
-                              alt="eSewa Payment QR" 
-                              className="h-full w-full object-contain rounded-lg"
-                              onError={(e) => {
-                                (e.target as any).src = "https://placehold.co/400x400/60b524/ffffff?text=ESEWA+QR";
-                              }}
-                            />
-                         </div>
-                         <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-3">Scan to Pay via eSewa</p>
-                      </div>
-                    </div>
-
-                    <div className="p-5 bg-accent/[0.03] border border-accent/10 rounded-2xl space-y-4">
-                       <div className="flex items-start gap-3">
-                          <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
-                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Open <span className="font-bold">eSewa or Khalti</span> and scan either of the QR codes above.</p>
+                     {/* Referral Code Promo Input */}
+                     <div className="p-3 bg-background border border-border-subtle rounded-xl space-y-2">
+                       <div className="flex gap-2 items-center">
+                         <input
+                           type="text"
+                           placeholder="Have a referral code? (e.g. LOK-XXXXX)"
+                           className="flex-1 bg-surface border border-border-subtle px-3 py-2 rounded-lg text-xs font-medium uppercase outline-none focus:border-accent text-foreground"
+                           value={referralCodeInput}
+                           onChange={(e) => setReferralCodeInput(e.target.value)}
+                           disabled={discountApplied}
+                         />
+                         <button
+                           type="button"
+                           onClick={verifyReferralCode}
+                           disabled={discountApplied || verifyingCode || !referralCodeInput}
+                           className="px-3 py-2 bg-accent/10 border border-accent/20 text-accent font-bold text-xs rounded-lg hover:bg-accent/20 transition-all disabled:opacity-50"
+                         >
+                           {verifyingCode ? 'Checking...' : discountApplied ? 'Applied' : 'Apply'}
+                         </button>
                        </div>
-                       <div className="flex items-start gap-3">
-                          <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
-                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Pay exact amount <span className="font-bold text-accent">NPR {selectedPlan.price}</span>. In remarks, write your full name.</p>
-                       </div>
-                       <div className="flex items-start gap-3">
-                          <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
-                          <p className="text-xs font-medium text-foreground/80 leading-relaxed">Enter your details in the next step to notify our team.</p>
-                       </div>
-                    </div>
+                       {referralMessage && (
+                         <p className="text-[11px] font-semibold text-emerald-500 flex items-center gap-1">
+                           ✓ {referralMessage}
+                         </p>
+                       )}
+                     </div>
 
-                    <button 
-                      onClick={() => setStep(2)}
-                      className="w-full py-4 bg-primary text-accent rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-all min-h-[52px]"
-                    >
-                       I have paid, Next <ArrowRight className="h-4 w-4" />
-                    </button>
-                 </div>
-               )}
+                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                       {/* Khalti Card */}
+                       <div className="flex flex-col items-center p-4 bg-white dark:bg-background border border-border-subtle rounded-2xl shadow-inner group/khalti relative overflow-hidden transition-all duration-300 hover:border-purple-500/30 hover:shadow-lg hover:shadow-purple-500/[0.02]">
+                          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-600" />
+                          <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-1.5">
+                            <Smartphone className="h-3.5 w-3.5" /> Khalti QR
+                          </span>
+                          {qrLoading ? (
+                            <div className="flex flex-col items-center justify-center h-40 w-40 bg-gray-100 dark:bg-surface/50 animate-pulse rounded-xl">
+                              <p className="text-[9px] font-black text-subtle uppercase animate-pulse">Loading...</p>
+                            </div>
+                          ) : (
+                            <div className="relative h-40 w-40">
+                               <img 
+                                 src={qrUrl} 
+                                 alt="Khalti Payment QR" 
+                                 className="h-full w-full object-contain rounded-lg"
+                                 onError={(e) => {
+                                   (e.target as any).src = "https://placehold.co/400x400/5c2d91/ffffff?text=KHALTI+QR";
+                                 }}
+                               />
+                            </div>
+                          )}
+                          <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-3">Scan to Pay via Khalti</p>
+                       </div>
+
+                       {/* eSewa Card */}
+                       <div className="flex flex-col items-center p-4 bg-white dark:bg-background border border-border-subtle rounded-2xl shadow-inner group/esewa relative overflow-hidden transition-all duration-300 hover:border-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/[0.02]">
+                          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-green-600" />
+                          <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-1.5">
+                            <Smartphone className="h-3.5 w-3.5" /> eSewa QR
+                          </span>
+                          <div className="relative h-40 w-40">
+                             <img 
+                               src="/esewa_qr.jpg" 
+                               alt="eSewa Payment QR" 
+                               className="h-full w-full object-contain rounded-lg"
+                               onError={(e) => {
+                                 (e.target as any).src = "https://placehold.co/400x400/60b524/ffffff?text=ESEWA+QR";
+                               }}
+                             />
+                          </div>
+                          <p className="text-[9px] font-black text-subtle uppercase tracking-widest mt-3">Scan to Pay via eSewa</p>
+                       </div>
+                     </div>
+
+                     <div className="p-5 bg-accent/[0.03] border border-accent/10 rounded-2xl space-y-4">
+                        <div className="flex items-start gap-3">
+                           <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                           <p className="text-xs font-medium text-foreground/80 leading-relaxed">Open <span className="font-bold">eSewa or Khalti</span> and scan either of the QR codes above.</p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                           <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                           <p className="text-xs font-medium text-foreground/80 leading-relaxed">
+                             Pay amount <span className="font-bold text-accent">NPR {finalPrice}</span>. In remarks, write your full name.
+                           </p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                           <div className="h-5 w-5 rounded-full bg-primary text-accent flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                           <p className="text-xs font-medium text-foreground/80 leading-relaxed">Enter your details in the next step to notify our team.</p>
+                        </div>
+                     </div>
+
+                     <button 
+                       onClick={() => setStep(2)}
+                       className="w-full py-4 bg-primary text-accent rounded-2xl text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-all min-h-[52px]"
+                     >
+                        I have paid, Next <ArrowRight className="h-4 w-4" />
+                     </button>
+                  </div>
+                 );
+               })()}
 
                {/* STEP 2: FORM */}
                {step === 2 && (

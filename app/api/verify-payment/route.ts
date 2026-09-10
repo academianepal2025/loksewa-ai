@@ -107,7 +107,21 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Final status update failed: ${reqError.message}` }, { status: 500 });
       }
 
-      // 6. Send Approval Email
+      // 6. Trigger referral reward for referrer (if referee was invited)
+      try {
+        const { error: rpcError } = await supabaseAdmin.rpc('award_referral_bonus', {
+          p_referee_id: paymentRequest.user_id
+        });
+        if (rpcError) {
+          console.warn('[verify-payment] Referral bonus RPC warning:', rpcError);
+        } else {
+          console.log('[verify-payment] Referral bonus check completed for referee:', paymentRequest.user_id);
+        }
+      } catch (refErr) {
+        console.error('[verify-payment] Referral bonus error:', refErr);
+      }
+
+      // 7. Send Approval Email
       console.log('[verify-payment] Sending approval email...');
       sendPaymentApprovedEmail(
         paymentRequest.user_email,
