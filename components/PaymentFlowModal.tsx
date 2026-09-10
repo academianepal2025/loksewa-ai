@@ -89,19 +89,67 @@ export function PaymentFlowModal({ isOpen, onClose, selectedPlan }: PaymentFlowM
     if (!code) return;
     setVerifyingCode(true);
     try {
-      const { data, error } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Authentication Required', { description: 'Please sign in to apply a referral code.' });
+        return;
+      }
+
+      // 1. Check referrer profile exists
+      const { data: referrerProfile, error } = await supabase
         .from('profiles')
-        .select('id')
+        .select('id, referral_code')
         .eq('referral_code', code)
         .maybeSingle();
 
-      if (data) {
-        setDiscountApplied(true);
-        setReferralMessage(`15% discount applied with referral code ${code}`);
-        toast.success('Referral Code Applied!', { description: '15% discount applied to plan.' });
-      } else {
-        toast.error('Invalid Referral Code', { description: 'Please check the code and try again.' });
+      if (!referrerProfile) {
+        toast.error('Invalid Referral Code', { description: 'The referral code entered does not exist.' });
+        return;
       }
+
+      // 2. Prevent self-referral
+      if (referrerProfile.id === user.id) {
+        toast.error('Invalid Referral Code', { description: 'You cannot use your own referral code.' });
+        return;
+      }
+
+      // 3. Check if user is an existing user or newly registered
+      const { data: userProfile } = await supabase
+        .from('profiles')
+        .select('created_at')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      // Check if user has previous payments
+      const { data: existingPayments } = await supabase
+        .from('payment_requests')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('status', 'approved');
+
+      // Check if user was linked as referee at signup
+      const { data: refRecord } = await supabase
+        .from('referrals')
+        .select('id')
+        .eq('referee_id', user.id)
+        .maybeSingle();
+
+      const createdAt = userProfile?.created_at ? new Date(userProfile.created_at) : new Date(0);
+      const isNewUserWindow = (Date.now() - createdAt.getTime()) < (14 * 86400 * 1000); // 14 days
+      const hasNoPriorPayments = !existingPayments || existingPayments.length === 0;
+
+      // Eligible if linked as referee at signup OR (created within 14 days AND no prior payments)
+      if (!refRecord && (!isNewUserWindow || !hasNoPriorPayments)) {
+        toast.error('User Already Exists', { 
+          description: 'Referral discount is only valid for new users. Existing accounts cannot redeem referral codes.' 
+        });
+        return;
+      }
+
+      // Valid new user!
+      setDiscountApplied(true);
+      setReferralMessage(`15% discount applied with referral code ${code}`);
+      toast.success('Referral Code Applied!', { description: '15% discount applied for new user.' });
     } catch (err) {
       toast.error('Error checking code');
     } finally {

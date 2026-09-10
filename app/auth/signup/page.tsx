@@ -57,7 +57,13 @@ function SignUpForm() {
     });
 
     if (error) {
-      toast.error('Initialization Failed', { description: error.message });
+      if (error.message?.toLowerCase().includes('already') || error.message?.toLowerCase().includes('exist')) {
+        toast.error('User Already Exists', { 
+          description: 'This email is already registered. Referral discounts apply to new users only. Please sign in.' 
+        });
+      } else {
+        toast.error('Initialization Failed', { description: error.message });
+      }
     } else {
       toast.success('Account Initialized', { description: 'Please verify your email to activate your workspace.' });
       router.push('/onboarding');
