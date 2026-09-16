@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -10,30 +10,56 @@ import {
 import {
   TrendingUp, DollarSign, Users, MessageSquare,
   ClipboardList, BookOpen, Brain, FileText,
-  CheckCircle2, XCircle, Loader2, Cpu, Coins
+  CheckCircle2, XCircle, Loader2, Cpu, Coins,
+  RefreshCw, Activity
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
 
 export default function AdminStatsPage() {
   const [chartData, setChartData] = useState<any>(null);
   const [platformData, setPlatformData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+
+  const fetchStats = useCallback(async (isManual = false) => {
+    if (isManual) setRefreshing(true);
+    try {
+      const [chartsRes, platformRes] = await Promise.all([
+        fetch('/api/admin/stats?section=charts', { cache: 'no-store' }),
+        fetch('/api/admin/stats?section=platform', { cache: 'no-store' })
+      ]);
+
+      if (chartsRes.ok && platformRes.ok) {
+        const [charts, platform] = await Promise.all([chartsRes.json(), platformRes.json()]);
+        if (charts.success) setChartData(charts.data);
+        if (platform.success) setPlatformData(platform.data);
+        setLastRefreshed(new Date());
+        if (isManual) toast.success('Analytics refreshed');
+      } else {
+        if (isManual) toast.error('Failed to load updated stats');
+      }
+    } catch {
+      if (isManual) toast.error('Failed to refresh stats');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    Promise.all([
-      fetch('/api/admin/stats?section=charts').then(r => r.json()),
-      fetch('/api/admin/stats?section=platform').then(r => r.json())
-    ]).then(([charts, platform]) => {
-      if (charts.success) setChartData(charts.data);
-      if (platform.success) setPlatformData(platform.data);
-    }).catch(() => toast.error('Failed to load stats'))
-    .finally(() => setLoading(false));
-  }, []);
+    fetchStats();
+    // Real-time polling every 15 seconds
+    const interval = setInterval(() => fetchStats(false), 15000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1e3a5f]" />
+      <div className="flex flex-col items-center justify-center py-24 space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+        <p className="text-xs font-bold text-subtle uppercase tracking-widest">Loading Live Platform Analytics...</p>
       </div>
     );
   }
@@ -52,9 +78,30 @@ export default function AdminStatsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-black text-foreground tracking-tighter uppercase">Platform Analytics</h1>
-        <p className="text-[10px] text-subtle mt-1 uppercase tracking-widest font-black">Comprehensive Mission Statistics</p>
+      {/* Header with Live Sync Status & Refresh */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-black text-foreground tracking-tighter uppercase">Platform Analytics</h1>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Live Sync (15s)
+            </span>
+          </div>
+          <p className="text-[10px] text-subtle mt-1 uppercase tracking-widest font-black">
+            Comprehensive Real-Time System Metrics • Last updated: {format(lastRefreshed, 'HH:mm:ss')}
+          </p>
+        </div>
+        <button
+          onClick={() => fetchStats(true)}
+          disabled={refreshing}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/20 disabled:opacity-50 w-fit"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} /> Refresh Metrics
+        </button>
       </div>
 
       {/* KPI Row */}

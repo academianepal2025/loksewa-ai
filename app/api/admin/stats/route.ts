@@ -143,12 +143,12 @@ async function getChartData(supabaseAdmin: any) {
       .select('created_at')
       .gte('created_at', thirtyDaysAgo.toISOString())
       .order('created_at', { ascending: true }),
-    // Approved payments in last 30 days
+    // Approved payments in last 30 days (support approved or manually_granted and fallback to created_at)
     supabaseAdmin.from('payment_requests')
-      .select('plan_amount, reviewed_at')
-      .eq('status', 'approved')
-      .gte('reviewed_at', thirtyDaysAgo.toISOString())
-      .order('reviewed_at', { ascending: true })
+      .select('plan_amount, reviewed_at, created_at')
+      .in('status', ['approved', 'manually_granted'])
+      .gte('created_at', thirtyDaysAgo.toISOString())
+      .order('created_at', { ascending: true })
   ]);
 
   // Group signups by day
@@ -161,8 +161,9 @@ async function getChartData(supabaseAdmin: any) {
   // Group revenue by day
   const revenueByDay: Record<string, number> = {};
   (revenueRes.data || []).forEach((p: any) => {
-    if (p.reviewed_at) {
-      const day = p.reviewed_at.split('T')[0];
+    const dateStr = p.reviewed_at || p.created_at;
+    if (dateStr) {
+      const day = dateStr.split('T')[0];
       revenueByDay[day] = (revenueByDay[day] || 0) + (p.plan_amount || 0);
     }
   });
@@ -185,6 +186,8 @@ async function getChartData(supabaseAdmin: any) {
 }
 
 async function getPlatformStats(supabaseAdmin: any) {
+  const thirtyDaysAgoIso = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
   const [
     freeUsersRes,
     proMonthlyRes,
@@ -199,7 +202,12 @@ async function getPlatformStats(supabaseAdmin: any) {
     docsFailedRes,
     aiCostRes,
     dauRes,
-    mauRes
+    mauRes,
+    recentChatsRes,
+    recentQuizzesRes,
+    recentDocsRes,
+    recentProfilesRes,
+    recentPaymentsRes
   ] = await Promise.all([
     // Free = profiles not in active subscriptions
     supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }),
@@ -235,10 +243,16 @@ async function getPlatformStats(supabaseAdmin: any) {
       .select('cost_estimate, feature, input_tokens, output_tokens, model, created_at, user_id')
       .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
       .order('created_at', { ascending: false }),
-    // DAU (Today)
+    // DAU (Today from activity logs)
     supabaseAdmin.from('activity_logs').select('user_id', { head: false }).eq('activity_date', new Date().toISOString().split('T')[0]),
-    // MAU (Last 30 Days)
-    supabaseAdmin.from('activity_logs').select('user_id', { head: false }).gte('activity_date', new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0])
+    // MAU (Last 30 Days from activity logs)
+    supabaseAdmin.from('activity_logs').select('user_id', { head: false }).gte('activity_date', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]),
+    // Recent platform activities (last 30 days) to accurately calculate real-time DAU and MAU
+    supabaseAdmin.from('chat_messages').select('user_id, created_at').gte('created_at', thirtyDaysAgoIso),
+    supabaseAdmin.from('quiz_attempts').select('user_id, created_at').gte('created_at', thirtyDaysAgoIso),
+    supabaseAdmin.from('documents').select('user_id, created_at').gte('created_at', thirtyDaysAgoIso),
+    supabaseAdmin.from('profiles').select('id, created_at').gte('created_at', thirtyDaysAgoIso),
+    supabaseAdmin.from('payment_requests').select('user_id, created_at').gte('created_at', thirtyDaysAgoIso)
   ]);
 
   const totalPaid = (proMonthlyRes.count || 0) + (proQuarterlyRes.count || 0) + (cyclePackRes.count || 0);
@@ -355,9 +369,34 @@ async function getPlatformStats(supabaseAdmin: any) {
     });
   }
 
-  // Calculate unique DAU and MAU
-  const uniqueDAU = new Set(dauRes?.data?.map((l: any) => l.user_id) || []).size;
-  const uniqueMAU = new Set(mauRes?.data?.map((l: any) => l.user_id) || []).size;
+  // Calculate unique DAU and MAU across activity logs and live platform interactions
+  const todayStr = new Date().toISOString().split('T')[0];
+  const mauSet = new Set<string>();
+  const dauSet = new Set<string>();
+
+  (dauRes?.data || []).forEach((l: any) => l.user_id && dauSet.add(l.user_id));
+  (mauRes?.data || []).forEach((l: any) => l.user_id && mauSet.add(l.user_id));
+
+  const addActiveEvents = (list: any[], idKey = 'user_id') => {
+    (list || []).forEach((item: any) => {
+      const uid = item[idKey];
+      if (uid) {
+        mauSet.add(uid);
+        if (item.created_at && item.created_at.startsWith(todayStr)) {
+          dauSet.add(uid);
+        }
+      }
+    });
+  };
+
+  addActiveEvents(recentChatsRes?.data);
+  addActiveEvents(recentQuizzesRes?.data);
+  addActiveEvents(recentDocsRes?.data);
+  addActiveEvents(recentProfilesRes?.data, 'id');
+  addActiveEvents(recentPaymentsRes?.data);
+
+  const uniqueDAU = dauSet.size;
+  const uniqueMAU = mauSet.size;
 
   // Top active users: sum documents, chats, quizzes, notes per user
   const { data: topUsers } = await supabaseAdmin
