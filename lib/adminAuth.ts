@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
 
 /**
@@ -9,21 +10,16 @@ import { NextResponse } from 'next/server';
 export async function verifyAdmin() {
   try {
     const supabase = await createClient();
-    console.log('[adminAuth] Step 1: Checking session...');
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
-    if (authError) {
-      console.error('[adminAuth] Auth error:', authError);
+    if (authError || !user) {
+      if (authError) console.error('[adminAuth] Auth error:', authError);
       return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), user: null, supabase };
     }
     
-    if (!user) {
-      console.warn('[adminAuth] No user found in session');
-      return { error: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }), user: null, supabase };
-    }
-    
-    console.log('[adminAuth] Step 2: Checking profile for user:', user.id);
-    const { data: profile, error: profileError } = await supabase
+    // Check is_admin using admin service client so RLS rules on profiles do not block reading
+    const supabaseAdmin = createAdminClient();
+    const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('is_admin')
       .eq('id', user.id)
@@ -44,7 +40,6 @@ export async function verifyAdmin() {
       return { error: NextResponse.json({ error: 'Access denied: Admin privileges required' }, { status: 403 }), user: null, supabase };
     }
 
-    console.log('[adminAuth] Admin verified successfully');
     return { error: null, user, supabase };
   } catch (err: any) {
     console.error('[adminAuth] UNEXPECTED ERROR:', err);

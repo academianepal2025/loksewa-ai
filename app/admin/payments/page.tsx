@@ -62,32 +62,35 @@ export default function AdminPaymentsPage() {
 
   const fetchRequests = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('payment_requests')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) { toast.error('Failed to fetch'); }
-    else {
-      setRequests(data || []);
-      // Calculate stats
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const s = { total: data?.length || 0, pending: 0, approved: 0, rejected: 0, monthRevenue: 0 };
-      data?.forEach((r: any) => {
-        if (r.status === 'pending') s.pending++;
-        else if (r.status === 'approved') {
-          s.approved++;
-          if (r.reviewed_at && new Date(r.reviewed_at) >= monthStart) {
-            s.monthRevenue += r.plan_amount || 0;
-          }
-        }
-        else if (r.status === 'rejected') s.rejected++;
+    try {
+      const params = new URLSearchParams({
+        tab: activeTab,
+        dateFrom,
+        dateTo,
+        page: page.toString(),
+        limit: rowsPerPage.toString()
       });
-      setStats(s);
+      const res = await fetch(`/api/admin/payments?${params}`, { cache: 'no-store' });
+      if (!res.ok) {
+        toast.error('Failed to fetch payment requests');
+        return;
+      }
+      const json = await res.json();
+      if (json.success) {
+        setRequests(json.data.requests || []);
+        if (json.data.stats) {
+          setStats(json.data.stats);
+        }
+      } else {
+        toast.error(json.error || 'Failed to fetch payment requests');
+      }
+    } catch (e) {
+      console.error('[admin/payments] Fetch error:', e);
+      toast.error('Failed to fetch payment requests');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [supabase]);
+  }, [activeTab, dateFrom, dateTo, page, rowsPerPage]);
 
   useEffect(() => { fetchRequests(); }, [fetchRequests]);
 

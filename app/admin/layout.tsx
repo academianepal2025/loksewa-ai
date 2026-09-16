@@ -36,6 +36,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [pendingCount, setPendingCount] = useState(0);
   const [mounted, setMounted] = useState(false);
 
+  const fetchPendingCount = async () => {
+    try {
+      const res = await fetch('/api/admin/pending-count', { cache: 'no-store' });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) setPendingCount(json.count);
+      }
+    } catch { /* silent */ }
+  };
+
   useEffect(() => {
     setMounted(true);
     async function checkAdmin() {
@@ -50,15 +60,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       if (!profile?.is_admin) { router.push('/dashboard'); return; }
 
-      const { count } = await supabase
-        .from('payment_requests')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
-
-      setPendingCount(count || 0);
+      await fetchPendingCount();
       setLoading(false);
     }
     checkAdmin();
+
+    const interval = setInterval(fetchPendingCount, 15000);
+    return () => clearInterval(interval);
   }, [supabase, router]);
 
   if (loading) return (
