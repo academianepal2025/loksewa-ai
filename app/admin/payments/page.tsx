@@ -71,11 +71,13 @@ export default function AdminPaymentsPage() {
         limit: rowsPerPage.toString()
       });
       const res = await fetch(`/api/admin/payments?${params}`, { cache: 'no-store' });
+      const json = await res.json().catch(() => ({}));
+      
       if (!res.ok) {
-        toast.error('Failed to fetch payment requests');
+        console.error(`[admin/payments] API error status ${res.status}:`, json);
+        toast.error(json.error || `Failed to fetch payment requests (${res.status})`);
         return;
       }
-      const json = await res.json();
       if (json.success) {
         setRequests(json.data.requests || []);
         if (json.data.stats) {
@@ -84,7 +86,7 @@ export default function AdminPaymentsPage() {
       } else {
         toast.error(json.error || 'Failed to fetch payment requests');
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error('[admin/payments] Fetch error:', e);
       toast.error('Failed to fetch payment requests');
     } finally {
