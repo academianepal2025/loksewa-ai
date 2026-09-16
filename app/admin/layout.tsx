@@ -56,9 +56,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         .from('profiles')
         .select('is_admin')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (!profile?.is_admin) { router.push('/dashboard'); return; }
+      if (!profile?.is_admin) {
+        // Double check via server verifyAdmin to ensure client RLS didn't hide profile
+        const verifyRes = await fetch('/api/admin/pending-count', { cache: 'no-store' });
+        if (!verifyRes.ok) {
+          router.push('/dashboard');
+          return;
+        }
+      }
 
       await fetchPendingCount();
       setLoading(false);

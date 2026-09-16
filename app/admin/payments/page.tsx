@@ -94,25 +94,29 @@ export default function AdminPaymentsPage() {
     }
   }, [activeTab, dateFrom, dateTo, page, rowsPerPage]);
 
-  useEffect(() => { fetchRequests(); }, [fetchRequests]);
+  useEffect(() => {
+    fetchRequests();
+    const interval = setInterval(fetchRequests, 10000);
+    return () => clearInterval(interval);
+  }, [fetchRequests]);
 
   // Realtime subscription
   useEffect(() => {
     const channel = supabase
       .channel('admin-payments-realtime')
       .on('postgres_changes', {
-        event: 'INSERT',
+        event: '*',
         schema: 'public',
         table: 'payment_requests'
       }, (payload: any) => {
-        const newReq = payload.new as PaymentRequest;
-        setRequests(prev => [newReq, ...prev]);
-        setStats(prev => ({ ...prev, total: prev.total + 1, pending: prev.pending + 1 }));
-        toast.info('New Payment Request', { description: `${newReq.user_email} — ${newReq.plan?.replace('_', ' ')}` });
-        // Browser notification
-        if (Notification.permission === 'granted') {
-          new Notification('New Payment Request', { body: `${newReq.user_email} submitted a ${newReq.plan} payment` });
+        if (payload.eventType === 'INSERT') {
+          const newReq = payload.new as PaymentRequest;
+          toast.info('New Payment Request', { description: `${newReq.user_email} — ${newReq.plan?.replace('_', ' ')}` });
+          if (Notification.permission === 'granted') {
+            new Notification('New Payment Request', { body: `${newReq.user_email} submitted a ${newReq.plan} payment` });
+          }
         }
+        fetchRequests();
       })
       .subscribe();
 
@@ -122,7 +126,7 @@ export default function AdminPaymentsPage() {
     }
 
     return () => { supabase.removeChannel(channel); };
-  }, [supabase]);
+  }, [supabase, fetchRequests]);
 
   const handleReview = async () => {
     if (!reviewingRequest || !reviewAction) return;

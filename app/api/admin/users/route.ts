@@ -98,26 +98,17 @@ export async function GET(req: Request) {
 
     const allUserIds = profiles.map((p) => p.id);
 
-    // Fetch subscriptions only for these matching profiles in chunks of 100 to avoid URI length limit error
-    const chunkSize = 100;
-    const subs: Subscription[] = [];
-    
-    for (let i = 0; i < allUserIds.length; i += chunkSize) {
-      const chunk = allUserIds.slice(i, i + chunkSize);
-      const { data: chunkSubs, error: subsError } = await supabaseAdmin
-        .from('subscriptions')
-        .select('user_id, plan, status, expires_at')
-        .in('user_id', chunk);
+    // Fetch all existing subscriptions in one fast query instead of looping over thousands of user IDs
+    const { data: allSubs, error: subsError } = await supabaseAdmin
+      .from('subscriptions')
+      .select('user_id, plan, status, expires_at');
 
-      if (subsError) {
-        console.error('[admin/users] Subscriptions Fetch Error:', subsError);
-        return NextResponse.json({ error: `Subscriptions: ${subsError.message}` }, { status: 500 });
-      }
-
-      if (chunkSubs) {
-        subs.push(...(chunkSubs as Subscription[]));
-      }
+    if (subsError) {
+      console.error('[admin/users] Subscriptions Fetch Error:', subsError);
+      return NextResponse.json({ error: `Subscriptions: ${subsError.message}` }, { status: 500 });
     }
+
+    const subs = (allSubs as Subscription[]) || [];
 
     // Build subscriptions map
     const subMap = new Map<string, Subscription>();

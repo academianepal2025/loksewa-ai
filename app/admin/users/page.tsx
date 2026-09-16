@@ -3,11 +3,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   Search, Filter, ChevronLeft, ChevronRight, Users,
-  ArrowUpDown, Eye, Loader2
+  ArrowUpDown, Eye, Loader2, RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { UserDetailPanel } from '@/components/admin/UserDetailPanel';
+import { createClient } from '@/lib/supabase/client';
 
 interface UserRow {
   id: string;
@@ -38,6 +39,7 @@ const statusBadge: Record<string, string> = {
 };
 
 export default function AdminUsersPage() {
+  const supabase = createClient();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -68,7 +70,6 @@ export default function AdminUsersPage() {
       }
       const json = await res.json();
       if (json.success) {
-        console.log(`[admin/users] Loaded ${json.data.users.length} users`);
         setUsers(json.data.users);
         setTotal(json.data.total);
       } else {
@@ -83,7 +84,30 @@ export default function AdminUsersPage() {
     }
   }, [page, search, filter, sort]);
 
-  useEffect(() => { fetchUsers(); }, [fetchUsers]);
+  useEffect(() => {
+    fetchUsers();
+    // Auto-poll every 30s to keep user list in sync
+    const interval = setInterval(fetchUsers, 30000);
+    return () => clearInterval(interval);
+  }, [fetchUsers]);
+
+  // Real-time listener for new user signups
+  useEffect(() => {
+    const channel = supabase
+      .channel('admin-users-realtime')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'profiles'
+      }, () => {
+        fetchUsers();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, fetchUsers]);
 
   const handleSearchChange = (val: string) => {
     if (searchTimeout) clearTimeout(searchTimeout);
@@ -108,8 +132,15 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold text-foreground tracking-tight flex items-center gap-2">
             <Users className="h-6 w-6 text-indigo-500" /> User Directory
           </h1>
-          <p className="text-xs text-subtle mt-1">{total} total users</p>
+          <p className="text-xs text-subtle mt-1">{total.toLocaleString()} total users</p>
         </div>
+        <button
+          onClick={() => fetchUsers()}
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#1e3a5f] text-[#c9a84c] rounded-xl text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg shadow-[#1e3a5f]/20 disabled:opacity-50 w-fit"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
+        </button>
       </div>
 
       {/* Filters */}
