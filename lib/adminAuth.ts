@@ -19,11 +19,24 @@ export async function verifyAdmin() {
     
     // Check is_admin using admin service client so RLS rules on profiles do not block reading
     const supabaseAdmin = createAdminClient();
-    const { data: profile, error: profileError } = await supabaseAdmin
+    let { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('is_admin')
       .eq('id', user.id)
       .maybeSingle();
+
+    // If admin client fails (e.g. missing service role key), fallback to session server client
+    if (profileError) {
+      console.warn('[adminAuth] Admin client profile fetch error, falling back to server client:', profileError.message);
+      const serverRes = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      profile = serverRes.data;
+      profileError = serverRes.error;
+    }
 
     if (profileError) {
       console.error('[adminAuth] Profile fetch error:', profileError);
