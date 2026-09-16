@@ -3,11 +3,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   Search, Filter, ChevronLeft, ChevronRight, Users,
-  ArrowUpDown, Eye, Loader2, RefreshCw
+  ArrowUpDown, Eye, Loader2, RefreshCw, Trash2, ShieldAlert, CheckSquare, Square
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 import { UserDetailPanel } from '@/components/admin/UserDetailPanel';
+import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { createClient } from '@/lib/supabase/client';
 
 interface UserRow {
@@ -51,8 +52,63 @@ export default function AdminUsersPage() {
   const [sort, setSort] = useState('newest');
   const [searchTimeout, setSearchTimeout] = useState<any>(null);
 
+  // Selection & Purging state
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [isPurging, setIsPurging] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [purgeMode, setPurgeMode] = useState<'selected' | 'batch'>('selected');
+
   // User detail panel
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const toggleSelectUser = (id: string) => {
+    setSelectedUserIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllPage = () => {
+    if (users.length === 0) return;
+    const allSelected = users.every(u => selectedUserIds.includes(u.id));
+    if (allSelected) {
+      const pageIds = new Set(users.map(u => u.id));
+      setSelectedUserIds(prev => prev.filter(id => !pageIds.has(id)));
+    } else {
+      const combined = new Set([...selectedUserIds, ...users.map(u => u.id)]);
+      setSelectedUserIds(Array.from(combined));
+    }
+  };
+
+  const handleExecutePurge = async () => {
+    setIsPurging(true);
+    try {
+      const payload = purgeMode === 'selected'
+        ? { userIds: selectedUserIds }
+        : { purgeBatch: true, batchSize: 50 };
+
+      const res = await fetch('/api/admin/users/purge', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'Failed to purge users');
+        return;
+      }
+
+      toast.success(data.message || 'Users purged successfully!');
+      setSelectedUserIds([]);
+      setConfirmModalOpen(false);
+      fetchUsers();
+    } catch (err: any) {
+      console.error('[purge] Client error:', err);
+      toast.error('Network error while executing purge');
+    } finally {
+      setIsPurging(false);
+    }
+  };
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -143,46 +199,92 @@ export default function AdminUsersPage() {
         </button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle" />
-          <input
-            type="text"
-            placeholder="Search name, email, or phone..."
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full bg-surface border border-border-subtle rounded-xl pl-11 pr-4 py-3 text-sm font-bold text-foreground outline-none focus:border-accent transition-all"
-          />
+      {/* Filters & Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-subtle" />
+            <input
+              type="text"
+              placeholder="Search name, email, or phone..."
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="w-full bg-surface border border-border-subtle rounded-xl pl-11 pr-4 py-3 text-sm font-bold text-foreground outline-none focus:border-accent transition-all"
+            />
+          </div>
+          <select
+            value={filter}
+            onChange={(e) => { setFilter(e.target.value); setPage(1); }}
+            className="bg-surface border border-border-subtle rounded-xl px-4 py-3 text-xs font-bold text-foreground outline-none focus:border-accent min-w-[170px]"
+          >
+            <option value="all">All Plans</option>
+            <option value="inactive">Inactive (&gt; 30 days)</option>
+            <option value="free">Free</option>
+            <option value="pro_monthly">Pro Monthly</option>
+            <option value="pro_quarterly">Pro Quarterly</option>
+            <option value="cycle_pack">Cycle Pack</option>
+            <option value="expired">Expired</option>
+          </select>
+          <select
+            value={sort}
+            onChange={(e) => { setSort(e.target.value); setPage(1); }}
+            className="bg-surface border border-border-subtle rounded-xl px-4 py-3 text-xs font-bold text-foreground outline-none focus:border-accent min-w-[150px]"
+          >
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="alpha">A → Z</option>
+          </select>
         </div>
-        <select
-          value={filter}
-          onChange={(e) => { setFilter(e.target.value); setPage(1); }}
-          className="bg-surface border border-border-subtle rounded-xl px-4 py-3 text-xs font-bold text-foreground outline-none focus:border-accent min-w-[150px]"
-        >
-          <option value="all">All Plans</option>
-          <option value="free">Free</option>
-          <option value="pro_monthly">Pro Monthly</option>
-          <option value="pro_quarterly">Pro Quarterly</option>
-          <option value="cycle_pack">Cycle Pack</option>
-          <option value="expired">Expired</option>
-        </select>
-        <select
-          value={sort}
-          onChange={(e) => { setSort(e.target.value); setPage(1); }}
-          className="bg-surface border border-border-subtle rounded-xl px-4 py-3 text-xs font-bold text-foreground outline-none focus:border-accent min-w-[150px]"
-        >
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="alpha">A → Z</option>
-        </select>
+
+        {/* Purge Actions */}
+        <div className="flex items-center gap-2">
+          {selectedUserIds.length > 0 && (
+            <button
+              onClick={() => {
+                setPurgeMode('selected');
+                setConfirmModalOpen(true);
+              }}
+              disabled={isPurging}
+              className="flex items-center gap-1.5 px-3.5 py-3 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-xs font-bold hover:bg-red-500/20 transition-all disabled:opacity-50"
+            >
+              <Trash2 className="h-4 w-4" /> Purge Selected ({selectedUserIds.length})
+            </button>
+          )}
+
+          {filter === 'inactive' && (
+            <button
+              onClick={() => {
+                setPurgeMode('batch');
+                setConfirmModalOpen(true);
+              }}
+              disabled={isPurging || total === 0}
+              className="flex items-center gap-1.5 px-3.5 py-3 bg-red-600 text-white shadow-lg shadow-red-600/20 rounded-xl text-xs font-bold hover:bg-red-700 transition-all disabled:opacity-50"
+            >
+              <ShieldAlert className="h-4 w-4" /> Batch Purge (50 Inactive)
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table */}
       <div className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
         <div className="overflow-x-auto admin-table-scroll">
-          <table className="w-full text-left min-w-[1100px]">
+          <table className="w-full text-left min-w-[1150px]">
             <thead className="bg-background/50 border-b border-border-subtle">
               <tr>
+                <th className="px-4 py-3 w-10 text-center">
+                  <button
+                    type="button"
+                    onClick={toggleSelectAllPage}
+                    className="text-subtle hover:text-foreground transition-colors p-1"
+                    title={users.length > 0 && users.every(u => selectedUserIds.includes(u.id)) ? 'Deselect page' : 'Select all on page'}
+                  >
+                    {users.length > 0 && users.every(u => selectedUserIds.includes(u.id)) ? (
+                      <CheckSquare className="h-4 w-4 text-accent" />
+                    ) : (
+                      <Square className="h-4 w-4" />
+                    )}
+                  </button>
+                </th>
                 <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">User</th>
                 <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">Phone</th>
                 <th className="px-5 py-3 text-[10px] font-bold text-subtle uppercase tracking-widest">Plan</th>
@@ -201,64 +303,80 @@ export default function AdminUsersPage() {
               {loading ? (
                 [1,2,3,4,5].map(i => (
                   <tr key={i} className="animate-pulse">
-                    <td colSpan={12} className="px-5 py-5"><div className="h-4 bg-background rounded w-full" /></td>
+                    <td colSpan={13} className="px-5 py-5"><div className="h-4 bg-background rounded w-full" /></td>
                   </tr>
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="px-5 py-12 text-center">
+                  <td colSpan={13} className="px-5 py-12 text-center">
                     <p className="text-sm font-bold text-subtle">No users found</p>
                   </td>
                 </tr>
-              ) : users.map(u => (
-                <tr key={u.id} className="hover:bg-background/30 transition-all">
-                  <td className="px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 text-xs font-bold shrink-0">
-                        {(u.full_name || u.email || '?')[0]?.toUpperCase()}
+              ) : users.map(u => {
+                const isSelected = selectedUserIds.includes(u.id);
+                return (
+                  <tr key={u.id} className={`hover:bg-background/30 transition-all ${isSelected ? 'bg-indigo-500/5' : ''}`}>
+                    <td className="px-4 py-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => toggleSelectUser(u.id)}
+                        className="text-subtle hover:text-foreground transition-colors p-1"
+                      >
+                        {isSelected ? (
+                          <CheckSquare className="h-4 w-4 text-accent" />
+                        ) : (
+                          <Square className="h-4 w-4" />
+                        )}
+                      </button>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 text-xs font-bold shrink-0">
+                          {(u.full_name || u.email || '?')[0]?.toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-foreground truncate max-w-[150px]">{u.full_name || '—'}</p>
+                          <p className="text-[10px] text-subtle truncate max-w-[150px]">{u.email}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-bold text-foreground truncate max-w-[150px]">{u.full_name || '—'}</p>
-                        <p className="text-[10px] text-subtle truncate max-w-[150px]">{u.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-4 text-xs font-bold text-foreground">{u.phone || '—'}</td>
-                  <td className="px-5 py-4">
-                    {u.plan ? (
-                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border ${planBadge[u.plan] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                        {u.plan.replace('_', ' ')}
+                    </td>
+                    <td className="px-5 py-4 text-xs font-bold text-foreground">{u.phone || '—'}</td>
+                    <td className="px-5 py-4">
+                      {u.plan ? (
+                        <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border ${planBadge[u.plan] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                          {u.plan.replace('_', ' ')}
+                        </span>
+                      ) : <span className="text-xs text-subtle">—</span>}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border ${statusBadge[u.plan_status] || statusBadge.free}`}>
+                        {u.plan_status}
                       </span>
-                    ) : <span className="text-xs text-subtle">—</span>}
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase border ${statusBadge[u.plan_status] || statusBadge.free}`}>
-                      {u.plan_status}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-xs font-bold text-foreground">
-                    {u.expires_at ? format(new Date(u.expires_at), 'MMM dd, yy') : '—'}
-                  </td>
-                  <td className="px-5 py-4">
-                    <span className={`text-sm font-black ${daysColor(u.days_remaining)}`}>
-                      {u.days_remaining !== null ? u.days_remaining : '—'}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.documents}</td>
-                  <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.chats}</td>
-                  <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.quizzes}</td>
-                  <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.notes}</td>
-                  <td className="px-5 py-4 text-[10px] font-bold text-subtle">{format(new Date(u.created_at), 'MMM dd, yy')}</td>
-                  <td className="px-5 py-4 text-right">
-                    <button
-                      onClick={() => setSelectedUserId(u.id)}
-                      className="flex items-center gap-1.5 px-3 py-2 bg-indigo-500/10 text-indigo-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-500/20 transition-all border border-indigo-500/20 ml-auto"
-                    >
-                      <Eye className="h-3 w-3" /> Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-5 py-4 text-xs font-bold text-foreground">
+                      {u.expires_at ? format(new Date(u.expires_at), 'MMM dd, yy') : '—'}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className={`text-sm font-black ${daysColor(u.days_remaining)}`}>
+                        {u.days_remaining !== null ? u.days_remaining : '—'}
+                      </span>
+                    </td>
+                    <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.documents}</td>
+                    <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.chats}</td>
+                    <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.quizzes}</td>
+                    <td className="px-5 py-4 text-xs font-bold text-foreground text-center">{u.notes}</td>
+                    <td className="px-5 py-4 text-[10px] font-bold text-subtle">{format(new Date(u.created_at), 'MMM dd, yy')}</td>
+                    <td className="px-5 py-4 text-right">
+                      <button
+                        onClick={() => setSelectedUserId(u.id)}
+                        className="flex items-center gap-1.5 px-3 py-2 bg-indigo-500/10 text-indigo-600 rounded-lg text-[10px] font-bold uppercase tracking-wider hover:bg-indigo-500/20 transition-all border border-indigo-500/20 ml-auto"
+                      >
+                        <Eye className="h-3 w-3" /> Details
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -286,6 +404,33 @@ export default function AdminUsersPage() {
         isOpen={!!selectedUserId}
         onClose={() => setSelectedUserId(null)}
         userId={selectedUserId}
+      />
+
+      {/* Purge Confirmation Modal */}
+      <ConfirmModal
+        isOpen={confirmModalOpen}
+        onClose={() => !isPurging && setConfirmModalOpen(false)}
+        onConfirm={handleExecutePurge}
+        variant="danger"
+        loading={isPurging}
+        title={purgeMode === 'selected' ? `Purge ${selectedUserIds.length} User(s)?` : 'Batch Purge 50 Inactive Users?'}
+        description={
+          purgeMode === 'selected' ? (
+            <span>
+              This will permanently delete the selected <strong>{selectedUserIds.length}</strong> account(s), including all their uploaded documents, document embeddings/chunks, chat messages, study notes, quiz history, and storage files. <strong>This action cannot be undone.</strong>
+              <br /><br />
+              <em>Note: Administrators and users with active paid subscriptions are strictly protected and will never be deleted.</em>
+            </span>
+          ) : (
+            <span>
+              This will automatically select and permanently delete up to <strong>50 oldest inactive users</strong> who have had no activity (chats, documents, quizzes) in the past 30 days and have no active subscription. All associated documents, embeddings, and storage files will be removed to free storage space.
+              <br /><br />
+              <strong>This action cannot be undone.</strong>
+            </span>
+          )
+        }
+        confirmLabel={isPurging ? 'Purging...' : 'Yes, Purge Data'}
+        cancelLabel="Cancel"
       />
     </div>
   );

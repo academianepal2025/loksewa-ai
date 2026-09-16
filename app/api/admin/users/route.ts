@@ -153,6 +153,9 @@ export async function GET(req: Request) {
         users = users.filter((u) => u.plan_status === 'free');
       } else if (filter === 'expired') {
         users = users.filter((u) => u.plan_status === 'expired');
+      } else if (filter === 'inactive') {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        users = users.filter((u) => u.plan_status !== 'active' && new Date(u.created_at) < thirtyDaysAgo);
       } else {
         users = users.filter((u) => u.plan === filter && u.plan_status === 'active');
       }
